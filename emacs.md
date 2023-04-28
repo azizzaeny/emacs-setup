@@ -1,4 +1,11 @@
 ### Background
+Whats the problem?. we need to generate a markdown files that markdown files itself contain init.el and load all emacs configuration. the configuration we generates also can be re-generate itself in the newer version.
+
+How we do it?. first of all we are storing a configuration in the markdown files. that meaning we need to figure out how we identify the code blocks inside the markdown then we evaluate each block in sequences.
+
+in order to re-generate and create initial of it. first we clone this document to specific folder on our local computer. we provide a way of installing or setting up the init.el in exact step. we go openup this files evaluates commands that generate init.el. we dont do syncing or copying out this files to ~/.emacs.d/init.el instead we generate it.
+
+
 ### Eamcs Shortcut
 
 ```txt
@@ -173,8 +180,8 @@ Scroll Behaviour
 ;; (setq scroll-step 2)  ;; keyboard scroll one line at a time
 ;; (setq scroll-conservatively 10000)
 ;; (setq scroll-preserve-screen-position t)
-
 ```
+
 ### Package Initialization
 
 ```elisp
@@ -223,7 +230,7 @@ Scroll Behaviour
 (el-get-bundle counsel)
 (el-get-bundle ivy)
 (el-get-bundle auto-complete)
-(el-get-bundle general)
+;; (el-get-bundle general)
 (el-get-bundle php-mode)
 
 ```
@@ -282,13 +289,13 @@ Scroll Behaviour
 (setq clojure-indent-style 'always-indent)
 (setq comment-column 0)
 
-
 ;; show-paren
 (require 'paren)
 (setq show-paren-delay 0.4)
 (set-face-foreground 'show-paren-match "#def")
 (set-face-attribute 'show-paren-match nil :weight 'extra-bold)
 (show-paren-mode 1)
+
 ```
 
 #### Javascript , MutliWeb, Tramp, Other
@@ -325,42 +332,28 @@ Scroll Behaviour
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'post-forward-angle-brackets)
 
-
-
 ```
 #### Setup Custom Key
 
 ```elisp
 
-(defvar custom-bindings-map (make-keymap)
-  "A keymap for custom bindings.")
+;; (general-define-key
+;;   "C-g"     'minibuffer-keyboard-quit
+;;   "C-s"     'counsel-grep-or-swiper
+;;   "C-x C-f" 'counsel-find-file
+;;   "C-x ag"  'counsel-ag
+;;   ;; "C-x f"   'counsel-describe-function
+;;   ;; "C-x l"   'counsel-find-library
+;;   "C-x f" nil
+;;   "C-x <left>" nil
+;;   "C-x <right>" nil)
 
-(general-define-key
-  "C-g"     'minibuffer-keyboard-quit
-  "C-s"     'counsel-grep-or-swiper
-  "C-x C-f" 'counsel-find-file
-  "C-x ag"  'counsel-ag
-  ;; "C-x f"   'counsel-describe-function
-  ;; "C-x l"   'counsel-find-library
-  "C-x f" nil
-  "C-x <left>" nil
-  "C-x <right>" nil)
 
-(defconst custom-key "C-c")
-
-(general-create-definer
-  custom-key :prefix "C-c")
-
-(define-minor-mode custom-bindings-mode
-  "A mode that activates custom-bindings."
-  t nil custom-bindings-map)
-
-;; (custom-key
-;;   "m e" 'mc/edit-lines
-;;   "m n" 'mc/mark-next-lines
-;;   "m e" 'emmet-expand-line)
-
-(custom-bindings-mode 1)
+(global-set-key (kbd "C-g") 'minibuffer-keyboard-quit)
+(global-set-key (kbd "C-s") 'counsel-grep-or-swiper)
+(global-set-key (kbd "C-x C-f") 'counsel-find-file)
+(global-set-key (kbd "C-x a g") 'counsel-ag)
+(global-set-key (kbd "C-x f") 'counsel-find-library)
 
 (global-set-key (kbd "C-x <up>") 'windmove-up)
 (global-set-key (kbd "C-x <down>") 'windmove-down)
@@ -368,6 +361,24 @@ Scroll Behaviour
 (global-set-key (kbd "C-x <right>") 'windmove-right)
 (global-set-key (kbd "C-x C-<left>") 'windmove-left)
 (global-set-key (kbd "C-x C-<right>") 'windmove-right)
+
+;; (defvar custom-bindings-map (make-;; keymap)
+;;   "A keymap for custom bindings.")
+;; (defconst custom-key "C-c")
+
+;; (general-create-definer
+;;   custom-key :prefix "C-c")
+
+;; (define-minor-mode custom-bindings-mode
+;;   "A mode that activates custom-bindings."
+;;   t nil custom-bindings-map)
+
+;; (custom-key
+;;   "m e" 'mc/edit-lines
+;;   "m n" 'mc/mark-next-lines
+;;   "m e" 'emmet-expand-line)
+
+;; (custom-bindings-mode 1)               
 ```
 
 #### Repl 
@@ -376,15 +387,14 @@ Scroll Behaviour
 
 (defvar repl-active-window "*ansi-term*")
 (defvar repl-bin-sh "/usr/bin/zsh")
-(defvar repl-wrap-txt "(fn %s)")
+(defvar repl-wrap-txt "%s")
 
 (defun repl-start (&optional repl-name init-script)
   (interactive)
   (let ((current-buffer-window (selected-window)))
 	(if (not repl-name)
 		(setq repl-active-window "*ansi-term*")
-	  (setq repl-active-window repl-name))
-	  
+	  (setq repl-active-window repl-name))	
 	(progn (ansi-term repl-bin-sh)
 		   (when init-script
 			 (insert init-script)
@@ -394,10 +404,11 @@ Scroll Behaviour
 
 (defun repl-send-str (input-str &optional repl-name init-script)
   (interactive)
-  ;;(let ((current-buffer-window (selected-window)
-		(term-send-string repl-active-window input-str)
-		(term-send-string repl-active-window "\n"))
-;;		(select-window current-buffer-window)))))
+  (let ((current-buffer-window (selected-window))
+        (format-str (format repl-wrap-txt input-str)))
+    (term-send-string repl-active-window format-str)
+	(term-send-string repl-active-window "\n")
+    (select-window current-buffer-window)))
 
 (defun repl-send-line ()
   (interactive)
@@ -451,7 +462,6 @@ Scroll Behaviour
 	  (repl-send-wrap (buffer-substring-no-properties (point) (mark)))
 	  (setq mark-active nil)
 	  (goto-char init-p))))
-(defun repl-send-js ())
 
 (defun repl-send-lisp ()
   (interactive)
@@ -461,24 +471,27 @@ Scroll Behaviour
   (setq mark-active nil)
   (forward-sexp))
 
-(defun repl-send-python ())
-
 (defun repl-send-md-block ()
   (interactive)
   (save-excursion
     (let ((starting-pos (progn (re-search-backward "^```" (point-min) t) (match-end 0)))    
           (end-pos (progn (re-search-forward md-block-end (point-max) t) (match-beginning 0))))
-      (let ((file-ref (or (progn (re-search-backward md-file-ref starting-pos t) (match-string 1)) nil))
+      (let ((file-ref (or (progn (re-search-backward "```" starting-pos t) (match-string 1)) nil))
             (start-content (progn (goto-char starting-pos) (beginning-of-line) (forward-line 1) (point))))
           (repl-send-str (buffer-substring-no-properties start-content end-pos)))
         )))
 
-(defun repl-send-all-md-block ())
 
+(defun repl-send-js ())
+(defun repl-send-python ())
+(defun repl-send-all-md-block ())
 (defun repl-send-clojure ())
 (defun repl-send-process-exit ()
   (interactive)
   (repl-send-str "process.exit(0);"))
+
+;; TODO:
+;; Create Marked things that can be swith able, so we dont define like send-process-exit, like a bookmark this things, so we have shortcut to sending all of this
 
 ```
 
@@ -492,8 +505,7 @@ Scroll Behaviour
   (save-excursion
     (let ((starting-pos (progn (re-search-backward "^```" (point-min) t) (match-end 0)))    
           (end-pos (progn (re-search-forward md-block-end (point-max) t) (match-beginning 0))))
-      (let ((file-ref (or (progn (re-search-backward tangle-md-file-ref starting-pos t) (match-string 1)) nil))
-			
+      (let ((file-ref (or (progn (re-search-backward tangle-md-file-ref starting-pos t) (match-string 1)) nil))			
             (start-content (progn (goto-char starting-pos) (beginning-of-line) (forward-line 1) (point))))
         (when file-ref
           (write-to-file file-ref (buffer-substring-no-properties start-content end-pos)))
@@ -515,21 +527,26 @@ Scroll Behaviour
 	  (find-file out-dir)
 	  (write-to-file out-dir (concat "## Notes - " (format-time-string "%Y%m%d" (current-time)))))
 	))
-
 ```
 
 #### Set Custom key 
 This Line should be placed at the bottom to set custom-key
 
 ```elisp
-(custom-key
-  "c s" 'repl-start
-  "c l" 'repl-send-line
-  "c b" 'repl-send-buffer
-  "c r" 'repl-send-region
-  "c e" 'repl-send-paragraph
-  "c w" 'repl-send-wrap-line
-  "c m" 'repl-send-md-block
-  "c t" 'tangle-md-block
-  )
+
+;; (global-unset-key "C-l")
+
+(global-set-key (kbd "C-c c l") 'repl-send-line)
+
+;; (custom-key
+;;   "c s" 'repl-start
+;;   "c l" 'repl-send-line
+;;   "c b" 'repl-send-buffer
+;;   "c r" 'repl-send-region
+;;   "c e" 'repl-send-paragraph
+;;   "c w" 'repl-send-wrap-line
+;;   "c m" 'repl-send-md-block
+;;   "c t" 'tangle-md-block
+;;   )
+
 ```
