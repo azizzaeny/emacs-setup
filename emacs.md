@@ -103,8 +103,8 @@ it would try to load emacs-lisp markdown identified syntax
   (let ((source (buffer-substring-no-properties (point-min) (point-max))))
     (write-to-file init-md-location source)))
 
-;;(generate-init-el)
-;;(generate-emacs-md)
+;; (generate-init-el)
+;; (generate-emacs-md)
 
 ;; TODO: copy files or this loaded buffer into the emacs directory
 
@@ -534,19 +534,15 @@ This Line should be placed at the bottom to set custom-key
 
 ```elisp
 
-;; (global-unset-key "C-l")
+(global-unset-key (kbd "C-l"))
+(global-set-key (kbd "C-l r") 'eval-region)
 
 (global-set-key (kbd "C-c c l") 'repl-send-line)
-
-;; (custom-key
-;;   "c s" 'repl-start
-;;   "c l" 'repl-send-line
-;;   "c b" 'repl-send-buffer
-;;   "c r" 'repl-send-region
-;;   "c e" 'repl-send-paragraph
-;;   "c w" 'repl-send-wrap-line
-;;   "c m" 'repl-send-md-block
-;;   "c t" 'tangle-md-block
-;;   )
+(global-set-key (kbd "C-c c s") 'repl-start)
+(global-set-key (kbd "C-c c b") 'repl-send-buffer)
+(global-set-key (kbd "C-c c r") 'repl-send-region)
+(global-set-key (kbd "C-c c e") 'repl-send-paragraph)
+(global-set-key (kbd "C-c c m") 'repl-send-md-block)
+(global-set-key (kbd "C-c c t") 'tangle-md-block)
 
 ```
