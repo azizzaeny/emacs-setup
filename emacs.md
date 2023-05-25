@@ -36,6 +36,8 @@ it would try to load emacs-lisp markdown identified syntax
 
 (setq byte-compile-warnings '(cl-functions))
 
+(setq ivy-use-virtual-buffers t)
+
 ;; Minimize garbage collection during startup
 (setq gc-cons-threshold most-positive-fixnum)
 
@@ -103,8 +105,8 @@ it would try to load emacs-lisp markdown identified syntax
   (let ((source (buffer-substring-no-properties (point-min) (point-max))))
     (write-to-file init-md-location source)))
 
-;; (generate-init-el)
-;; (generate-emacs-md)
+;;(generate-init-el)
+;;(generate-emacs-md)
 
 ;; TODO: copy files or this loaded buffer into the emacs directory
 
@@ -114,7 +116,7 @@ it would try to load emacs-lisp markdown identified syntax
 setting up toolbar, tooltip, tab-width, editor behaviour, encoding, line-number-mode,
 
 ```elisp
- 
+  
 ;; frame window, behaviour 
 (setq ns-pop-up-frames nil)
 (scroll-bar-mode -1)
@@ -232,7 +234,7 @@ Scroll Behaviour
 (el-get-bundle auto-complete)
 ;; (el-get-bundle general)
 (el-get-bundle php-mode)
-
+ 
 ```
 
 ### Setup Package
@@ -259,7 +261,7 @@ Scroll Behaviour
 		(swiper . ivy--regex-plus)))
 
 (setq company-tooltip-align-annotations t)
- 
+  
 ```
 #### Markdown , Poly Markdown 
 
@@ -283,7 +285,7 @@ Scroll Behaviour
 #### Clojure, Parens, Lisp 
 
 ```elisp
-
+ 
 ;; clojure-mode
 (require 'clojure-mode)
 (setq clojure-indent-style 'always-indent)
@@ -544,5 +546,8 @@ This Line should be placed at the bottom to set custom-key
 (global-set-key (kbd "C-c c e") 'repl-send-paragraph)
 (global-set-key (kbd "C-c c m") 'repl-send-md-block)
 (global-set-key (kbd "C-c c t") 'tangle-md-block)
+
+(global-set-key (kbd "C-x v") 'ivy-push-view)
+(global-set-key (kbd "C-c c a") 'aggressive-indent-indent-defun)
 
 ```
