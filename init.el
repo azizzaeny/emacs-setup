@@ -1,50 +1,49 @@
-### Background
-Whats the problem?. we need to generate a markdown files that markdown files itself contain init.el and load all emacs configuration. the configuration we generates also can be re-generate itself in the newer version.
 
-How we do it?. first of all we are storing a configuration in the markdown files. that meaning we need to figure out how we identify the code blocks inside the markdown then we evaluate each block in sequences.
+(require 'package)
+(require 'cl-lib)
 
-in order to re-generate and create initial of it. first we clone this document to specific folder on our local computer. we provide a way of installing or setting up the init.el in exact step. we go openup this files evaluates commands that generate init.el. we dont do syncing or copying out this files to ~/.emacs.d/init.el instead we generate it.
+(setq package-archives
+      '(("gnu" . "https://elpa.gnu.org/packages/")
+	("melpa-stable" . "https://stable.melpa.org/packages/")
+	("melpa" . "https://melpa.org/packages/")))
 
+(defvar
+  my-packages
+  '(
+    clojure-mode
+    counsel
+    ivy
+    auto-complete
+    python-mode
+    js2-mode
+    php-mode
+    aggressive-indent
+    polymode
+    poly-markdown
+    markdown-mode
+    yaml-mode
+    ))
 
-### Eamcs Shortcut
+;; parinfer
+;; paredit
+;; rainbow-delimiters
+;; smartparens
+;; multi-web-mode
+;; emmet-mode
+;; yasnippet
+;; github-theme
 
-```txt
-C-b backward one char
-C-f forward one char
-M-b backward one word
-M-f forward one word
-C-a begin line
-C-e end line
-C-p up line
-C-n down line
-M-< beginn document
-M-> End Document
-M-v up screen
-C-v down screen
-M-} down paragraph
-M-{ up paragraph
-M-h mark paragraph
-C-Spc Begin Mark 
-```
+(defun my-packages-installed-p ()
+  (cl-loop for p in my-packages
+           when (not (package-installed-p p)) do (cl-return nil)
+           finally (cl-return t)))
 
-### Getting Started & Setup 
-**Writing Emacs Configuration to The User Directory**  
-Evaluate this line of codes in your emacs to start, this will create init.el and copy the emacs.d files to your `~/.emacs.d/` directory  
-it would try to load emacs-lisp markdown identified syntax   
+(unless (my-packages-installed-p)
+  (package-refresh-contents)
+  (dolist (p my-packages)
+    (when (not (package-installed-p p))
+      (package-install p))))
 
-```emacs-lisp
-
-(setq byte-compile-warnings '(cl-functions))
-
-(setq ivy-use-virtual-buffers t)
-
-;; Minimize garbage collection during startup
-(setq gc-cons-threshold most-positive-fixnum)
-
-;; Lower threshold back to 8 MiB (default is 800kB)
-(add-hook 'emacs-startup-hook
-          (lambda ()
-            (setq gc-cons-threshold (expt 2 23))))
 
 (defvar md-block-header "^```elisp")
 (defvar md-block-end "^```$")
@@ -65,9 +64,9 @@ it would try to load emacs-lisp markdown identified syntax
 			  (funcall evaluator starting-pos end-pos)
 			(eval-region starting-pos end-pos)))))))
 
-(defvar md-base-init "~/.emacs.d/emacs.md")
+(defvar md-base-init "/home/aziz/test.md")
 ;; todo : fix load all markdown in the directory
-(load-markdown md-base-init)
+;; (load-markdown md-base-init)
 
 (defun write-to-file (file-location contents)
   (interactive)
@@ -105,42 +104,37 @@ it would try to load emacs-lisp markdown identified syntax
   (let ((source (buffer-substring-no-properties (point-min) (point-max))))
     (write-to-file init-md-location source)))
 
-;;(generate-init-el)
-;;(generate-emacs-md)
+;; (generate-init-el)
+;; (generate-emacs-md)
 
 ;; TODO: copy files or this loaded buffer into the emacs directory
+(setq byte-compile-warnings '(cl-functions))
 
-```
+;; Minimize garbage collection during startup
+(setq gc-cons-threshold most-positive-fixnum)
 
-### Base Setup Editor
-setting up toolbar, tooltip, tab-width, editor behaviour, encoding, line-number-mode,
+;; Lower threshold back to 8 MiB (default is 800kB)
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (setq gc-cons-threshold (expt 2 23))))
 
-```elisp
-  
-;; frame window, behaviour 
-(setq ns-pop-up-frames nil)
-(scroll-bar-mode -1)
-(tool-bar-mode   -1)
-(tooltip-mode    -1)
-(menu-bar-mode   -1)
 (set-language-environment "UTF-8")
 (prefer-coding-system 'utf-8)
-(setq use-dialog-box nil)
+
+
 (setq inhibit-startup-message t)
 (setq inhibit-startup-echo-area t)
 (setq initial-scratch-message nil)
+
 (setq ring-bel-function 'ignore)
 (setq visible-bell t)
 (setq custom-safe-themes t)
-(setq ns-use-proxy-icon  nil)
+(setq ns-pop-up-frames nil)
 (setq frame-title-format nil)
 (setq find-file-visit-truename t)
 (setq large-file-warning-threshold (* 25 1024 1024))
 (setq comment-style 'extra-line)
 (fset 'yes-or-no-p 'y-or-n-p)
-(setq redisplay-dont-pause t)
-
-;; Backup files 
 
 (setq make-backup-files nil)
 (setq auto-save-default nil)
@@ -156,25 +150,8 @@ setting up toolbar, tooltip, tab-width, editor behaviour, encoding, line-number-
 (setq tab-width 2)
 (setq toggle-truncate-lines t)
 (setq indent-tabs-mode nil)
-
-;; Cursor, mouse-wheel, scroll
-
-(set-default (quote cursor-type) t)
 (blink-cursor-mode -1)
 
-;; (global-whitespace-mode)
-;; (setq whitespace-style '(face tabs tab-mark trailing))
-;; (custom-set-faces
-;;  '(whitespace-tab ((t (:foreground "#f9f9f9")))))
-
-;; (setq whitespace-display-mappings
-;;       '((tab-mark 9 [124 9] [92 9])))
-
-```
-
-Scroll Behaviour 
-
-```elisp
 (defvar cursor-initial-color (face-attribute 'cursor :background))
 ;; (setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))  ;; one line at a time
 ;; (setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
@@ -182,67 +159,10 @@ Scroll Behaviour
 ;; (setq scroll-step 2)  ;; keyboard scroll one line at a time
 ;; (setq scroll-conservatively 10000)
 ;; (setq scroll-preserve-screen-position t)
-```
 
-### Package Initialization
+;; setup pacakge
 
-```elisp
-(defun initialize-el-get ()
-  (add-to-list 'load-path "~/.emacs.d/el-get/el-get")  
-  (unless (require 'el-get nil 'noerror)
-	(with-current-buffer
-		(url-retrieve-synchronously
-		 "https://raw.githubusercontent.com/dimitri/el-get/master/el-get-install.el")
-	  (goto-char (point-max))
-	  (eval-print-last-sexp)))
-  (add-to-list 'el-get-recipe-path "~/.emacs.d/el-get-user/recipes"))
-(initialize-el-get)
-(package-initialize)
-
-(el-get-bundle github-theme
-  :url "https://raw.githubusercontent.com/philiparvidsson/GitHub-Theme-for-Emacs/master/github-theme.el")
-
-(el-get-bundle polymode/polymode
-  :type github :pkgname "polymode/polymode")
-
-(el-get-bundle polymode/poly-markdown
-  :type github :pkgname "polymode/poly-markdown")
-
-(el-get-bundle defunkt/markdown-mode
-  :type github :pkgname "defunkt/markdown-mode")
-
-(el-get-bundle mooz/js2-mode
-  :type github :pkgname "mooz/js2-mode")
-
-(el-get-bundle clojure-mode)
-;; (el-get-bundle parinfer)
-;; (el-get-bundle paredit)
-
-(el-get-bundle rainbow-delimiters)
-(el-get-bundle aggressive-indent)
-;; (el-get-bundle smartparens)
-
-(el-get-bundle fgallina/multi-web-mode
-  :type github :pkgname "fgallina/multi-web-mode")
-
-;; (el-get-bundle emmet-mode)
-(el-get-bundle python-mode)
-(el-get-bundle yasnippet)
-;; (el-get-bundle gist)
-(el-get-bundle counsel)
-(el-get-bundle ivy)
-(el-get-bundle auto-complete)
-;; (el-get-bundle general)
-(el-get-bundle php-mode)
- 
-```
-
-### Setup Package
-#### Ivy, Swiper, Counsel
-
-```elisp
-
-(require 'counsel)
+;; (require 'counsel)
 (require 'ivy)
 (require 'swiper)
 (ivy-mode 1)
@@ -261,11 +181,7 @@ Scroll Behaviour
 		(swiper . ivy--regex-plus)))
 
 (setq company-tooltip-align-annotations t)
-  
-```
-#### Markdown , Poly Markdown 
 
-```elisp
 
 ;; markdown-mode
 (require 'markdown-mode)
@@ -279,12 +195,6 @@ Scroll Behaviour
 (require 'poly-markdown)
 (with-eval-after-load 'poly-markdown
   (add-to-list 'auto-mode-alist '("\\.md" . poly-markdown-mode)))
-
-```
-
-#### Clojure, Parens, Lisp 
-
-```elisp
  
 ;; clojure-mode
 (require 'clojure-mode)
@@ -298,11 +208,6 @@ Scroll Behaviour
 (set-face-attribute 'show-paren-match nil :weight 'extra-bold)
 (show-paren-mode 1)
 
-```
-
-#### Javascript , MutliWeb, Tramp, Other
-
-```elisp
 
 (setq-default indent-tabs-mode nil)
 (add-hook 'js2-mode-hook (lambda () (setq js2-basic-offset 2)))
@@ -312,80 +217,17 @@ Scroll Behaviour
 (setq indent-line-function 'insert-tab)
 (setq tab-stop-list (number-sequence 2 200 2))
 ;; (setq backward-delete-char-untabify-method 'hungry)
-
 (set-default 'truncate-lines t)
 
-;; multiweb
-;;(require 'multi-web-mode)
-;;(setq mweb-default-major-mode 'html-mode)
-;; (setq mweb-tags '((php-mode "<\\?php\\|<\\? \\|<\\?=" "\\?>")
-;;                   (js-mode "<script +\\(type=\"text/javascript\"\\|language=\"javascript\"\\)[^>]*>" "</script>")
-;;                   (css-mode "<style +type=\"text/css\"[^>]*>" "</style>")))
-;;(setq mweb-filename-extensions '("php" "htm" "html" "ctp" "phtml" "php4" "php5"))
-;;(multi-web-global-mode 1)
-;;(require 'php-mode)
 
-
-(require 'yasnippet)
-(yas-global-mode 1)
-(setq yas-snippet-dirs '("~/.emacs.d/snippets/"))
+;; (require 'yasnippet)
+;; (yas-global-mode 1)
+;; (setq yas-snippet-dirs '("~/.emacs.d/snippets/"))
 
 
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'post-forward-angle-brackets)
 
-```
-#### Setup Custom Key
-
-```elisp
-
-;; (general-define-key
-;;   "C-g"     'minibuffer-keyboard-quit
-;;   "C-s"     'counsel-grep-or-swiper
-;;   "C-x C-f" 'counsel-find-file
-;;   "C-x ag"  'counsel-ag
-;;   ;; "C-x f"   'counsel-describe-function
-;;   ;; "C-x l"   'counsel-find-library
-;;   "C-x f" nil
-;;   "C-x <left>" nil
-;;   "C-x <right>" nil)
-
-
-(global-set-key (kbd "C-g") 'minibuffer-keyboard-quit)
-(global-set-key (kbd "C-s") 'counsel-grep-or-swiper)
-(global-set-key (kbd "C-x C-f") 'counsel-find-file)
-(global-set-key (kbd "C-x a g") 'counsel-ag)
-(global-set-key (kbd "C-x f") 'counsel-find-library)
-
-(global-set-key (kbd "C-x <up>") 'windmove-up)
-(global-set-key (kbd "C-x <down>") 'windmove-down)
-(global-set-key (kbd "C-x <left>") 'windmove-left)
-(global-set-key (kbd "C-x <right>") 'windmove-right)
-(global-set-key (kbd "C-x C-<left>") 'windmove-left)
-(global-set-key (kbd "C-x C-<right>") 'windmove-right)
-
-;; (defvar custom-bindings-map (make-;; keymap)
-;;   "A keymap for custom bindings.")
-;; (defconst custom-key "C-c")
-
-;; (general-create-definer
-;;   custom-key :prefix "C-c")
-
-;; (define-minor-mode custom-bindings-mode
-;;   "A mode that activates custom-bindings."
-;;   t nil custom-bindings-map)
-
-;; (custom-key
-;;   "m e" 'mc/edit-lines
-;;   "m n" 'mc/mark-next-lines
-;;   "m e" 'emmet-expand-line)
-
-;; (custom-bindings-mode 1)               
-```
-
-#### Repl 
-
-```elisp
 
 (defvar repl-active-window "*ansi-term*")
 (defvar repl-bin-sh "/usr/bin/zsh")
@@ -492,14 +334,6 @@ Scroll Behaviour
   (interactive)
   (repl-send-str "process.exit(0);"))
 
-;; TODO:
-;; Create Marked things that can be swith able, so we dont define like send-process-exit, like a bookmark this things, so we have shortcut to sending all of this
-
-```
-
-#### Tangle Markdowns
-
-```elisp
 (defvar tangle-md-file-ref "path=\\([^\s+]+\\)")
 
 (defun tangle-md-block ()
@@ -515,11 +349,6 @@ Scroll Behaviour
 
 (defun tangle-md-buffer ())
 
-```
-
-#### Open Notes
-
-```elisp
 
 (defun open-note ()
   (interactive)
@@ -529,15 +358,59 @@ Scroll Behaviour
 	  (find-file out-dir)
 	  (write-to-file out-dir (concat "## Notes - " (format-time-string "%Y%m%d" (current-time)))))
 	))
-```
 
-#### Set Custom key 
-This Line should be placed at the bottom to set custom-key
+(defun align-to-colon (begin end)
+  "Align region to colon"
+  (interactive "r")
+  (align-regexp begin end
+                (rx (group (zero-or-more (syntax whitespace))) ":"  ) 1 1 ))
 
-```elisp
+(defun align-to-comma (begin end)
+  "Align region to comma signs"
+  (interactive "r")
+  (align-regexp begin end
+                (rx "," (group (zero-or-more (syntax whitespace))) ) 1 1 ))
+
+
+(defun align-to-equals (begin end)
+  "Align region to equal signs"
+  (interactive "r")
+  (align-regexp begin end
+                (rx (group (zero-or-more (syntax whitespace))) "=") 1 1 ))
+
+(defun align-to-hash (begin end)
+  "Align region to hash ( => ) signs"
+  (interactive "r")
+  (align-regexp begin end
+                (rx (group (zero-or-more (syntax whitespace))) "=>") 1 1 ))
+
+;; work with this
+(defun align-to-comma-before (begin end)
+  "Align region to equal signs"
+  (interactive "r")
+  (align-regexp begin end
+                (rx (group (zero-or-more (syntax whitespace))) ",") 1 1 ))
+
 
 (global-unset-key (kbd "C-l"))
 (global-set-key (kbd "C-l r") 'eval-region)
+
+(global-set-key (kbd "C-g") 'minibuffer-keyboard-quit)
+(global-set-key (kbd "C-s") 'counsel-grep-or-swiper)
+
+(global-set-key (kbd "C-x C-f") 'counsel-find-file)
+(global-set-key (kbd "C-x f") 'counsel-find-library)
+(global-set-key (kbd "C-x a") 'ansi-term)
+(global-unset-key (kbd "C-x m"))
+;;(global-set-key (kbd "C-x m") 'multi-term)
+(global-set-key (kbd "C-x <up>") 'windmove-up)
+(global-set-key (kbd "C-x <up>") 'windmove-up)
+(global-set-key (kbd "C-x <down>") 'windmove-down)
+(global-set-key (kbd "C-x <left>") 'windmove-left)
+(global-set-key (kbd "C-x <right>") 'windmove-right)
+(global-set-key (kbd "C-x C-<left>") 'windmove-left)
+(global-set-key (kbd "C-x C-<right>") 'windmove-right)
+(global-set-key (kbd "C-x v") 'ivy-push-view)
 
 (global-set-key (kbd "C-c c l") 'repl-send-line)
 (global-set-key (kbd "C-c c s") 'repl-start)
@@ -547,7 +420,10 @@ This Line should be placed at the bottom to set custom-key
 (global-set-key (kbd "C-c c m") 'repl-send-md-block)
 (global-set-key (kbd "C-c c t") 'tangle-md-block)
 
-(global-set-key (kbd "C-x v") 'ivy-push-view)
 (global-set-key (kbd "C-c c a") 'aggressive-indent-indent-defun)
+(global-set-key (kbd "C-c c c") 'align-to-colon)
+(global-set-key (kbd "C-c c e") 'align-to-equals)
 
-```
+(global-set-key (kbd "C-c c g") 'generate-emacs-md)
+
+(server-start)

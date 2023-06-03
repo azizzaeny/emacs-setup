@@ -1,6 +1,6 @@
+starting
+
+emacs -l init.el init.el
 
 ### Contents 
--  [Emacs Config](./emacs.md) 
-
-### Articles and Contents Included 
-- Repl Driven Development Emacs []()
+-  [Emacs Config](./init.el) 
