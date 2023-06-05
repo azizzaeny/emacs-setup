@@ -410,7 +410,9 @@
 (global-set-key (kbd "C-x <right>") 'windmove-right)
 (global-set-key (kbd "C-x C-<left>") 'windmove-left)
 (global-set-key (kbd "C-x C-<right>") 'windmove-right)
+
 (global-set-key (kbd "C-x v") 'ivy-push-view)
+(global-set-key (kbd "C-x p") 'ivy-pop-view)
 
 (global-set-key (kbd "C-c c l") 'repl-send-line)
 (global-set-key (kbd "C-c c s") 'repl-start)
