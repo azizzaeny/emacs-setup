@@ -10,12 +10,19 @@ emacs start with loading `init.el` files which is contain parser to parse markdo
 
 ### Contents 
 - [Emacs markdown parser](./init.el) 
-- [Setup package](./contents/01-install-package)
+- [Setup package](./contents/01-install-package.md)
 - [Make it home](./contents/02-make-it-home.md)
 - [Beyond editor](./contents/03-beyond-editor.md)
+- [Send string to buffer](./contents/04-repl-send-string.md)
+- [Literate programming in markdown](./contents/05-literate-tangling.md)
+- [Align to something](./contents/06-align-to-sign.md)
 
 ```elisp
 (load-markdown "./contents/01-install-package.md")
 (load-markdown "./contents/02-make-it-home.md")
 (load-markdown "./contents/03-beyond-editor.md")
+(load-markdown "./contents/04-repl-send-string.md")
+(load-markdown "./contents/05-literate-tangling.md")
+(load-markdown "./contents/06-align-to-sign.md")
+
 ```
