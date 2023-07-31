@@ -54,4 +54,6 @@
   (let ((source (buffer-substring-no-properties (point-min) (point-max))))
     (write-to-file init-md-location source)))
 
+(global-set-key (kbd "C-c c g") 'generate-emacs-md)
+
 (load-markdown "./readme.md")
