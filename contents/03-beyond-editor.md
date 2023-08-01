@@ -107,7 +107,7 @@ make the functional editor, extends its core functionality
 (global-set-key (kbd "C-x v") 'ivy-push-view)
 (global-set-key (kbd "C-x p") 'ivy-pop-view)
 
-(global-set-key (kbd "C-c l r") 'eval-region)
+(global-set-key (kbd "C-x e") 'eval-region)
 (global-set-key (kbd "C-c c v") 'visual-line-mode)
 (global-set-key (kbd "C-c c a") 'aggressive-indent-indent-defun)
 
