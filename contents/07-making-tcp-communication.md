@@ -2,7 +2,9 @@
 (explain the idea)
 
 #### concept 
-interactive start a client given buffer-name, when start input read number of port that to connect 
+interactive start a client given buffer-name, when start input read number of port that to creating a tcp server, when there is a message assume it is a lisp message that we can evaluate
+eval it in the current emacs.
+
 
 #### Ex1: 
 ```lisp
