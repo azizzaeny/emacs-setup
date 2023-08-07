@@ -17,6 +17,7 @@ emacs start with loading `init.el` files which is contain parser to parse markdo
 - [Literate programming in markdown](./contents/05-literate-tangling.md)
 - [Align to something](./contents/06-align-to-sign.md)
 - [Eval through TCP](./contents/07-making-tcp-communication.md)
+- [Simulate in frame](./contents/08-simulate-things-in-frame.md)
 
 ```elisp
 (load-markdown "./contents/01-install-package.md")
@@ -26,5 +27,6 @@ emacs start with loading `init.el` files which is contain parser to parse markdo
 (load-markdown "./contents/05-literate-tangling.md")
 (load-markdown "./contents/06-align-to-sign.md")
 (load-markdown "./contents/07-making-tcp-communication.md")
+(load-markdown "./contents/08-simulate-things-in-frame.md")
 
 ```

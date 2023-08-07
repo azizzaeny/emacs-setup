@@ -69,11 +69,14 @@ eval it in the current emacs.
 ;; (let ((proc (make-network-process :name "my sock"
 ;;                                   :host 'local    ;; or hostname string
 ;;                                   :service 9999)))
-;;   (process-send-string proc "(message \"hello socket world\")")
-;;   (sleep for 300)
+;;   ;;(process-send-string proc "(message \"hello socket world\")")
+;;   (process-send-string proc "(find)")
+;;   (sleep for 3)
 ;;   (delete-process proc))
 
+;;(find-file "06-align-to-sign.md")
 ```
+
 
 #### reference 
 - [simple tcp client example](https://stackoverflow.com/questions/6162967/simple-tcp-client-examples-in-emacs-elisp)
