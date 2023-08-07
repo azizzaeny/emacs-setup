@@ -1,4 +1,4 @@
-## Simulating open File In Frame
+## Simulating Open File In Frame
 
 the idea is to make open files in frame of the choices, we can make this to follow up the notes open by making tcp call to the emacs server
 
