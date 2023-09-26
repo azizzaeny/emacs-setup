@@ -1,15 +1,26 @@
 ### Repl Send String
 Common pattern to use Sending string to repl to evaluate or aka: process simulation in ansiterm
-
+NOTE: we refactor this into more advanced simulations
 
 #### ansi-term as the repl process 
 (explain the idea)
 
 
-```elisp
+```lisp
+
+(defun insert-selected-region-to-ansi-term ()
+  "Insert the selected region into the *ansi-term* buffer."
+  (interactive)
+  (let ((selected-text (buffer-substring (region-beginning) (region-end))))
+    (with-current-buffer "*ansi-term*"
+      (goto-char (point-max))
+      (insert selected-text))))
+
+(global-set-key (kbd "C-c i") 'insert-selected-region-to-ansi-term)
 
 (defvar repl-active-window "*ansi-term*")
-(defvar repl-bin-sh "/usr/bin/zsh")
+(defvar repl-bin-sh "/bin/bash")
+;;(defvar repl-wrap-txt "{\"code\":\"%s\"}")
 (defvar repl-wrap-txt "%s")
 
 (defun repl-start (&optional repl-name init-script)
@@ -30,7 +41,7 @@ Common pattern to use Sending string to repl to evaluate or aka: process simulat
   (let ((current-buffer-window (selected-window))
         (format-str (format repl-wrap-txt input-str)))
     (term-send-string repl-active-window format-str)
-	(term-send-string repl-active-window "\n")
+	;; (term-send-string repl-active-window "\n")
     (select-window current-buffer-window)))
 
 ```
@@ -38,8 +49,8 @@ Common pattern to use Sending string to repl to evaluate or aka: process simulat
 #### Extend the idea
 add sending line, sending paragrhaph, smart sending by analyzing code  
 
-```elisp
- 
+```lisp
+
 (defun repl-send-line ()
   (interactive)
   (save-excursion
@@ -124,7 +135,7 @@ add sending line, sending paragrhaph, smart sending by analyzing code
 
 ### key binding
 
-```elisp
+```lisp
 
 (global-set-key (kbd "C-c c l") 'repl-send-line)
 (global-set-key (kbd "C-c c s") 'repl-start)

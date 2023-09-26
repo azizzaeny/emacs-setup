@@ -32,7 +32,7 @@ make the functional editor, extends its core functionality
 
 #### other mode, polymode, clojure, js , markdown
 ```elisp
-
+ 
 ;; polymode poly-markdown
 (require 'polymode)
 (require 'poly-markdown)
@@ -62,7 +62,7 @@ make the functional editor, extends its core functionality
 (set-face-foreground 'show-paren-match "#def")
 (set-face-attribute 'show-paren-match nil :weight 'extra-bold)
 (show-paren-mode 1)
-
+ 
 (setq-default indent-tabs-mode nil)
 (add-hook 'js2-mode-hook (lambda () (setq js2-basic-offset 2)))
 
@@ -82,6 +82,11 @@ make the functional editor, extends its core functionality
 
 ```
 
+####  language server protocol mode
+```lisp
+;;(require 'lsp-mode)
+;;(add-hook 'js-mode-hook #'lsp)
+```
 #### Set key binding default
 
 ```elisp
@@ -89,7 +94,7 @@ make the functional editor, extends its core functionality
 (global-set-key (kbd "C-g") 'minibuffer-keyboard-quit)
 ;; (global-set-key (kbd "C-s") 'counsel-grep-or-swiper)
 (global-set-key (kbd "C-s") 'swiper)
-
+ 
 (global-set-key (kbd "C-x C-f") 'counsel-find-file)
 (global-set-key (kbd "C-x f") 'counsel-find-library)
 (global-set-key (kbd "C-x a") 'ansi-term)

@@ -18,7 +18,6 @@ add lists to package archives, gnu and melpa .
 todo: simplify the lists   
 
 ```elisp 
-
 (defvar
   my-packages
   '(
@@ -33,7 +32,8 @@ todo: simplify the lists
     polymode
     poly-markdown
     markdown-mode
-    yaml-mode ))
+    yaml-mode
+    ))
 
 ;; parinfer
 ;; paredit

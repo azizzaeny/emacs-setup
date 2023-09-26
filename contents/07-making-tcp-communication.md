@@ -7,7 +7,7 @@ eval it in the current emacs.
 
 #### tcp server evaluation
 
-```elisp
+```lisp
 ;; abbrev: tcpe => tcp-eval server
 
 (defun tcpe-server-name (port)

@@ -23,9 +23,9 @@ emacs start with loading `init.el` files which is contain parser to parse markdo
 (load-markdown "./contents/01-install-package.md")
 (load-markdown "./contents/02-make-it-home.md")
 (load-markdown "./contents/03-beyond-editor.md")
-(load-markdown "./contents/04-repl-send-string.md")
+;;(load-markdown "./contents/04-repl-send-string.md")
 (load-markdown "./contents/05-literate-tangling.md")
 (load-markdown "./contents/06-align-to-sign.md")
-(load-markdown "./contents/07-making-tcp-communication.md")
+;;(load-markdown "./contents/07-making-tcp-communication.md")
 (load-markdown "./contents/08-simulate-things-in-frame.md")
 ```
