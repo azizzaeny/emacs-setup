@@ -37,6 +37,4 @@ the idea is to make open files in frame of the choices, we can make this to foll
           (select-frame-set-input-focus frame)
           (find-file file))
       (error "No frame with name %s" frame-name))))
-
-
 ```

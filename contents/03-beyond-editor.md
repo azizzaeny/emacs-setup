@@ -56,6 +56,7 @@ make the functional editor, extends its core functionality
 #### tabify, indent, parent
 
 ```elisp
+
 ;; show-paren
 (require 'paren)
 (setq show-paren-delay 0.4)
