@@ -35,6 +35,14 @@ every send is send with code
 (defvar repl-conn nil
   "Variable to hold the REPL connection.")
 
+(defvar repl-type "node" "Type of REPL: 'node' or 'browser'.")
+
+(defun switch-type ()
+  "Switch the `repl-type` between 'node' and 'browser'."
+  (interactive)
+  (setq repl-type (if (equal repl-type "node") "browser" "node"))
+  (message "Switched REPL type to %s" repl-type))
+
 (defun connect-repl ()
   "Connect to the custom REPL server."
   (interactive)
@@ -55,6 +63,7 @@ every send is send with code
          (file (or (file-name-nondirectory path) "unknown"))
          (data `(("code" . ,code-str)
                  ("path" . ,path)
+                 ("type" . ,repl-type)
                  ("at" . ,at)
                  ("line" . ,line)
                  ("file" . ,file)))
@@ -91,8 +100,11 @@ every send is send with code
 key binding
 
 ```elisp
+
+(global-set-key (kbd "C-c c w") 'switch-type)
 (global-set-key (kbd "C-c c l") 'send-line)
 (global-set-key (kbd "C-c c s") 'connect-repl)
 (global-set-key (kbd "C-c c r") 'send-region)
 (global-set-key (kbd "C-c c e") 'send-paragraph)
+
 ```
