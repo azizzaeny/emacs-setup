@@ -1,5 +1,5 @@
-;;(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 
+;;(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 ;;(require 'setup-init)
 
 ;; more require here then do inside the each files
@@ -61,9 +61,11 @@
 
 ;; (setq load-verbose t)
 ;; (setq debug-on-error t)
-(load-theme 'vscode-dark-plus t)
 
 (menu-bar-mode -1)
+;;(display-line-numbers-mode 1)
+(global-display-line-numbers-mode 1)
+
 
 (set-face-foreground 'vertical-border
                      (face-background 'vertical-border nil t))
@@ -94,6 +96,16 @@
 (setq indent-tabs-mode nil)
 (blink-cursor-mode -1)
 
+(setq window-divider-default-places 'right-only)
+(setq window-divider-default-bottom-width 1)
+(setq window-divider-default-right-width 1)
+(load-theme 'vscode-dark-plus t)
+
+(window-divider-mode 1)
+(custom-set-faces
+ '(window-divider ((t (:foreground "dim gray"))))
+ '(window-divider-first-pixel ((t (:foreground "dim gray"))))
+ '(window-divider-last-pixel ((t (:foreground "dim gray")))))
 
 (defvar cursor-initial-color (face-attribute 'cursor :background))
 ;;(setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))  ;; one line at a time
@@ -138,13 +150,6 @@
 ;; (unless (ivy-state-dynamic-collection ivy-last)
 ;;   (completion-metadata "" minibuffer-completion-table minibuffer-completion-predicate))
 
-(global-set-key (kbd "C-g") 'minibuffer-keyboard-quit)
-;; (global-set-key (kbd "C-s") 'counsel-grep-or-swiper)
-(global-set-key (kbd "C-s") 'swiper)
- 
-(global-set-key (kbd "C-x C-f") 'counsel-find-file)
-(global-set-key (kbd "C-x f") 'counsel-find-library)
-
 ;; clojure-mode
 (require 'clojure-mode)
 (setq clojure-indent-style 'always-indent)
@@ -184,6 +189,14 @@
 ;;(add-hook 'js-mode-hook #'lsp)
 
 
+(global-set-key (kbd "C-g") 'minibuffer-keyboard-quit)
+;; (global-set-key (kbd "C-s") 'counsel-grep-or-swiper)
+(global-set-key (kbd "C-s") 'swiper)
+ 
+(global-set-key (kbd "C-x C-f") 'counsel-find-file)
+(global-set-key (kbd "C-x f") 'counsel-find-library)
+
+
 (global-set-key (kbd "C-x <up>") 'windmove-up)
 (global-set-key (kbd "C-x <up>") 'windmove-up)
 (global-set-key (kbd "C-x <down>") 'windmove-down)
@@ -204,15 +217,14 @@
 (global-set-key (kbd "C-x c v") 'visual-line-mode)
 
 (global-unset-key (kbd "C-x a"))
-;; (global-set-key (kbd "C-x a") 'ansi-term)
 
-(global-set-key (kbd "C-x y r") 'yas-reload-all)
-(global-set-key (kbd "C-x y n") 'yas-new-snippet)
+;; (global-set-key (kbd "C-x a") 'ansi-term)
+;;(global-set-key (kbd "C-x y r") 'yas-reload-all)
+;;(global-set-key (kbd "C-x y n") 'yas-new-snippet)
 
 (global-unset-key (kbd "C-x r"))
 (global-unset-key (kbd "C-t")) ;; tranpose
 (global-unset-key (kbd "C-h")) ;; help
-
 (global-unset-key (kbd "C-x C-t")) ;;transpse line
 
 ;; (setq server-use-tcp t)
@@ -239,12 +251,10 @@
 	    (eval-region starting-pos end-pos)))))))
 
 
-;; (load-markdown "contents/02-search-text.md")
-;; (load-markdown "contents/03-programming.md")
-;; (load-markdown "contents/04-repl.md")
-;; (load-markdown "contents/05-snippet.md")
-;; (load-markdown "contents/06-align.md")
-;; (load-markdown "contents/01-setup-editor.md")
+(load-markdown "snippets/snippet.md")
+(load-markdown "snippets/markdown.md")
+(load-markdown "snippets/repl.md")
+(load-markdown "snippets/align.md")
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -259,3 +269,5 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+

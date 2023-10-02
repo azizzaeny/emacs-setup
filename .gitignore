@@ -8,5 +8,3 @@
 !/snippets/*
 !/snippets.json
 !/.gitignore
-!/lisp
-!/lisp/*
