@@ -251,10 +251,10 @@
 	    (eval-region starting-pos end-pos)))))))
 
 
-(load-markdown "snippets/snippet.md")
-(load-markdown "snippets/markdown.md")
-(load-markdown "snippets/repl.md")
-(load-markdown "snippets/align.md")
+(load-markdown "contents/snippet.md")
+(load-markdown "contents/markdown.md")
+(load-markdown "contents/repl.md")
+(load-markdown "contents/align.md")
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
