@@ -31,3 +31,4 @@
 
 (global-set-key (kbd "C-c c c") 'align-to-colon)
 (global-set-key (kbd "C-c c e") 'align-to-equals)
+(provide 'setup-align)

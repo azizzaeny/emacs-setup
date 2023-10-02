@@ -29,3 +29,5 @@
  
 (global-set-key (kbd "C-x C-f") 'counsel-find-file)
 (global-set-key (kbd "C-x f") 'counsel-find-library)
+
+(provide 'setup-search)

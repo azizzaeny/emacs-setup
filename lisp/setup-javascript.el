@@ -10,3 +10,4 @@
 ;;(require 'lsp-mode)
 ;;(add-hook 'js-mode-hook #'lsp)
 
+(provide 'setup-javascript)

@@ -1,4 +1,5 @@
 (message "repl nil")
+(provide 'setup-repl)
 ;; (defvar repl-conn nil
 ;;   "Variable to hold the REPL connection.")
 

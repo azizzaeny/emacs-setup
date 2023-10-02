@@ -1,3 +1,4 @@
+
 ;; more require here then do inside the each files
 
 (require 'package)
@@ -50,3 +51,6 @@
 (require 'setup-javascript)
 (require 'setup-align)
 (require 'setup-repl)
+
+(provide 'setup)
+

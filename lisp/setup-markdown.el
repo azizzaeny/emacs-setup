@@ -89,3 +89,5 @@
 (defun tangle-md-buffer ())
 
 ;; (global-set-key (kbd "C-c c t") 'tangle-md-block)
+
+(provide 'setup-markdown)
