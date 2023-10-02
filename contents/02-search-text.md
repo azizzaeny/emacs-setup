@@ -1,4 +1,6 @@
-;; todo ag, agrep, set ivy etc..
+setup ivy  todo ag, agrep, set ivy etc..
+
+```elisp
 
 ;; (require 'counsel)
 (require 'ivy)
@@ -30,4 +32,4 @@
 (global-set-key (kbd "C-x C-f") 'counsel-find-file)
 (global-set-key (kbd "C-x f") 'counsel-find-library)
 
-(provide 'setup-search)
+```

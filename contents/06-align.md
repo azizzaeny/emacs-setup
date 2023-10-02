@@ -1,8 +1,4 @@
-
-## Align to something
-(explain the problem, the frustation)
-
-#### align to collon, sign, comman, equals, hash
+align
 
 ```elisp
 (defun align-to-colon (begin end)
@@ -16,7 +12,6 @@
   (interactive "r")
   (align-regexp begin end
                 (rx "," (group (zero-or-more (syntax whitespace))) ) 1 1 ))
-
 
 (defun align-to-equals (begin end)
   "Align region to equal signs"
@@ -37,14 +32,8 @@
   (align-regexp begin end
                 (rx (group (zero-or-more (syntax whitespace))) ",") 1 1 ))
 
-```
-
-#### key binding
-
-most common i use in javascirpt is collon and equals, so let set the key  
-```elisp
-
-(global-set-key (kbd "C-c c c") 'align-to-colon)
-(global-set-key (kbd "C-c c e") 'align-to-equals)
+(global-set-key (kbd "C-c a c") 'align-to-colon)
+(global-set-key (kbd "C-c a e") 'align-to-equals)
+(global-set-key (kbd "C-c a a") 'aggressive-indent-indent-defun)
 
 ```

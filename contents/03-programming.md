@@ -1,22 +1,25 @@
+setup programming
+
+clojure lisp family
+```elisp
+;; clojure-mode
+(require 'clojure-mode)
+(setq clojure-indent-style 'always-indent)
+(setq comment-column 0)
+
+;; show-paren
+(require 'paren)
+(setq show-paren-delay 0.4)
+(set-face-foreground 'show-paren-match "#def")
+(set-face-attribute 'show-paren-match nil :weight 'extra-bold)
+(show-paren-mode 1)
+```
+
+markdown
+
+```elisp
 (defvar md-block-header "^```elisp")
 (defvar md-block-end "^```$")
-
-(defun load-markdown (file-paths &optional evaluator)  
-  (interactive)  
-  (when (file-exists-p (expand-file-name file-paths))	
-	(with-temp-buffer	  
-	  (insert-file-contents file-paths)
-	  (goto-char (point-min))
-	  (while (not (eobp))
-		(forward-line 1)
-		(let ((starting-pos (progn (re-search-forward md-block-header (point-max) t)
-								   (match-end 0)))
-			  (end-pos (progn (re-search-forward md-block-end (point-max) t)
-							  (match-beginning 0))))
-		  (if evaluator
-			  (funcall evaluator starting-pos end-pos)
-			(eval-region starting-pos end-pos)))))))
-
 
 (defun write-to-file (file-location contents)
   (interactive)
@@ -27,7 +30,7 @@
   (with-temp-buffer
 	(insert contents)
 	(write-region (point-min) (point-max) file-location)))
-
+ 
 (defun search-first-emacs-lisp ()
   (interactive)
   (let ((contents (buffer-substring-no-properties (point-min) (point-max))))
@@ -57,6 +60,11 @@
 ;; (global-set-key (kbd "C-c c g") 'generate-emacs-md)
 ;; (load-markdown "./readme.md")
 
+```
+
+poly markdown configuration
+
+```elisp
 
 ;; polymode poly-markdown
 (require 'polymode)
@@ -87,7 +95,26 @@
         ))))
 
 (defun tangle-md-buffer ())
+ 
 
-;; (global-set-key (kbd "C-c c t") 'tangle-md-block)
+```
 
-(provide 'setup-markdown)
+javascript
+
+```elisp
+
+(setq-default indent-tabs-mode nil)
+(add-hook 'js2-mode-hook (lambda () (setq js2-basic-offset 2)))
+
+(setq js-indent-level 2)
+(setq typescript-indent-level 2)
+(setq indent-line-function 'insert-tab)
+(setq tab-stop-list (number-sequence 2 200 2))
+(set-default 'truncate-lines t)
+
+;;(require 'lsp-mode)
+;;(add-hook 'js-mode-hook #'lsp)
+
+```
+
+
