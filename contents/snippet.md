@@ -50,7 +50,14 @@ setting up snippets
       (message "No code found for abbreviation: %s" abbrev))))
 
 (global-set-key (kbd "C-c s e") 'custom-snippet-expand)
+(global-set-key (kbd "C-x x") 'custom-snippet-expand)
 (global-set-key (kbd "C-c s r") 'custom-snippet-eval)
 
-(message "smnippet loaded")
+;; snippet eval-markdown inside
+;; snippet eval-html-code inside
+;; perform repl send string of contents
+;; perform socket repl send string of contents
+
+(message "snippet loaded")
 ```
+
