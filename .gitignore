@@ -6,6 +6,7 @@
 !init.el
 !/snippets
 !/snippets/*
+!/snippets.json
 !/.gitignore
 !/lisp
 !/lisp/*

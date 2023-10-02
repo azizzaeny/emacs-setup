@@ -1,0 +1,6 @@
+{
+  "txt!" : "snippets/txt.snippet",
+  "cmd!" : "snippets/cmd.snippet",
+  "ev!" : "snippets/ev.snippet",
+  "node!": "snippets/node.snippet"
+}
