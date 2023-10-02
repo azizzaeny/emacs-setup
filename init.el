@@ -35,7 +35,7 @@
     clojure-mode counsel ivy
     auto-complete python-mode js2-mode php-mode
     aggressive-indent polymode poly-markdown
-    expand-region
+    expand-region vscode-dark-plus-theme
     markdown-mode yaml-mode))
 
 ;; parinfer
@@ -61,6 +61,7 @@
 
 ;; (setq load-verbose t)
 ;; (setq debug-on-error t)
+(load-theme 'vscode-dark-plus t)
 
 (menu-bar-mode -1)
 
@@ -107,7 +108,7 @@
 
 
 (require 'expand-region)
-(global-set-key (kbd "C-=") 'er/expand-region)
+;; (global-set-key (kbd "C-=") 'er/expand-region)
 
 ;; (require 'yasnippet)
 ;; (yas-global-mode 1)
