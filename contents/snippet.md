@@ -15,6 +15,18 @@ setting up snippets
 (defvar custom-snippets-hash (load-custom-snippets)
   "Hash table of custom snippets.")
 
+(defun reload-snippets ()
+  (interactive)
+  (setq custom-snippets-hash (load-custom-snippets))
+  (message "snippet reloaded"))
+
+```
+
+simple snippets, not loaded
+
+```elisp
+(message "snippet simple loaded")
+
 (defun custom-snippet-expand ()
   "Expand custom snippet."
   (interactive)
@@ -33,7 +45,9 @@ setting up snippets
           (backward-kill-word 1)
           (insert expansion))
       (message "No snippet found for abbreviation: %s" abbrev))))
+```
 
+```elisp
 (defun custom-snippet-eval ()
   "Evaluate the content of the snippet as Emacs Lisp code."
   (interactive)
@@ -49,15 +63,19 @@ setting up snippets
         (eval (read code))
       (message "No code found for abbreviation: %s" abbrev))))
 
+```
+
+assign key binding into it
+
+```elisp
 (global-set-key (kbd "C-c s e") 'custom-snippet-expand)
 (global-set-key (kbd "C-x x") 'custom-snippet-expand)
-(global-set-key (kbd "C-c s r") 'custom-snippet-eval)
+(global-set-key (kbd "C-c s v") 'custom-snippet-eval)
+(global-set-key (kbd "C-c s r") 'reload-snippets)
 
 ;; snippet eval-markdown inside
 ;; snippet eval-html-code inside
 ;; perform repl send string of contents
 ;; perform socket repl send string of contents
-
-(message "snippet loaded")
 ```
 
