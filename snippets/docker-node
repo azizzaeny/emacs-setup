@@ -1,1 +1,4 @@
-sudo docker ps
+sudo docker run --rm -it --name node-alpine --network host --entrypoint ""\
+     -v $(pwd)/:/www/:rw  -w /www \
+     node:20-alpine /bin/sh -c "node -i -e \"var vm = require('vm'); var ctx =  vm.createContext(global); vm.runInContext( require('fs').readFileSync('./index.js', 'utf-8'), ctx);\""
+        

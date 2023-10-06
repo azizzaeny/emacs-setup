@@ -1,1 +1,1 @@
-node -i -e
+node -i -e "var vm = require('vm'); var ctx =  vm.createContext(global); vm.runInContext( require('fs').readFileSync('./index.js', 'utf-8'), ctx);"

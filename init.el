@@ -192,10 +192,12 @@
 (global-set-key (kbd "C-g") 'minibuffer-keyboard-quit)
 ;; (global-set-key (kbd "C-s") 'counsel-grep-or-swiper)
 (global-set-key (kbd "C-s") 'swiper)
- 
+
+(global-unset-key (kbd "C-r"))
+(global-set-key (kbd "C-r") 'replace-string)
+
 (global-set-key (kbd "C-x C-f") 'counsel-find-file)
 (global-set-key (kbd "C-x f") 'counsel-find-library)
-
 
 (global-set-key (kbd "C-x <up>") 'windmove-up)
 (global-set-key (kbd "C-x <up>") 'windmove-up)

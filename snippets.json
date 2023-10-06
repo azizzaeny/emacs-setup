@@ -1,4 +1,7 @@
 {
   "node" : "snippets/node",
-  "dockernode": "snippets/docker-node"
+  "docker:node": "snippets/docker-node",
+  "html": "snippets/html",
+  "eval-md": "snippets/eval-md",
+  "rl": "snippets/reload"
 }

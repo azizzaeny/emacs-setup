@@ -22,15 +22,23 @@ setting up snippets
 
 ```
 
-simple snippets, not loaded
+customize things at point word 
 
 ```elisp
-(message "snippet simple loaded")
+
+(defun abbreviation-at-point ()
+  "Return the abbreviation at point."
+  (let* ((end (point))
+         (start (save-excursion
+                  (skip-chars-backward "a-zA-Z0-9_:|-!<>")
+                  (point))))
+    (buffer-substring-no-properties start end)))
 
 (defun custom-snippet-expand ()
   "Expand custom snippet."
   (interactive)
-  (let* ((abbrev (thing-at-point 'word))
+  (let* ((abbrev (abbreviation-at-point))
+         ;;(abbrev (thing-at-point 'word))
          ;;(expansion (gethash abbrev custom-snippets-hash)))
          (relative-snippet-path (gethash abbrev custom-snippets-hash))
          (snippet-path (when relative-snippet-path
@@ -45,6 +53,7 @@ simple snippets, not loaded
           (backward-kill-word 1)
           (insert expansion))
       (message "No snippet found for abbreviation: %s" abbrev))))
+
 ```
 
 ```elisp

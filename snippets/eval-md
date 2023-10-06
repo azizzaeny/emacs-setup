@@ -1,0 +1,58 @@
+// define snippet : evalmd
+
+var vm = require('vm');
+var fs = require('fs');
+
+function extractParams(paramsString){
+  if(paramsString){
+    return paramsString.split(/\s+/).reduce((acc, params)=>{
+      let [key, value] = params.split('=');
+      if(key && value){
+        acc[key] = isNaN(value) ? value : parseInt(value);
+      }     
+      return acc;
+    }, {});
+  }
+  return {};
+}
+
+function extractCode(markdown){
+  let regex = /```(\w+)((?:\s+\w+=\w+)*)\s*([\s\S]*?)```/g;
+  return [...markdown.matchAll(regex)].reduce((acc, match) => {
+    let lang         = match[1];
+    let paramsString = match[2];
+    let code         = match[3].trim();
+    let params       = extractParams(paramsString);
+    return acc.concat({
+      ...params,
+      lang,
+      code
+    });
+  }, []);
+}
+
+function isRunnable(block){
+  return ((block.lang === "javascript" || block.lang === "js") && block.evaluate && block.evaluate === 1);
+}
+
+function compileCode(blocks){
+  return blocks.reduce((acc, block) =>{
+    if(isRunnable(block)){
+      return acc.concat(`${block.code}\n`);
+    }
+    return acc;
+  }, '');
+}
+
+function evaluate(file, ctx){
+  if(!ctx) return 'cannot retrieve context';
+  let fileContents = fs.readFileSync(file, 'utf8');
+  let blocks = extractCode(fileContents);
+  let codes = compileCode(blocks);
+  if(!codes) return 'no codes found';
+  vm.runInContext(codes, ctx);
+}
+
+/* 
+node -i -e "var vm = require('vm'); var ctx =  vm.createContext(global); vm.runInContext( require('fs').readFileSync('./index.js', 'utf-8'), ctx);"
+*/
