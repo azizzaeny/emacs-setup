@@ -225,8 +225,8 @@
 (global-set-key (kbd "C-x c v") 'visual-line-mode)
 
 (global-unset-key (kbd "C-x a"))
+(global-set-key (kbd "C-x a a") 'ansi-term)
 
-;; (global-set-key (kbd "C-x a") 'ansi-term)
 ;;(global-set-key (kbd "C-x y r") 'yas-reload-all)
 ;;(global-set-key (kbd "C-x y n") 'yas-new-snippet)
 
