@@ -63,8 +63,6 @@
 ;; (setq debug-on-error t)
 
 (menu-bar-mode -1)
-;;(display-line-numbers-mode 1)
-(global-display-line-numbers-mode 1)
 
 
 (set-face-foreground 'vertical-border
@@ -185,9 +183,17 @@
 (setq tab-stop-list (number-sequence 2 200 2))
 (set-default 'truncate-lines t)
 
+;;(display-line-numbers-mode 1)
+(global-display-line-numbers-mode 1)
+
 ;;(require 'lsp-mode)
 ;;(add-hook 'js-mode-hook #'lsp)
 
+(global-unset-key (kbd "C-x l"))
+(global-set-key (kbd "C-x l") 'global-display-line-numbers-mode)
+
+
+(global-set-key (kbd "C-s") 'swiper)
 
 (global-set-key (kbd "C-g") 'minibuffer-keyboard-quit)
 ;; (global-set-key (kbd "C-s") 'counsel-grep-or-swiper)
@@ -257,6 +263,7 @@
 (load-markdown "contents/markdown.md")
 (load-markdown "contents/repl.md")
 (load-markdown "contents/align.md")
+(load-markdown "contents/notes.md")
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.

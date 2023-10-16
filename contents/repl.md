@@ -55,6 +55,20 @@ setup repl ansi socket browser
   (term-line-mode) ; Enable line mode for easier sending of content
   (message "Started %s REPL" cmd))
 
+(defun send-to-term-ansi-line ()
+  (interactive)
+  (with-current-buffer (process-buffer current-repl-process)
+    (term-line-mode) ; Enable line mode for easier sending of content
+    (goto-char (process-mark current-repl-process))
+    (insert content)
+    (term-send-input)))
+
+(defun send-to-term-ansi-char (content)
+  (interactive)
+  (term-send-string current-repl-process content)
+  (term-send-input)
+  )
+
 (defun send-to-repl (content)
   "Send CONTENT to the appropriate REPL based on `repl-type`."
   (cond
@@ -65,11 +79,9 @@ setup repl ansi socket browser
    ;; For ansi-term based REPLs
    ((equal repl-type "ansi")
     (when current-repl-process
-      (with-current-buffer (process-buffer current-repl-process)
-        (goto-char (process-mark current-repl-process))
-        (insert content)
-        (term-send-input))))
-   ;; Fallback
+      ;; (send-to-term-ansi-line)
+      (send-to-term-ansi-char content)
+     ))   
    (t (message "Unknown REPL type: %s" repl-type))))
 
 (defun send-line ()
@@ -87,6 +99,11 @@ setup repl ansi socket browser
   (interactive "r")
   (send-to-repl (buffer-substring-no-properties start end)))
 
+(defun send-reload ()
+  "sending common function on javascript to the REPL"
+  (interactive)
+  (send-to-repl "reload()"))
+
 ```
 
 customzie key bind
@@ -99,6 +116,7 @@ customzie key bind
 (global-set-key (kbd "C-c c w") 'switch-type)
 (global-set-key (kbd "C-c c l") 'send-line)
 (global-set-key (kbd "C-c c r") 'send-region)
+(global-set-key (kbd "C-c c o") 'send-reload)
 (global-set-key (kbd "C-c c e") 'send-paragraph)
 
 ```
