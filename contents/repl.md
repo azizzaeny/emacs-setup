@@ -112,7 +112,7 @@ customzie key bind
 
 (global-set-key (kbd "C-c c c") 'connect-repl)
 (global-set-key (kbd "C-c c s") 'start-ansi-repl)
-(global-set-key (kbd "C-x a") 'start-ansi-repl)
+;;(global-set-key (kbd "C-x a") 'start-ansi-repl)
 (global-set-key (kbd "C-c c w") 'switch-type)
 (global-set-key (kbd "C-c c l") 'send-line)
 (global-set-key (kbd "C-c c r") 'send-region)

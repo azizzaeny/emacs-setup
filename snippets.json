@@ -2,6 +2,10 @@
   "node" : "snippets/node",
   "docker:node": "snippets/docker-node",
   "html": "snippets/html",
-  "eval-md": "snippets/eval-md",
-  "rl": "snippets/reload"
+  "evalmd": "snippets/eval-md",
+  "md": "snippets/eval-md",
+  "rl": "snippets/reload",
+  "redis": "snippets/redis",
+  "redis-util": "snippets/redis-util",
+  "inspect": "snippets/inspect"
 }

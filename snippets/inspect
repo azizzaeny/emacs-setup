@@ -1,0 +1,6 @@
+var util = require('util');
+
+function inspect(obj){
+  var utilOpt = {showHidden: false, depth: null, colors: true};
+  return console.log(util.inspect(obj, utilOpt));
+}
