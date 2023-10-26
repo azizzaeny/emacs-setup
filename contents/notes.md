@@ -10,7 +10,7 @@ open today notes
       (setq year (nth 5 current-date)
             month (nth 4 current-date)
             day (nth 3 current-date))))
-  (let* ((directory "~/daily-notes-contents/contents/")
+  (let* ((directory "~/daily-note-contents/contents/")
          (filename (format "notes-%04d%02d%02d.md" year month day))
          (fullpath (concat directory filename)))
     (find-file fullpath)

@@ -2,13 +2,14 @@ setup repl ansi socket browser
 
 ```elisp
 
-(message "repl loaded")
 
 (defvar repl-conn nil
   "Variable to hold the REPL connection for socket-based REPLs.")
 
 (defvar current-repl-process nil
   "Current REPL process for ansi-term REPLs.")
+
+(message "repl loaded")
 
 (defvar repl-type "node" "Type of REPL: 'node', 'browser', or 'ansi'.")
 
@@ -48,7 +49,7 @@ setup repl ansi socket browser
 (defun start-ansi-repl (&optional cmd)
   "Start an ansi-term REPL using CMD or default to /bin/bash."
   (interactive)
-  (setq cmd (or cmd "/bin/bash"))
+  (setq cmd (or cmd "/bin/sh"))
   (setq repl-type "ansi")  ; Set the repl-type to 'ansi'
   (ansi-term cmd)
   (setq current-repl-process (get-buffer-process (current-buffer)))
@@ -65,8 +66,8 @@ setup repl ansi socket browser
 
 (defun send-to-term-ansi-char (content)
   (interactive)
-  (term-send-string current-repl-process content)
-  (term-send-input)
+  (term-send-string "*ansi-term*" content)
+  ;;(term-send-input)
   )
 
 (defun send-to-repl (content)
@@ -79,7 +80,7 @@ setup repl ansi socket browser
    ;; For ansi-term based REPLs
    ((equal repl-type "ansi")
     (when current-repl-process
-      ;; (send-to-term-ansi-line)
+       ;; (send-to-term-ansi-line)
       (send-to-term-ansi-char content)
      ))   
    (t (message "Unknown REPL type: %s" repl-type))))
