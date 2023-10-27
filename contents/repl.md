@@ -3,15 +3,23 @@ setup repl ansi socket browser
 ```elisp
 
 
+
+(message "repl loaded")
+
+
 (defvar repl-conn nil
   "Variable to hold the REPL connection for socket-based REPLs.")
 
 (defvar current-repl-process nil
   "Current REPL process for ansi-term REPLs.")
 
-(message "repl loaded")
-
 (defvar repl-type "node" "Type of REPL: 'node', 'browser', or 'ansi'.")
+(defvar repl-process "*ansi-term*")
+
+(defun set-repl-process ()
+  "set interactive repl process"
+  (interactive)
+  (setq repl-process (read-string "Enter repl process: ")))
 
 (defun switch-type ()
   "Switch the `repl-type` to cycle between 'node', 'browser', and 'ansi'."
@@ -49,12 +57,15 @@ setup repl ansi socket browser
 (defun start-ansi-repl (&optional cmd)
   "Start an ansi-term REPL using CMD or default to /bin/bash."
   (interactive)
-  (setq cmd (or cmd "/bin/sh"))
+  (setq cmd (or cmd "/bin/zsh"))
   (setq repl-type "ansi")  ; Set the repl-type to 'ansi'
   (ansi-term cmd)
-  (setq current-repl-process (get-buffer-process (current-buffer)))
+  ;; (setq current-repl-process (get-buffer-process (current-buffer)))
   (term-line-mode) ; Enable line mode for easier sending of content
   (message "Started %s REPL" cmd))
+
+
+;; two type send-to send-to-term-ansi-line send-to-term-ansi-char
 
 (defun send-to-term-ansi-line ()
   (interactive)
@@ -66,9 +77,10 @@ setup repl ansi socket browser
 
 (defun send-to-term-ansi-char (content)
   (interactive)
-  (term-send-string "*ansi-term*" content)
+  (term-send-string repl-process content)
   ;;(term-send-input)
   )
+
 
 (defun send-to-repl (content)
   "Send CONTENT to the appropriate REPL based on `repl-type`."
@@ -111,6 +123,7 @@ customzie key bind
 
 ```elisp
 
+(global-set-key (kbd "C-c c p") 'set-repl-process)
 (global-set-key (kbd "C-c c c") 'connect-repl)
 (global-set-key (kbd "C-c c s") 'start-ansi-repl)
 ;;(global-set-key (kbd "C-x a") 'start-ansi-repl)
