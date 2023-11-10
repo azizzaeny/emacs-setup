@@ -57,30 +57,27 @@ setup repl ansi socket browser
 (defun start-ansi-repl (&optional cmd)
   "Start an ansi-term REPL using CMD or default to /bin/bash."
   (interactive)
-  (setq cmd (or cmd "/bin/zsh"))
+  (setq cmd (or cmd "/bin/bash"))
   (setq repl-type "ansi")  ; Set the repl-type to 'ansi'
   (ansi-term cmd)
   ;; (setq current-repl-process (get-buffer-process (current-buffer)))
   (term-line-mode) ; Enable line mode for easier sending of content
   (message "Started %s REPL" cmd))
 
-
 ;; two type send-to send-to-term-ansi-line send-to-term-ansi-char
 
 (defun send-to-term-ansi-line ()
   (interactive)
-  (with-current-buffer (process-buffer current-repl-process)
+  (with-current-buffer (process-buffer repl-process)
     (term-line-mode) ; Enable line mode for easier sending of content
-    (goto-char (process-mark current-repl-process))
+    (goto-char (process-mark repl-process))
     (insert content)
     (term-send-input)))
 
 (defun send-to-term-ansi-char (content)
   (interactive)
   (term-send-string repl-process content)
-  ;;(term-send-input)
-  )
-
+  (term-send-input))
 
 (defun send-to-repl (content)
   "Send CONTENT to the appropriate REPL based on `repl-type`."
@@ -91,10 +88,9 @@ setup repl ansi socket browser
       (process-send-string repl-conn (concat content "\n"))))
    ;; For ansi-term based REPLs
    ((equal repl-type "ansi")
-    (when current-repl-process
-       ;; (send-to-term-ansi-line)
-      (send-to-term-ansi-char content)
-     ))   
+      ;;(send-to-term-ansi-line)
+     (send-to-term-ansi-char content)
+    )   
    (t (message "Unknown REPL type: %s" repl-type))))
 
 (defun send-line ()
@@ -117,6 +113,17 @@ setup repl ansi socket browser
   (interactive)
   (send-to-repl "reload()"))
 
+
+(defun send-md-block ()
+  (interactive)
+  (save-excursion
+    (let ((starting-pos (progn (re-search-backward "^```" (point-min) t) (match-end 0)))    
+          (end-pos (progn (re-search-forward md-block-end (point-max) t) (match-beginning 0))))
+      (let ((file-ref (or (progn (re-search-backward "```" starting-pos t) (match-string 1)) nil))
+            (start-content (progn (goto-char starting-pos) (beginning-of-line) (forward-line 1) (point))))
+          (send-to-repl (buffer-substring-no-properties start-content end-pos)))
+        )))
+
 ```
 
 customzie key bind
@@ -132,6 +139,7 @@ customzie key bind
 (global-set-key (kbd "C-c c r") 'send-region)
 (global-set-key (kbd "C-c c o") 'send-reload)
 (global-set-key (kbd "C-c c e") 'send-paragraph)
+(global-set-key (kbd "C-c c m") 'send-md-block)
 
 ```
 
