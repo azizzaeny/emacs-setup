@@ -4,8 +4,11 @@
   "html": "snippets/html",
   "evalmd": "snippets/eval-md",
   "md": "snippets/eval-md",
+  "js": "snippets/md-js",
   "rl": "snippets/reload",
   "redis": "snippets/redis",
   "redis-util": "snippets/redis-util",
-  "inspect": "snippets/inspect"
+  "inspect": "snippets/inspect",
+  "test": "snippets/test",
+  "jsu": "snippets/js-usage"
 }
