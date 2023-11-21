@@ -10,5 +10,6 @@
   "redis-util": "snippets/redis-util",
   "inspect": "snippets/inspect",
   "test": "snippets/test",
-  "jsu": "snippets/js-usage"
+  "jsu": "snippets/js-usage",
+  "as": "snippets/assert"
 }
