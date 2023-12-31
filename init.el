@@ -193,10 +193,6 @@
 ;;(require 'lsp-mode)
 ;;(add-hook 'js-mode-hook #'lsp)
 
-(global-unset-key (kbd "C-x l"))
-(global-set-key (kbd "C-x l") 'global-display-line-numbers-mode)
-
-
 (global-set-key (kbd "C-s") 'swiper)
 
 (global-set-key (kbd "C-g") 'minibuffer-keyboard-quit)
@@ -227,9 +223,14 @@
 (global-unset-key (kbd "C-x e"))
 (global-set-key (kbd "C-x e") 'eval-region)
 (global-set-key (kbd "C-x c v") 'visual-line-mode)
+(global-set-key (kbd "C-x g") 'goto-line)
+
+(global-unset-key (kbd "C-x l"))
+(global-set-key (kbd "C-x l") 'global-display-line-numbers-mode)
 
 (global-unset-key (kbd "C-x a"))
 (global-set-key (kbd "C-x a a") 'ansi-term)
+
 
 ;;(global-set-key (kbd "C-x y r") 'yas-reload-all)
 ;;(global-set-key (kbd "C-x y n") 'yas-new-snippet)
@@ -238,6 +239,10 @@
 (global-unset-key (kbd "C-t")) ;; tranpose
 (global-unset-key (kbd "C-h")) ;; help
 (global-unset-key (kbd "C-x C-t")) ;;transpse line
+
+(global-set-key (kbd "C-c b m") 'hs-minor-mode)
+(global-set-key (kbd "C-c b h") 'hs-hide-block)
+(global-set-key (kbd "C-c b s") 'hs-show-block)
 
 ;; (setq server-use-tcp t)
 ;; (setq server-host "iodev")
