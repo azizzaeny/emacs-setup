@@ -35,7 +35,7 @@
     clojure-mode counsel ivy
     auto-complete python-mode js2-mode php-mode
     aggressive-indent polymode poly-markdown
-    expand-region vscode-dark-plus-theme
+    expand-region vscode-dark-plus-theme    
     markdown-mode yaml-mode))
 
 ;; parinfer
@@ -120,9 +120,8 @@
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'post-forward-angle-brackets)
 
-
 (require 'expand-region)
-;; (global-set-key (kbd "C-=") 'er/expand-region)
+(global-set-key (kbd "C-c e") 'er/expand-region)
 
 ;; (require 'yasnippet)
 ;; (yas-global-mode 1)

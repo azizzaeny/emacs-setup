@@ -2,26 +2,21 @@ setup repl ansi socket browser
 
 ```elisp
 
-
-
-(message "repl loaded")
-
-
 (defvar repl-conn nil
   "Variable to hold the REPL connection for socket-based REPLs.")
 
 (defvar current-repl-process nil
   "Current REPL process for ansi-term REPLs.")
 
-(defvar repl-type "node" "Type of REPL: 'node', 'browser', or 'ansi'.")
-(defvar repl-process "*ansi-term*")
+(defvar repl-type "ansi" "Type of REPL: 'node', 'browser', or 'ansi'.")
+(defvar repl-process "*ansi-term*") ;; main repl process window
 
-(defun set-repl-process ()
+(defun repl-set-process ()
   "set interactive repl process"
   (interactive)
-  (setq repl-process (read-string "Enter repl process: ")))
+  (setq repl-process (read-string "Enter repl process: "))) ;; change main process window
 
-(defun switch-type ()
+(defun repl-switch-type ()
   "Switch the `repl-type` to cycle between 'node', 'browser', and 'ansi'."
   (interactive)
   (setq repl-type (cond
@@ -30,7 +25,7 @@ setup repl ansi socket browser
                    ((equal repl-type "ansi") "node")))
   (message "Switched REPL type to %s" repl-type))
 
-(defun connect-repl ()
+(defun repl-connect-socket ()
   "Connect to the socket-based REPL server if the type is 'node' or 'browser'."
   (interactive)
   (when (member repl-type '("node" "browser"))
@@ -39,7 +34,8 @@ setup repl ansi socket browser
       (setq repl-conn (open-network-stream "repl-conn" nil host port))
       (message "Connected to %s REPL server" repl-type))))
 
-(defun disconnect-repl ()
+;; TODO: fix this repl-conn dont wait repl process
+(defun repl-disconnect-socket ()
   "Disconnect from the current REPL."
   (interactive)
   (cond
@@ -54,7 +50,8 @@ setup repl ansi socket browser
       (setq current-repl-process nil)
       (message "Closed %s REPL" repl-type)))))
 
-(defun start-ansi-repl (&optional cmd)
+
+(defun repl-start-ansi (&optional cmd)
   "Start an ansi-term REPL using CMD or default to /bin/bash."
   (interactive)
   (setq cmd (or cmd "/bin/bash"))
@@ -65,8 +62,7 @@ setup repl ansi socket browser
   (message "Started %s REPL" cmd))
 
 ;; two type send-to send-to-term-ansi-line send-to-term-ansi-char
-
-(defun send-to-term-ansi-line ()
+(defun repl-send-to-term-ansi-line () ;; not used 
   (interactive)
   (with-current-buffer (process-buffer repl-process)
     (term-line-mode) ; Enable line mode for easier sending of content
@@ -74,55 +70,59 @@ setup repl ansi socket browser
     (insert content)
     (term-send-input)))
 
-(defun send-to-term-ansi-char (content)
+(defun repl-send-to-term-ansi-char (content) ;; used this 
   (interactive)
   (term-send-string repl-process content)
   (term-send-input))
 
-(defun send-to-repl (content)
+(defun repl-send-content (content)
   "Send CONTENT to the appropriate REPL based on `repl-type`."
   (cond
-   ;; For socket-based REPLs
-   ((member repl-type '("node" "browser"))
+   ((member repl-type '("node" "browser"))    ;; For socket-based REPLs
     (when repl-conn
       (process-send-string repl-conn (concat content "\n"))))
-   ;; For ansi-term based REPLs
-   ((equal repl-type "ansi")
+   ((equal repl-type "ansi") ;; For ansi-term based REPLs
       ;;(send-to-term-ansi-line)
-     (send-to-term-ansi-char content)
-    )   
+     (repl-send-to-term-ansi-char content))   
    (t (message "Unknown REPL type: %s" repl-type))))
 
-(defun send-line ()
+
+(defun repl-send-line ()
   "Send the current line to the REPL."
   (interactive)
-  (send-to-repl (thing-at-point 'line t)))
+  (repl-send-content (thing-at-point 'line t)))
 
-(defun send-paragraph ()
+(defun repl-send-paragraph ()
   "Send the current paragraph to the REPL."
   (interactive)
-  (send-to-repl (thing-at-point 'paragraph t)))
+  (repl-send-content (thing-at-point 'paragraph t)))
 
-(defun send-region (start end)
+(defun repl-send-region (start end)
   "Send the region between START and END to the REPL."
   (interactive "r")
-  (send-to-repl (buffer-substring-no-properties start end)))
+  (repl-send-content (buffer-substring-no-properties start end)))
 
-(defun send-reload ()
+(defun repl-send-reload ()
   "sending common function on javascript to the REPL"
   (interactive)
-  (send-to-repl "reload()"))
+  (repl-send-content "reload()"))
 
-
-(defun send-md-block ()
+(defun repl-send-md-block ()
   (interactive)
   (save-excursion
     (let ((starting-pos (progn (re-search-backward "^```" (point-min) t) (match-end 0)))    
           (end-pos (progn (re-search-forward md-block-end (point-max) t) (match-beginning 0))))
       (let ((file-ref (or (progn (re-search-backward "```" starting-pos t) (match-string 1)) nil))
             (start-content (progn (goto-char starting-pos) (beginning-of-line) (forward-line 1) (point))))
-          (send-to-repl (buffer-substring-no-properties start-content end-pos)))
+          (repl-send-content (buffer-substring-no-properties start-content end-pos)))
         )))
+
+(defun repl-send-buffer ()
+  "send the whole buffer"
+  (interactive)
+  (repl-send-content (buffer-substring-no-properties (point-min) (point-max))))
+
+(message "repl loaded")
 
 ```
 
@@ -130,16 +130,17 @@ customzie key bind
 
 ```elisp
 
-(global-set-key (kbd "C-c c p") 'set-repl-process)
-(global-set-key (kbd "C-c c c") 'connect-repl)
-(global-set-key (kbd "C-c c s") 'start-ansi-repl)
-;;(global-set-key (kbd "C-x a") 'start-ansi-repl)
-(global-set-key (kbd "C-c c w") 'switch-type)
-(global-set-key (kbd "C-c c l") 'send-line)
-(global-set-key (kbd "C-c c r") 'send-region)
-(global-set-key (kbd "C-c c o") 'send-reload)
-(global-set-key (kbd "C-c c e") 'send-paragraph)
-(global-set-key (kbd "C-c c m") 'send-md-block)
+(global-set-key (kbd "C-c c p") 'repl-set-process)
+(global-set-key (kbd "C-c c c") 'repl-connect-socket);
+(global-set-key (kbd "C-c c d") 'repl-disconnect-socket);
+(global-set-key (kbd "C-c c s") 'repl-start-ansi)
+(global-set-key (kbd "C-c c w") 'repl-switch-type)
+(global-set-key (kbd "C-c c l") 'repl-send-line)
+(global-set-key (kbd "C-c c r") 'repl-send-region)
+(global-set-key (kbd "C-c c o") 'repl-send-reload)
+(global-set-key (kbd "C-c c b") 'repl-send-buffer)
+(global-set-key (kbd "C-c c e") 'repl-send-paragraph)
+(global-set-key (kbd "C-c c m") 'repl-send-md-block)
 
 ```
 
