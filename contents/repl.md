@@ -10,11 +10,17 @@ setup repl ansi socket browser
 
 (defvar repl-type "ansi" "Type of REPL: 'node', 'browser', or 'ansi'.")
 (defvar repl-process "*ansi-term*") ;; main repl process window
+(defvar repl-wrap  "%s")
 
 (defun repl-set-process ()
   "set interactive repl process"
   (interactive)
   (setq repl-process (read-string "Enter repl process: "))) ;; change main process window
+
+(defun repl-set-wrap ()
+  "set interactive repl-wrap as client"
+  (interactive)
+  (setq repl-wrap (read-string "Enter wrap wrap: ")))
 
 (defun repl-switch-type ()
   "Switch the `repl-type` to cycle between 'node', 'browser', and 'ansi'."
@@ -50,7 +56,6 @@ setup repl ansi socket browser
       (setq current-repl-process nil)
       (message "Closed %s REPL" repl-type)))))
 
-
 (defun repl-start-ansi (&optional cmd)
   "Start an ansi-term REPL using CMD or default to /bin/bash."
   (interactive)
@@ -58,7 +63,7 @@ setup repl ansi socket browser
   (setq repl-type "ansi")  ; Set the repl-type to 'ansi'
   (ansi-term cmd)
   ;; (setq current-repl-process (get-buffer-process (current-buffer)))
-  (term-line-mode) ; Enable line mode for easier sending of content
+  ;; (term-line-mode) ; Enable line mode for easier sending of content
   (message "Started %s REPL" cmd))
 
 ;; two type send-to send-to-term-ansi-line send-to-term-ansi-char
@@ -83,7 +88,7 @@ setup repl ansi socket browser
       (process-send-string repl-conn (concat content "\n"))))
    ((equal repl-type "ansi") ;; For ansi-term based REPLs
       ;;(send-to-term-ansi-line)
-     (repl-send-to-term-ansi-char content))   
+     (repl-send-to-term-ansi-char (format repl-wrap content)))   
    (t (message "Unknown REPL type: %s" repl-type))))
 
 
