@@ -229,7 +229,7 @@
 
 (global-unset-key (kbd "C-x a"))
 (global-set-key (kbd "C-x a a") 'ansi-term)
-
+(global-set-key (kbd "C-x r b") 'rename-buffer)
 
 ;;(global-set-key (kbd "C-x y r") 'yas-reload-all)
 ;;(global-set-key (kbd "C-x y n") 'yas-new-snippet)
