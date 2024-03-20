@@ -4,6 +4,17 @@ ssetup repl ansi socket browser
 (defvar repl-process "*ansi-term*") ;; main repl process window
 (defvar repl-wrap  "%s")
 
+(defface my-highlight-face
+  '((t (:background "##f0f8ff"))) ; Customize background color here
+  "Face for highlighting text."
+  :group 'basic-faces)
+
+(defun highlight-region (start end)
+  (let ((region-highlight (make-overlay start end)))
+    (overlay-put region-highlight 'face 'my-highlight-face)
+    (run-at-time "0.3 sec" nil #'delete-overlay region-highlight))
+  (deactivate-mark))
+
 (defun repl-start-ansi ()
   (interactive)
   (setq cmd (read-string "Enter cmd: " "/bin/zsh"))  
@@ -29,21 +40,11 @@ ssetup repl ansi socket browser
     (term-send-input)
     (term-char-mode)))
 
-(defface my-highlight-face
-  '((t (:background "##f0f8ff"))) ; Customize background color here
-  "Face for highlighting text."
-  :group 'basic-faces)
-
-(defun highlight-region (start end)
-  (let ((region-highlight (make-overlay start end)))
-    (overlay-put region-highlight 'face 'my-highlight-face)
-    (run-at-time "0.3 sec" nil #'delete-overlay region-highlight))
-  (deactivate-mark))
-
 (defun repl-send-buffer ()
   "send the whole buffer"
   (interactive)
   (highlight-region (point-min) (point-max))
+  (message "send b")  
   (repl-send-content (buffer-substring-no-properties (point-min) (point-max))))
 
 (defun repl-send-line ()
@@ -53,6 +54,7 @@ ssetup repl ansi socket browser
     (let ((start (progn (beginning-of-line) (point)))
           (end (progn (end-of-line) (point))))
       (highlight-region start end)
+      (message "send n: %s %s" start end)
       (repl-send-content (buffer-substring-no-properties start end))
       ;; (repl-send-content (thing-at-point 'line t))
       )))
@@ -64,6 +66,7 @@ ssetup repl ansi socket browser
     (let ((start (progn (backward-paragraph) (point)))
           (end (progn (forward-paragraph) (point))))
       (highlight-region start end)
+      (message "send e: %s %s" start end)      
       (repl-send-content (buffer-substring-no-properties start end))
       ;;(repl-send-content (thing-at-point 'paragraph t))
       )))
@@ -73,6 +76,7 @@ ssetup repl ansi socket browser
   "Send the region between START and END to the REPL."
   (interactive "r")
   (highlight-region start end)
+  (message "send r: %s %s" start end)  
   (repl-send-content (buffer-substring-no-properties start end)))
 
 (defun repl-send-md-block ()
@@ -83,9 +87,24 @@ ssetup repl ansi socket browser
       (let ((file-ref (or (progn (re-search-backward "```" starting-pos t) (match-string 1)) nil))
             (start-content (progn (goto-char starting-pos) (beginning-of-line) (forward-line 1) (point))))
         (highlight-region start-content end-pos)
+        (message "send m: %s %s" start-content end-pos)  
         (repl-send-content (buffer-substring-no-properties start-content end-pos))
         )
       )))
 
+(defun repl-send-eol ()
+  "utility tools to make it easier for us to create files for this entire buffer"
+  (interactive)
+  (let ((file-loc (read-string "Path:")))
+    (repl-send-content (format "cat > %s <<'EOL'" file-loc))))
+
+(defun repl-send-eol-output-buffer ()
+  "utility tools to make it easier for us to create files for this entire buffer"
+  (interactive)
+  (let ((file-loc (read-string "Path:"))
+        (content (buffer-substring-no-properties (point-min) (point-max))))                 
+    (repl-send-content (format "cat > %s <<'EOL'\n%sEOL" file-loc content))))
+
+  
 (message "repl loaded")
 ```
