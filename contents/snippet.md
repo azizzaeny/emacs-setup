@@ -74,17 +74,11 @@ customize things at point word
 
 ```
 
-assign key binding into it
-
-```elisp
-(global-set-key (kbd "C-c s e") 'custom-snippet-expand)
-(global-set-key (kbd "C-x x") 'custom-snippet-expand)
-(global-set-key (kbd "C-c s v") 'custom-snippet-eval)
-(global-set-key (kbd "C-c s r") 'reload-snippets)
+todo: key binding into it
 
 ;; snippet eval-markdown inside
 ;; snippet eval-html-code inside
 ;; perform repl send string of contents
 ;; perform socket repl send string of contents
-```
 
+todo:  we dont read from json we read from markdowns
