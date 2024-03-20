@@ -68,18 +68,3 @@ open today notes
   (note-open-n-day 7))
 
 ```
-
-key binding
-
-```elisp
-
-(global-set-key (kbd "C-c n o") 'note-open-today)
-(global-set-key (kbd "C-c n 1") 'note-open-yesterday)
-(global-set-key (kbd "C-c n 2") 'note-open-n2)
-(global-set-key (kbd "C-c n 3") 'note-open-n3)
-(global-set-key (kbd "C-c n 4") 'note-open-n4)
-(global-set-key (kbd "C-c n 5") 'note-open-n5)
-(global-set-key (kbd "C-c n 6") 'note-open-n6)
-(global-set-key (kbd "C-c n 7") 'note-open-n7)
-
-```
