@@ -1,16 +1,14 @@
-setup repl ansi socket browser
+ssetup repl ansi socket browser
 
 ```elisp
-
-(defvar repl-conn nil
-  "Variable to hold the REPL connection for socket-based REPLs.")
-
-(defvar current-repl-process nil
-  "Current REPL process for ansi-term REPLs.")
-
-(defvar repl-type "ansi" "Type of REPL: 'node', 'browser', or 'ansi'.")
 (defvar repl-process "*ansi-term*") ;; main repl process window
 (defvar repl-wrap  "%s")
+
+(defun repl-start-ansi ()
+  (interactive)
+  (setq cmd (read-string "Enter cmd: " "/bin/zsh"))  
+  (ansi-term cmd)
+  (messsage "Started %s REPL" repl-process))
 
 (defun repl-set-process ()
   "set interactive repl process"
@@ -22,95 +20,60 @@ setup repl ansi socket browser
   (interactive)
   (setq repl-wrap (read-string "Enter wrap wrap: ")))
 
-(defun repl-switch-type ()
-  "Switch the `repl-type` to cycle between 'node', 'browser', and 'ansi'."
-  (interactive)
-  (setq repl-type (cond
-                   ((equal repl-type "node") "browser")
-                   ((equal repl-type "browser") "ansi")
-                   ((equal repl-type "ansi") "node")))
-  (message "Switched REPL type to %s" repl-type))
-
-(defun repl-connect-socket ()
-  "Connect to the socket-based REPL server if the type is 'node' or 'browser'."
-  (interactive)
-  (when (member repl-type '("node" "browser"))
-    (let ((host "127.0.0.1")
-          (port 1355))
-      (setq repl-conn (open-network-stream "repl-conn" nil host port))
-      (message "Connected to %s REPL server" repl-type))))
-
-;; TODO: fix this repl-conn dont wait repl process
-(defun repl-disconnect-socket ()
-  "Disconnect from the current REPL."
-  (interactive)
-  (cond
-   ((member repl-type '("node" "browser"))
-    (when repl-conn
-      (delete-process repl-conn)
-      (setq repl-conn nil)
-      (message "Disconnected from %s REPL server" repl-type)))
-   ((equal repl-type "ansi")
-    (when current-repl-process
-      (delete-process current-repl-process)
-      (setq current-repl-process nil)
-      (message "Closed %s REPL" repl-type)))))
-
-(defun repl-start-ansi (&optional cmd)
-  "Start an ansi-term REPL using CMD or default to /bin/bash."
-  (interactive)
-  (setq cmd (or cmd "/bin/bash"))
-  (setq repl-type "ansi")  ; Set the repl-type to 'ansi'
-  (ansi-term cmd)
-  ;; (setq current-repl-process (get-buffer-process (current-buffer)))
-  ;; (term-line-mode) ; Enable line mode for easier sending of content
-  (message "Started %s REPL" cmd))
-
-;; two type send-to send-to-term-ansi-line send-to-term-ansi-char
-(defun repl-send-to-term-ansi-line () ;; not used 
-  (interactive)
-  (with-current-buffer (process-buffer repl-process)
-    (term-line-mode) ; Enable line mode for easier sending of content
-    (goto-char (process-mark repl-process))
-    (insert content)
-    (term-send-input)))
-
-(defun repl-send-to-term-ansi-char (content) ;; used this 
-  (interactive)
-  (term-send-string repl-process content)
-  (term-send-input))
-
 (defun repl-send-content (content)
-  "Send CONTENT to the appropriate REPL based on `repl-type`."
-  (cond
-   ((member repl-type '("node" "browser"))    ;; For socket-based REPLs
-    (when repl-conn
-      (process-send-string repl-conn (concat content "\n"))))
-   ((equal repl-type "ansi") ;; For ansi-term based REPLs
-      ;;(send-to-term-ansi-line)
-     (repl-send-to-term-ansi-char (format repl-wrap content)))   
-   (t (message "Unknown REPL type: %s" repl-type))))
+  "simulate entering into repl-process"
+  (interactive)
+  (with-current-buffer repl-process
+    (term-line-mode)
+    (insert (format repl-wrap content))
+    (term-send-input)
+    (term-char-mode)))
 
+(defface my-highlight-face
+  '((t (:background "##f0f8ff"))) ; Customize background color here
+  "Face for highlighting text."
+  :group 'basic-faces)
+
+(defun highlight-region (start end)
+  (let ((region-highlight (make-overlay start end)))
+    (overlay-put region-highlight 'face 'my-highlight-face)
+    (run-at-time "0.3 sec" nil #'delete-overlay region-highlight))
+  (deactivate-mark))
+
+(defun repl-send-buffer ()
+  "send the whole buffer"
+  (interactive)
+  (highlight-region (point-min) (point-max))
+  (repl-send-content (buffer-substring-no-properties (point-min) (point-max))))
 
 (defun repl-send-line ()
   "Send the current line to the REPL."
-  (interactive)
-  (repl-send-content (thing-at-point 'line t)))
+  (interactive)  
+  (save-excursion
+    (let ((start (progn (beginning-of-line) (point)))
+          (end (progn (end-of-line) (point))))
+      (highlight-region start end)
+      (repl-send-content (buffer-substring-no-properties start end))
+      ;; (repl-send-content (thing-at-point 'line t))
+      )))
 
 (defun repl-send-paragraph ()
   "Send the current paragraph to the REPL."
   (interactive)
-  (repl-send-content (thing-at-point 'paragraph t)))
+  (save-excursion
+    (let ((start (progn (backward-paragraph) (point)))
+          (end (progn (forward-paragraph) (point))))
+      (highlight-region start end)
+      (repl-send-content (buffer-substring-no-properties start end))
+      ;;(repl-send-content (thing-at-point 'paragraph t))
+      )))
+
 
 (defun repl-send-region (start end)
   "Send the region between START and END to the REPL."
   (interactive "r")
+  (highlight-region start end)
   (repl-send-content (buffer-substring-no-properties start end)))
-
-(defun repl-send-reload ()
-  "sending common function on javascript to the REPL"
-  (interactive)
-  (repl-send-content "reload()"))
 
 (defun repl-send-md-block ()
   (interactive)
@@ -119,33 +82,10 @@ setup repl ansi socket browser
           (end-pos (progn (re-search-forward md-block-end (point-max) t) (match-beginning 0))))
       (let ((file-ref (or (progn (re-search-backward "```" starting-pos t) (match-string 1)) nil))
             (start-content (progn (goto-char starting-pos) (beginning-of-line) (forward-line 1) (point))))
-          (repl-send-content (buffer-substring-no-properties start-content end-pos)))
-        )))
-
-(defun repl-send-buffer ()
-  "send the whole buffer"
-  (interactive)
-  (repl-send-content (buffer-substring-no-properties (point-min) (point-max))))
+        (highlight-region start-content end-pos)
+        (repl-send-content (buffer-substring-no-properties start-content end-pos))
+        )
+      )))
 
 (message "repl loaded")
-
 ```
-
-customzie key bind
-
-```elisp
-
-(global-set-key (kbd "C-c c p") 'repl-set-process)
-(global-set-key (kbd "C-c c c") 'repl-connect-socket);
-(global-set-key (kbd "C-c c d") 'repl-disconnect-socket);
-(global-set-key (kbd "C-c c s") 'repl-start-ansi)
-(global-set-key (kbd "C-c c w") 'repl-switch-type)
-(global-set-key (kbd "C-c c l") 'repl-send-line)
-(global-set-key (kbd "C-c c r") 'repl-send-region)
-(global-set-key (kbd "C-c c o") 'repl-send-reload)
-(global-set-key (kbd "C-c c b") 'repl-send-buffer)
-(global-set-key (kbd "C-c c e") 'repl-send-paragraph)
-(global-set-key (kbd "C-c c m") 'repl-send-md-block)
-
-```
-
