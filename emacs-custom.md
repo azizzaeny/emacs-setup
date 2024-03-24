@@ -350,6 +350,124 @@
   (note-open-n-day 7))
 
 ```
+### Key binding
+**binding keys settings**
+rules for windows we use `C-x`
+
+```elisp
+
+(global-unset-key (kbd "C-t")) ;; tranpose
+(global-unset-key (kbd "C-h")) ;; help
+(global-unset-key (kbd "C-x C-t")) ;;transpse line
+
+(global-set-key (kbd "C-s") 'swiper)
+(global-set-key (kbd "C-g") 'minibuffer-keyboard-quit)
+;; (global-set-key (kbd "C-s") 'counsel-grep-or-swiper)
+(global-set-key (kbd "C-s") 'swiper)
+
+(global-unset-key (kbd "C-r"))
+(global-set-key (kbd "C-r") 'replace-string)
+
+(global-set-key (kbd "C-x C-f") 'counsel-find-file)
+(global-set-key (kbd "C-x f") 'counsel-find-library)
+
+;; moving
+(global-set-key (kbd "C-x g") 'goto-line)
+(global-set-key (kbd "C-x <up>") 'windmove-up)
+(global-set-key (kbd "C-x <up>") 'windmove-up)
+(global-set-key (kbd "C-x <down>") 'windmove-down)
+(global-set-key (kbd "C-x <left>") 'windmove-left)
+(global-set-key (kbd "C-x <right>") 'windmove-right)
+(global-set-key (kbd "C-x C-<left>") 'windmove-left)
+(global-set-key (kbd "C-x C-<right>") 'windmove-right)
+
+;; markdonw
+;; C-c C-n or C-c C-p: Move to the next or previous heading (alternative).
+;; C-M-a (markdown-beginning-of-code-block): Move to the beginning of the current code block.
+;; C-M-e (markdown-end-of-code-block): Move to the end of the current code block
+(global-set-key (kbd "C-c n") 'polymode-next-chunk)
+(global-set-key (kbd "C-c p") 'polymode-previous-chunk)
+(global-set-key (kbd "C-c C-n") 'markdown-forward-same-level)
+(global-set-key (kbd "C-c C-p") 'markdown-backward-same-level)
+(global-set-key (kbd "C-c m") 'polymode-mark-or-extend-chunk)
+
+;; push view
+(global-set-key (kbd "C-x v v") 'ivy-push-view)
+(global-set-key (kbd "C-x v p") 'ivy-pop-view)
+
+;; evaling
+(global-unset-key (kbd "C-x e"))
+(global-set-key (kbd "C-x e") 'eval-region)
+
+;; wrap-un-wrap text
+(global-set-key (kbd "C-x w v") 'visual-line-mode)
+
+;; line number mode
+(global-unset-key (kbd "C-x l"))
+(global-set-key (kbd "C-x l") 'global-display-line-numbers-mode)
+
+;; ansi-term
+(global-unset-key (kbd "C-x r"))
+(global-unset-key (kbd "C-x a"))
+(global-set-key (kbd "C-x a a") 'ansi-term)
+(global-set-key (kbd "C-x r b") 'rename-buffer)
+
+
+;; code folding
+(global-set-key (kbd "C-c b m") 'hs-minor-mode)
+(global-set-key (kbd "C-c b h") 'hs-hide-block)
+(global-set-key (kbd "C-c b s") 'hs-show-block)
+
+;; align
+(global-set-key (kbd "C-c a c") 'align-to-colon)
+(global-set-key (kbd "C-c a e") 'align-to-equals)
+(global-set-key (kbd "C-c a a") 'aggressive-indent-indent-defun)
+
+;; expand region
+(global-set-key (kbd "C-c e") 'er/expand-region)
+
+
+;; the snippets
+(global-set-key (kbd "C-c s e") 'custom-snippet-expand)
+(global-set-key (kbd "C-c s v") 'custom-snippet-eval)
+(global-set-key (kbd "C-c s r") 'reload-snippets)
+
+
+;; the notes
+(global-set-key (kbd "C-c c n") 'note-open-today)
+;; (global-set-key (kbd "C-c n 1") 'note-open-yesterday)
+;; (global-set-key (kbd "C-c n 2") 'note-open-n2)
+;; (global-set-key (kbd "C-c n 3") 'note-open-n3)
+;; (global-set-key (kbd "C-c n 4") 'note-open-n4)
+;; (global-set-key (kbd "C-c n 5") 'note-open-n5)
+;; (global-set-key (kbd "C-c n 6") 'note-open-n6)
+;; (global-set-key (kbd "C-c n 7") 'note-open-n7)
+
+;; the repl
+(global-set-key (kbd "C-c c p") 'repl-set-process)
+(global-set-key (kbd "C-c c c") 'repl-connect-socket);
+(global-set-key (kbd "C-c c d") 'repl-disconnect-socket);
+(global-set-key (kbd "C-c c s") 'repl-start-ansi)
+(global-set-key (kbd "C-c c w") 'repl-switch-type)
+(global-set-key (kbd "C-c c l") 'repl-send-line)
+(global-set-key (kbd "C-c c r") 'repl-send-region)
+(global-set-key (kbd "C-c c o") 'repl-send-eol-output-buffer)
+(global-set-key (kbd "C-c c b") 'repl-send-buffer)
+(global-set-key (kbd "C-c c e") 'repl-send-paragraph)
+(global-set-key (kbd "C-c c m") 'repl-send-md-block)
+
+;; Define a prefix keymap
+;; (define-prefix-command 'my-custom-prefix-map)
+;; (global-set-key (kbd "C-c c") 'my-custom-prefix-map)
+
+;; ;; Define a keymap for the sequence "b u" under the prefix
+;; (define-key my-custom-prefix-map (kbd "b u") 'my-custom-command)
+
+;; ;; Define the custom command bound to "b u"
+;; (defun my-custom-command ()
+;;   (interactive)
+;;   (message "You pressed C-c c b u! This is a custom command."))
+```
 ### TCP Client
 **tcp-client**
 
@@ -488,119 +606,3 @@ another try
 
 ```
 
-### Key binding
-**binding keys settings**
-rules for windows we use `C-x`
-
-```elisp
-
-(global-unset-key (kbd "C-t")) ;; tranpose
-(global-unset-key (kbd "C-h")) ;; help
-(global-unset-key (kbd "C-x C-t")) ;;transpse line
-
-(global-set-key (kbd "C-s") 'swiper)
-(global-set-key (kbd "C-g") 'minibuffer-keyboard-quit)
-;; (global-set-key (kbd "C-s") 'counsel-grep-or-swiper)
-(global-set-key (kbd "C-s") 'swiper)
-
-(global-unset-key (kbd "C-r"))
-(global-set-key (kbd "C-r") 'replace-string)
-
-(global-set-key (kbd "C-x C-f") 'counsel-find-file)
-(global-set-key (kbd "C-x f") 'counsel-find-library)
-
-;; moving
-(global-set-key (kbd "C-x g") 'goto-line)
-(global-set-key (kbd "C-x <up>") 'windmove-up)
-(global-set-key (kbd "C-x <up>") 'windmove-up)
-(global-set-key (kbd "C-x <down>") 'windmove-down)
-(global-set-key (kbd "C-x <left>") 'windmove-left)
-(global-set-key (kbd "C-x <right>") 'windmove-right)
-(global-set-key (kbd "C-x C-<left>") 'windmove-left)
-(global-set-key (kbd "C-x C-<right>") 'windmove-right)
-
-;; markdonw
-;; C-c C-n or C-c C-p: Move to the next or previous heading (alternative).
-;; C-M-a (markdown-beginning-of-code-block): Move to the beginning of the current code block.
-;; C-M-e (markdown-end-of-code-block): Move to the end of the current code block
-(global-set-key (kbd "C-c n") 'polymode-next-chunk)
-(global-set-key (kbd "C-c p") 'polymode-previous-chunk)
-(global-set-key (kbd "C-c m") 'polymode-mark-or-extend-chunk)
-
-;; push view
-(global-set-key (kbd "C-x v v") 'ivy-push-view)
-(global-set-key (kbd "C-x v p") 'ivy-pop-view)
-
-;; evaling
-(global-unset-key (kbd "C-x e"))
-(global-set-key (kbd "C-x e") 'eval-region)
-
-;; wrap-un-wrap text
-(global-set-key (kbd "C-x w v") 'visual-line-mode)
-
-;; line number mode
-(global-unset-key (kbd "C-x l"))
-(global-set-key (kbd "C-x l") 'global-display-line-numbers-mode)
-
-;; ansi-term
-(global-unset-key (kbd "C-x r"))
-(global-unset-key (kbd "C-x a"))
-(global-set-key (kbd "C-x a a") 'ansi-term)
-(global-set-key (kbd "C-x r b") 'rename-buffer)
-
-
-;; code folding
-(global-set-key (kbd "C-c b m") 'hs-minor-mode)
-(global-set-key (kbd "C-c b h") 'hs-hide-block)
-(global-set-key (kbd "C-c b s") 'hs-show-block)
-
-;; align
-(global-set-key (kbd "C-c a c") 'align-to-colon)
-(global-set-key (kbd "C-c a e") 'align-to-equals)
-(global-set-key (kbd "C-c a a") 'aggressive-indent-indent-defun)
-
-;; expand region
-(global-set-key (kbd "C-c e") 'er/expand-region)
-
-
-;; the snippets
-(global-set-key (kbd "C-c s e") 'custom-snippet-expand)
-(global-set-key (kbd "C-c s v") 'custom-snippet-eval)
-(global-set-key (kbd "C-c s r") 'reload-snippets)
-
-
-;; the notes
-;; (global-set-key (kbd "C-c n o") 'note-open-today)
-;; (global-set-key (kbd "C-c n 1") 'note-open-yesterday)
-;; (global-set-key (kbd "C-c n 2") 'note-open-n2)
-;; (global-set-key (kbd "C-c n 3") 'note-open-n3)
-;; (global-set-key (kbd "C-c n 4") 'note-open-n4)
-;; (global-set-key (kbd "C-c n 5") 'note-open-n5)
-;; (global-set-key (kbd "C-c n 6") 'note-open-n6)
-;; (global-set-key (kbd "C-c n 7") 'note-open-n7)
-
-;; the repl
-(global-set-key (kbd "C-c c p") 'repl-set-process)
-(global-set-key (kbd "C-c c c") 'repl-connect-socket);
-(global-set-key (kbd "C-c c d") 'repl-disconnect-socket);
-(global-set-key (kbd "C-c c s") 'repl-start-ansi)
-(global-set-key (kbd "C-c c w") 'repl-switch-type)
-(global-set-key (kbd "C-c c l") 'repl-send-line)
-(global-set-key (kbd "C-c c r") 'repl-send-region)
-(global-set-key (kbd "C-c c o") 'repl-send-eol-output-buffer)
-(global-set-key (kbd "C-c c b") 'repl-send-buffer)
-(global-set-key (kbd "C-c c e") 'repl-send-paragraph)
-(global-set-key (kbd "C-c c m") 'repl-send-md-block)
-
-;; Define a prefix keymap
-;; (define-prefix-command 'my-custom-prefix-map)
-;; (global-set-key (kbd "C-c c") 'my-custom-prefix-map)
-
-;; ;; Define a keymap for the sequence "b u" under the prefix
-;; (define-key my-custom-prefix-map (kbd "b u") 'my-custom-command)
-
-;; ;; Define the custom command bound to "b u"
-;; (defun my-custom-command ()
-;;   (interactive)
-;;   (message "You pressed C-c c b u! This is a custom command."))
-```
