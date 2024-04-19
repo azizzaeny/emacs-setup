@@ -69,6 +69,7 @@
     vscode-dark-plus-theme
     treemacs 
     markdown-mode
+    multiple-cursors
     yaml-mode)
   )
 
@@ -228,6 +229,8 @@
 ;;(require 'lsp-mode)
 ;;(add-hook 'js-mode-hook #'lsp)
 
+(require 'multiple-cursors)
+
 ;; (setq server-use-tcp t)
 ;; (setq server-host "iodev")
 (server-start)
@@ -246,6 +249,6 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(edit-indirect yaml-mode yasnippet expand-region poly-markdown polymode aggressive-indent php-mode js2-mode python-mode auto-complete counsel clojure-mode cmake-mode)))
+   '(multiple-cursors edit-indirect yaml-mode yasnippet expand-region poly-markdown polymode aggressive-indent php-mode js2-mode python-mode auto-complete counsel clojure-mode cmake-mode)))
 
 
