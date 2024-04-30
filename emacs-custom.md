@@ -193,6 +193,21 @@
         (content (buffer-substring-no-properties (point-min) (point-max))))                 
     (repl-send-content (format "cat > %s <<'EOL'\n%sEOL" file-loc content))))
 
+(defun repl-send-reload ()
+  "send default funciton reload"
+  (interactive)
+  (repl-send-content "reload()"))
+
+(defun repl-send-client-region (start end)
+  "Send region pre configured string"
+  (interactive "r")
+  (message "send r: %s %s" start end)  
+  (highlight-region start end)
+  (setq repl-wrap "responseWith(`%s`)")
+  (repl-send-content (buffer-substring-no-properties start end))
+  (setq repl-wrap "%s"))
+
+
 (message "repl loaded")
 ```
 
@@ -590,7 +605,7 @@ rules for windows we use `C-x`
 
 
 ;; the notes
-(global-set-key (kbd "C-c c t") 'note-open-today)
+(global-set-key (kbd "C-c c n") 'note-open-today)
 ;; (global-set-key (kbd "C-c n 1") 'note-open-yesterday)
 ;; (global-set-key (kbd "C-c n 2") 'note-open-n2)
 ;; (global-set-key (kbd "C-c n 3") 'note-open-n3)
@@ -601,7 +616,8 @@ rules for windows we use `C-x`
 
 ;; the repl
 (global-set-key (kbd "C-c c p") 'repl-set-process)
-(global-set-key (kbd "C-c c c") 'repl-connect-socket);
+
+;; (global-set-key (kbd "C-c c c") 'repl-connect-socket);
 (global-set-key (kbd "C-c c d") 'repl-disconnect-socket);
 (global-set-key (kbd "C-c c s") 'repl-start-ansi)
 (global-set-key (kbd "C-c c w") 'repl-set-wrap)
@@ -612,6 +628,8 @@ rules for windows we use `C-x`
 (global-set-key (kbd "C-c c g") 'repl-send-buffer-escape)
 (global-set-key (kbd "C-c c e") 'repl-send-paragraph)
 (global-set-key (kbd "C-c c m") 'repl-send-md-block)
+(global-set-key (kbd "C-c c c") 'repl-send-client-region);
+(global-set-key (kbd "C-c c k") 'repl-send-reload);
 
 ;; Multi Cursrs
 (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
