@@ -1,7 +1,54 @@
 ### Snippet System
 **snippet**
 
+simplify version without file path contents
+
 ```elisp
+
+(defvar snippets (make-hash-table :test 'equal))
+(puthash "node" "foo\nbar\nbar" snippets);
+(puthash "html" "<html>\n  <head>\n    <meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0\">\n  </head>\n  <body></body>\n</html>" snippets);
+(puthash "http" "var {createServer, startServer response, findFile} = require('@zaeny/http');\n\nvar index = (req, res) => findFile('./index.html')\nvar notFound = () => ({body:'', headers:{}, status: 404});\n\nvar routes = {\n  'GET /': index,\n  \"GET /_\": responseBuffer,\n  \"GET /favico.ico\": notFound,  \n}\n\nvar handler = (req, res) => {\n  let resolve = routes[`${req.method} ${req.path}`];  \n  if(resolve) return resolve(req, res);\n  return index(req, res); // no not found\n}\nvar server = server  || startServer(createServer({ port: 8081, handler: (req, res) => handler(req, res)}))\nvar reload = () => responseWith(`window.location=window.location;`);\nvar watchReload = (file, callback) => require('fs').watchFile(file, { persistent:true, interval:500 }, (prev, cur)=> callback());\nvar watcher = watcher || watchReload('./index.html', reload);\n" snippets)
+(puthash "addHttp" "\nvar evaluate= (...args) => {\n  let [vm=require('vm'), ctx=global, addCtx={console, require, module}] = args;\n  return (res) => {\n    let context = vm.createContext(ctx);\n    return vm.runInContext(res, Object.assign(context, addCtx));\n  }\n}\nvar addDeps = (url, file) => fetch(url).then(res => res.text()).then(evaluate());\nvar httpUrl = \"https://raw.githubusercontent.com/azizzaeny/http/main/dist/index.js\";\naddDeps(httpUrl);" snippets)
+(puthash "devjs" "\nvar dev = url => fetch(url).then(res => res.text()).then(res => (eval(res), setTimeout(()=>dev(url), 200)));\n" snippets)
+
+(defun abbrev-at-point ()
+  "Return the abbreviation at point."
+  (let* ((end (point))
+         (start (save-excursion
+                  (skip-chars-backward "a-zA-Z0-9_:|-!<>")
+                  (point))))
+    (buffer-substring-no-properties start end)))
+
+(defun insert-content-abbrev (content)
+  (interactive)
+  (progn
+    (backward-kill-word 1)
+    (insert content)))
+
+(defun expand-abbrev-snippet ()
+  (interactive)
+  (let* ((abbrev (abbrev-at-point))
+         (snippet-content (gethash abbrev snippets)))
+    (if snippet-content
+        (insert-content-abbrev snippet-content))))
+
+(defun region-to-single-line ()
+  "Replace newlines in region with '\\n' and concatenate into a single line."
+  (interactive)
+  (when (region-active-p)
+    (let ((start (region-beginning))
+          (end (region-end)))
+      (save-excursion
+        (goto-char start)
+        (let ((region-text (buffer-substring-no-properties start end)))
+          (setq region-text (replace-regexp-in-string "\n" "\\\\n" (replace-regexp-in-string "\"" "\\\\\"" region-text)))
+          (kill-new region-text))))))
+
+```
+
+snippets with file path contents
+```lisp
 
 ;; simple versions
 (defvar custom-snippets-file-path (expand-file-name "snippets.json" user-emacs-directory)
@@ -43,6 +90,7 @@
          (expansion (when snippet-path
                       (with-temp-buffer
                         (insert-file-contents snippet-path)
+                        ;;(insert "foo\nbar")
                         (buffer-string)))))
     (message snippet-path)
     (if expansion
@@ -197,6 +245,11 @@
   "send default funciton reload"
   (interactive)
   (repl-send-content "reload()"))
+
+(defun repl-send-main ()
+  "send default funciton reload"
+  (interactive)
+  (repl-send-content "main()"))
 
 (defun repl-send-client-region (start end)
   "Send region pre configured string"
@@ -599,11 +652,12 @@ rules for windows we use `C-x`
 
 
 ;; the snippets
-(global-set-key (kbd "C-c s e") 'custom-snippet-expand)
-(global-set-key (kbd "C-c s v") 'custom-snippet-eval)
-(global-set-key (kbd "C-c s r") 'reload-snippets)
-
-
+;; (global-set-key (kbd "C-c s e") 'custom-snippet-expand)
+;; (global-set-key (kbd "C-c s v") 'custom-snippet-eval)
+;; (global-set-key (kbd "C-c s r") 'reload-snippets)
+(global-set-key (kbd "C-c s e") 'expand-abbrev-snippet)
+(global-set-key (kbd "C-c s l") 'region-to-single-line)
+                
 ;; the notes
 (global-set-key (kbd "C-c c n") 'note-open-today)
 ;; (global-set-key (kbd "C-c n 1") 'note-open-yesterday)
@@ -630,6 +684,7 @@ rules for windows we use `C-x`
 (global-set-key (kbd "C-c c m") 'repl-send-md-block)
 (global-set-key (kbd "C-c c c") 'repl-send-client-region);
 (global-set-key (kbd "C-c c k") 'repl-send-reload);
+(global-set-key (kbd "C-c c j") 'repl-send-main);
 
 ;; Multi Cursrs
 (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
