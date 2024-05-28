@@ -153,10 +153,12 @@ snippets with file path contents
   "simulate entering into repl-process"
   (interactive)
   (with-current-buffer repl-process
+    (goto-char (point-max))
     (term-line-mode)
     (insert (format repl-wrap content))
     (term-send-input)
-    (term-char-mode)))
+    (term-char-mode))
+   )
 
 (defun repl-send-buffer ()
   "send the whole buffer"
