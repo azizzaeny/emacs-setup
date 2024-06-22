@@ -70,6 +70,9 @@
     treemacs 
     markdown-mode
     multiple-cursors
+    impatient-mode
+    simple-httpd
+    emmet-mode
     yaml-mode)
   )
 
@@ -97,6 +100,9 @@
 
 ;; (setq load-verbose t)
 ;; (setq debug-on-error t)
+
+(when (string= system-type "darwin")
+  (setq dired-use-ls-dired nil))
 
 (menu-bar-mode -1)
 
@@ -230,6 +236,11 @@
 ;;(add-hook 'js-mode-hook #'lsp)
 
 (require 'multiple-cursors)
+
+(require 'simple-httpd)
+(require 'impatient-mode)
+(setq httpd-port 19008) ;; secret port playground
+
 
 ;; (setq server-use-tcp t)
 ;; (setq server-host "iodev")
