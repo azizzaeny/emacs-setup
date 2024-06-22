@@ -643,6 +643,9 @@
 (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
 (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
 
+;; Emmet
+(global-set-key (kbd "C-j") 'emmet-expand-line)
+
 ;; (load-markdown "contents/snippet.md")
 ;; (load-markdown "contents/markdown.md")
 ;; (load-markdown "contents/repl.md")
