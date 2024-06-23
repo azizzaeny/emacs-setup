@@ -73,8 +73,19 @@
     impatient-mode
     simple-httpd
     emmet-mode
+    web-mode
+    rjsx-mode
+    xref-js2
+    mmm-mode
+    nginx-mode
+    dotenv-mode
+    json-mode
     yaml-mode)
   )
+
+;; usefull programming elisp
+;; https://github.com/magnars/dash.el
+;; https://github.com/magnars/s.el
 
 ;; this required but not yet
 ;; parinfer
@@ -132,6 +143,9 @@
 (setq indicate-empty-lines t)
 (setq global-hl-line-mode t)
 (setq tab-width 2)
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 2)
+
 (setq toggle-truncate-lines t)
 (setq indent-tabs-mode nil)
 (blink-cursor-mode -1)
@@ -159,6 +173,7 @@
 (setq scroll-step 2)  ;; keyboard scroll one line at a time
 (setq scroll-conservatively 10000)
 (setq scroll-preserve-screen-position t)
+
 
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'post-forward-angle-brackets)
@@ -249,6 +264,15 @@
 (require 'impatient-mode)
 ;; (setq httpd-port 19008) ;; secret port playground
 
+;; webmode
+(setq web-mode-markup-indent-offset 2)
+(setq web-mode-css-indent-offset 2)
+(setq web-mode-code-indent-offset 2)
+(setq web-mode-enable-current-column-highlight t)
+(setq web-mode-script-padding 1)
+(setq web-mode-style-padding 1)
+(setq web-mode-block-padding 0)
+
 
 ;; (setq server-use-tcp t)
 ;; (setq server-host "iodev")
@@ -257,8 +281,8 @@
 
 ;; snippet
 (defvar snippets (make-hash-table :test 'equal))
-(puthash "node" "foo\nbar\nbar" snippets);
-(puthash "html" "<html>\n  <head>\n    <meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0\">\n  </head>\n  <body></body>\n</html>" snippets);
+(puthash "tailwind" "" snippets);
+(puthash "html" "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\"/>\n    <meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0\">    \n    <script src=\"https://cdn.tailwindcss.com/3.4.3\"></script>\n    <script> console.clear();</script>\n    <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n    <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n    <link href=\"https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap\" rel=\"stylesheet\">\n  </head>\n  <body class=\"antialiased font-sans m-0 p-0\">\n    \n  </body>\n</html>\n" snippets);
 (puthash "http" "var {createServer, startServer response, findFile} = require('@zaeny/http');\n\nvar index = (req, res) => findFile('./index.html')\nvar notFound = () => ({body:'', headers:{}, status: 404});\n\nvar routes = {\n  'GET /': index,\n  \"GET /_\": responseBuffer,\n  \"GET /favico.ico\": notFound,  \n}\n\nvar handler = (req, res) => {\n  let resolve = routes[`${req.method} ${req.path}`];  \n  if(resolve) return resolve(req, res);\n  return index(req, res); // no not found\n}\nvar server = server  || startServer(createServer({ port: 8081, handler: (req, res) => handler(req, res)}))\nvar reload = () => responseWith(`window.location=window.location;`);\nvar watchReload = (file, callback) => require('fs').watchFile(file, { persistent:true, interval:500 }, (prev, cur)=> callback());\nvar watcher = watcher || watchReload('./index.html', reload);\n" snippets)
 (puthash "addHttp" "\nvar evaluate= (...args) => {\n  let [vm=require('vm'), ctx=global, addCtx={console, require, module}] = args;\n  return (res) => {\n    let context = vm.createContext(ctx);\n    return vm.runInContext(res, Object.assign(context, addCtx));\n  }\n}\nvar addDeps = (url, file) => fetch(url).then(res => res.text()).then(evaluate());\nvar httpUrl = \"https://raw.githubusercontent.com/azizzaeny/http/main/dist/index.js\";\naddDeps(httpUrl);" snippets)
 (puthash "devjs" "\nvar dev = url => fetch(url).then(res => res.text()).then(res => (eval(res), setTimeout(()=>dev(url), 200)));\n" snippets)
