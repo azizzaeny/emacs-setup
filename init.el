@@ -238,8 +238,16 @@
 (require 'multiple-cursors)
 
 (require 'simple-httpd)
+
+(defun httpd-start-with-port (port)
+  "Prompt for a port number and start simple-httpd with that port."
+  (interactive "nEnter port number: ")
+  (setq httpd-port port)
+  (httpd-start)
+  (message "simple-httpd started on port %d" httpd-port))
+
 (require 'impatient-mode)
-(setq httpd-port 19008) ;; secret port playground
+;; (setq httpd-port 19008) ;; secret port playground
 
 
 ;; (setq server-use-tcp t)
@@ -624,7 +632,7 @@
 
 ;; (global-set-key (kbd "C-c c c") 'repl-connect-socket);
 (global-set-key (kbd "C-c c d") 'repl-disconnect-socket);
-(global-set-key (kbd "C-c c s") 'repl-start-ansi)
+;; (global-set-key (kbd "C-c c s") 'repl-start-ansi)
 (global-set-key (kbd "C-c c w") 'repl-set-wrap)
 (global-set-key (kbd "C-c c l") 'repl-send-line)
 (global-set-key (kbd "C-c c r") 'repl-send-region)
@@ -645,6 +653,13 @@
 
 ;; Emmet
 (global-set-key (kbd "C-j") 'emmet-expand-line)
+
+;; Impation mode
+(global-set-key (kbd "C-c c i") 'impatient-mode)
+
+;; simple-httpd
+(global-set-key (kbd "C-c c s") 'httpd-start-with-port)
+
 
 ;; (load-markdown "contents/snippet.md")
 ;; (load-markdown "contents/markdown.md")
