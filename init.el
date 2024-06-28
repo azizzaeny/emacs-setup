@@ -290,6 +290,7 @@
 (puthash "http" "var createServer, startServer, findFile\nvar server = server || null;\nvar main = () => {\n  server = createServer({ port: 8081, handler: (req, res) => handler(req, res)})\n  startServer(server); console.log('started server', 8081);  \n}\nvar routes = {\n  'GET /': 'mainHandler'\n};\nvar mainHandler = (req, res) => findFile(`${process.env.CONTEXT}/index.html`);\nvar handler = (req, res) => {\n  let resolve = routes[`${req.method} ${req.pathname}`];\n  if(resolve && global[resolve]) return global[resolve](req, res);\n  return response('404');\n}\nPromise.all([\n  deps('https://raw.githubusercontent.com/azizzaeny/clojure.core/main/dist/core.js'),  \n  deps('https://raw.githubusercontent.com/azizzaeny/http/main/index.js'),\n]).then(main);\n" snippets)
 (puthash "binnode" "node -e \"var evaluate=(...args)=>{ let [vm=require('vm'), ctx=global] = args;  return (res) => vm.runInContext(res, Object.assign(vm.createContext(ctx), {console, require, module}));}; var deps=(url) => fetch(url).then(res => res.text()).then(evaluate()); process.env.CONTEXT='$1'; evaluate()(require('fs').readFileSync('./$1/index.js'));\" -i\n" snippets)
 (puthash "jsdev" "\nvar dev = url => fetch(url).then(res => res.text()).then(res => (eval(res), setTimeout(()=>dev(url), 200)));\n" snippets)
+(puthash "watchfile" "\nvar watch = (file, callback) => require('fs').watchFile(\n  file,\n  {persistent:true, interval:200 },\n  (prev, cur)=> callback()\n);\n" snippets)
 
 ;; todo node evaluate index automaticly
 ;; todo http fix
