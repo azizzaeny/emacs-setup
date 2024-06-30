@@ -572,6 +572,68 @@
   (interactive)
   (note-open-n-day 7))
 
+;; prototype mode
+
+(defun start-node-repl ()
+  "Start a Node.js REPL in `ansi-term`."
+  (interactive)
+  (ansi-term "node" "Node.js REPL"))
+
+(defun switch-to-or-start-node-repl ()
+  "Switch to an existing Node.js REPL or start a new one."
+  (interactive)
+  (let ((buffer (get-buffer "*Node.js REPL*")))
+    (if buffer
+        (switch-to-buffer buffer)
+      (start-node-repl))))
+
+(defun start-node-repl-with-hello ()
+  "Start a Node.js REPL in `ansi-term`, define and invoke the `hello` function."
+  (interactive)
+  (ansi-term "node" "Node.js REPL")
+  (let ((proc (get-buffer-process "*Node.js REPL*")))
+    (comint-send-string proc "function hello(){ return 1;}")
+    (comint-send-string proc "hello()")))
+
+(defvar node-repl-timer nil
+  "Timer to delay sending `hello(1)` to the Node.js REPL.")
+
+(defun send-hello-to-node-repl ()
+  "Send `hello(1)` to the Node.js REPL if it exists."
+  (let ((buffer (get-buffer "*Node.js REPL*")))
+    (when buffer
+      (let ((proc (get-buffer-process buffer)))
+        (when proc
+          (comint-send-string proc "release();\n"))))))
+
+(defun schedule-send-hello-to-node-repl ()
+  "Schedule sending `hello(1)` to the Node.js REPL after a delay."
+  (when node-repl-timer
+    (cancel-timer node-repl-timer))
+  (setq node-repl-timer (run-with-idle-timer 0.2 nil 'send-hello-to-node-repl)))
+
+
+(defun start-or-switch-to-node-repl-with-hello ()
+  "Start a Node.js REPL in `ansi-term` if it doesn't already exist,
+change the working directory to the current buffer's directory,
+define and invoke the `hello` function."
+  (interactive)
+  (let* ((buffer (get-buffer "*Node.js REPL*"))
+         (current-dir (file-name-directory (or (buffer-file-name) default-directory))))
+    (if buffer
+        (with-current-buffer buffer
+          (let ((proc (get-buffer-process buffer)))
+            (when proc
+              (comint-send-string proc "console.log('process exists');"))))
+      (ansi-term "node" "Node.js REPL")
+      (let ((proc (get-buffer-process "*Node.js REPL*")))
+        (when proc
+          (comint-send-string proc (format "process.env.CONTEXT='%s';process.chdir('%s');\n" current-dir current-dir))
+          (comint-send-string proc "var evaluate=(...args)=>{\n  let [vm=require('vm'), ctx=global] = args;  return (res) => vm.runInContext(res, Object.assign(vm.createContext(ctx), {console, require, module}));\n};\nvar deps=(url) => fetch(url).then(res => res.text()).then(evaluate());\nvar createServer, startServer, findFile, response;\nvar server = server || null;\nvar main = () => {\n  server = createServer({ port: 8081, handler: (req, res) => handler(req, res)})\n  startServer(server); console.log('started server', 8081);  \n}\nvar version = 0;\nvar requests = [];\nvar release = () => {\n  version = version + 1;\n  console.log('release', version);\n  requests.forEach(([req, res]) =>{\n    let path = req.pathname === \"/\" ? \"index.html\" : req.pathname;    \n    return res.end(getFile(`${process.env.CONTEXT}/${path}`, '404'));\n  });\n  requests = [];\n}\nvar getFile = (filePath, defaultContent) => fs.existsSync(filePath) ? fs.readFileSync(filePath, 'utf-8') : defaultContent;\nvar handler = (req, res) => {\n  let path = req.pathname === \"/\" ? \"index.html\" : req.pathname;\n  let req_version = parseInt(req.headers['x-version']) || 0;\n  if(!req_version){\n    return {\n      status: 200,\n      headers: {'x-version': version},\n      body: getFile(`${process.env.CONTEXT}/${path}`, '404')\n    };\n  }     \n  if(version === req_version){\n    return {\n      status: 200,\n      headers: {'x-version': version },\n      body: getFile(`${process.env.CONTEXT}/${path}`, '404')\n    };\n  }else{\n    requests.push([req, res]);\n    return null;\n  }    \n}\n\nvar watch = (dir, callback) => require('fs').watch(\n  dir,\n  (prev, cur)=> callback()\n);\nwatch(`${process.env.CONTEXT}`, release);")
+          (comint-send-string proc "\nPromise.all([\n  deps('https://raw.githubusercontent.com/azizzaeny/http/main/index.js'),\n]).then(main);\n"))))))
+
+(global-set-key (kbd "C-c s n") 'start-or-switch-to-node-repl-with-hello)
+
 ;; key binding
 
 (global-unset-key (kbd "C-t")) ;; tranpose
