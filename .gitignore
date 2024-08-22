@@ -10,4 +10,5 @@
 !/.gitignore
 !/learn-command.md        
 !/docs
-!/docs/*  
+!/docs/*
+!/.tmux.conf    
