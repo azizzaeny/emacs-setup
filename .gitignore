@@ -8,4 +8,5 @@
 !/snippets/*
 !/snippets.json
 !/.gitignore
-!/emacs-custom.md        
+!/learn-command.md        
+!/docs/*
