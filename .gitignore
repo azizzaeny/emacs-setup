@@ -9,4 +9,5 @@
 !/snippets.json
 !/.gitignore
 !/learn-command.md        
-!/docs/*
+!/docs
+!/docs/*  
