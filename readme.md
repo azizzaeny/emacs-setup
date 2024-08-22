@@ -8,3 +8,13 @@ clone the repository `git clone git@github.com:azizzaeny/emacs-setup.git` then `
 ### Explanation 
 emacs start with loading `init.el` files which is contain parser to parse markdown file, the emacs will start as server running in the background  
 
+### Start by creating link into emacs.d folder
+
+```sh
+cd ~
+pwd
+ln -s /path/to/emacs-setup ~/.emacs.d
+ln -s /home/user/config/emacs-folder ~/.emacs.d
+
+cp .tmux.conf ~
+```
