@@ -29,9 +29,10 @@
 	      (funcall evaluator starting-pos end-pos)
 	    (eval-region starting-pos end-pos)))))))
 
-(load-markdown "docs/visual.md")
+
 (load-markdown "docs/package.md")
 (load-markdown "docs/configure-package.md")
+(load-markdown "docs/visual.md")
 (load-markdown "docs/simple-httpd.md")
 (load-markdown "docs/copy-paste.md")
 (load-markdown "docs/note.md")
