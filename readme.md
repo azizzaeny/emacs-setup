@@ -17,4 +17,8 @@ ln -s /path/to/emacs-setup ~/.emacs.d
 ln -s /home/user/config/emacs-folder ~/.emacs.d
 
 cp .tmux.conf ~
+
+# in .bashrc add this line
+export TERM=xterm-256color
+
 ```
