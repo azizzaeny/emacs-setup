@@ -111,23 +111,23 @@ var httpServer = (ctx) => require('http').createServer(processRequest(ctx)).list
 ### Capture Code Blocks
 
 ```js name=captureCode
+
 var captureCodeBlocks = (markdown) => {
   let codeBlockRegex = /```(\w+)((?:\s+\w+=[\w./-]+)*)\s*([\s\S]*?)```/g;
   let matches = markdown.matchAll(codeBlockRegex);
-  let codeBlocks = Array.from(matches, match => {
-    let language = match[1];
-    let attributesString = match[2].trim();
-    let code = match[3].trim();
-    let params = attributesString.split(/\s+/).reduce((acc, attr)=>{
+  return Array.from(matches, match => {
+    let attr = match[2].trim();
+    let params = attr.split(/\s+/).reduce((acc, attr)=>{
       let [key, value] = attr.split('=');
-      if (key && value) {
-        acc[key] = value;
-      }
-      return acc;
+      return (key && value) ? (acc[key] = value, acc) : acc;
     }, {});    
-    return { language, params, code };
+    return { lang: match[1] , params, content: match[3].trim() };
   });
-  return codeBlocks;
 }
 
+```
+
+### Read file
+```js name=readFile
+var readFile = (file) => require('fs').existsSync(file) ? require('fs').readFileSync(file, 'utf8') : null;
 ```
