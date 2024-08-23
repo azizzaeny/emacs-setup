@@ -1,9 +1,6 @@
 uniqufy dired
 ```elisp
 
-(when (string= system-type "darwin")
-  (setq dired-use-ls-dired nil))
-
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'post-forward-angle-brackets)
 

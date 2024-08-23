@@ -28,7 +28,6 @@ refresh package contents
     treemacs 
     markdown-mode
     multiple-cursors
-    impatient-mode
     simple-httpd
     emmet-mode
     web-mode
@@ -38,7 +37,9 @@ refresh package contents
     nginx-mode
     dotenv-mode
     json-mode
-    yaml-mode))
+    yaml-mode
+    )
+  )
 ```
 
 configure the package

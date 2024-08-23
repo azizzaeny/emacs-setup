@@ -1,3 +1,6 @@
+(when (string= system-type "darwin")       
+  (setq dired-use-ls-dired nil))
+
 (set-language-environment "UTF-8")
 (prefer-coding-system 'utf-8)
 
@@ -30,13 +33,16 @@
 	    (eval-region starting-pos end-pos)))))))
 
 
+(defvar md-block-header-snippet "^```\\(\\S-+\\)\\s-+name=\\(\\S-+\\)")
+(defvar md-block-end-snippet "^```$")
+
 (load-markdown "docs/package.md")
 (load-markdown "docs/configure-package.md")
 (load-markdown "docs/visual.md")
 (load-markdown "docs/simple-httpd.md")
 (load-markdown "docs/copy-paste.md")
 (load-markdown "docs/note.md")
-(load-markdown "docs/snippet.md")
+(load-markdown "docs/expand-abbrev.md")
 (load-markdown "docs/repl.md")
 (load-markdown "docs/align.md")
 
@@ -58,5 +64,5 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(multiple-cursors edit-indirect yaml-mode yasnippet expand-region poly-markdown polymode aggressive-indent php-mode js2-mode python-mode auto-complete counsel clojure-mode cmake-mode)))
+   '(multiple-cursors  yaml-mode yasnippet expand-region poly-markdown polymode aggressive-indent php-mode js2-mode python-mode auto-complete counsel clojure-mode cmake-mode)))
 
