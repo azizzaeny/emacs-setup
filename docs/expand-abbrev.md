@@ -20,7 +20,10 @@ expand abbreviations custom snippets
                      snippets))))
     (message "Snippets file not found: %s" (expand-file-name snippets-file))))
 
-(load-snippets "~/.emacs.d/docs/snippet.md")
+
+(defun reload-snippets ()
+  (interactive)
+  (load-snippets "~/.emacs.d/docs/snippet.md"))
 
 (defun abbrev-at-point ()
   "Return the abbreviation at point."
