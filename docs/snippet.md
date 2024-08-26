@@ -56,12 +56,9 @@ node -e "var evaluate=(...args)=>{ let [vm=require('vm'), ctx=global] = args;  r
 ```
 
 ### evaluate deps
-```js name=evalDeps
-var evaluate=(...args)=>{
-  let [vm=require('vm'), ctx=global] = args;
-  return (res) => vm.runInContext(res, Object.assign(vm.createContext(ctx), {console, require, module}));
-};
-var deps=(url) => fetch(url).then(res => res.text()).then(evaluate());
+```js name=evaluate
+var evaluate=(res)=> require('vm').runInContext(res, Object.assign(require('vm').createContext(global), {console, require, module}));
+var deps=(url) => fetch(url).then(res => res.text()).then(evaluate);
 ```
 
 ### basic routing
@@ -107,11 +104,23 @@ var processRequest = (ctx) => (request, response) => {
 var httpServer = (ctx) => require('http').createServer(processRequest(ctx)).listen(ctx.port);
 
 ```
+### Simple Handler
+
+```js name=handler
+var routes = {
+  'GET /': 'serve'
+};
+var handler = (req, res) => {
+  let resolved = routes[`${req.method} ${req.pathname}`];
+  if (resolved && global[resolved]) return global[resolved](req, res);  
+  return { body: `not-found`}
+}
+
+```
 
 ### Capture Code Blocks
 
 ```js name=captureCode
-
 var captureCodeBlocks = (markdown) => {
   let codeBlockRegex = /```(\w+)((?:\s+\w+=[\w./-]+)*)\s*([\s\S]*?)```/g;
   let matches = markdown.matchAll(codeBlockRegex);
@@ -130,4 +139,44 @@ var captureCodeBlocks = (markdown) => {
 ### Read file
 ```js name=readFile
 var readFile = (file) => require('fs').existsSync(file) ? require('fs').readFileSync(file, 'utf8') : null;
+```
+
+### Eval markdown
+
+```js name=evalMarkdown
+var captureCodeBlocks = (markdown) => {
+  let codeBlockRegex = /```(\w+)((?:\s+\w+=[\w./-]+)*)\s*([\s\S]*?)```/g;
+  let matches = markdown.matchAll(codeBlockRegex);
+  return Array.from(matches, match => {
+    let attr = match[2].trim();
+    let params = attr.split(/\s+/).reduce((acc, attr)=>{
+      let [key, value] = attr.split('=');
+      return (key && value) ? (acc[key] = value, acc) : acc;
+    }, {});    
+    return { lang: match[1] , params, content: match[3].trim() };
+  });
+}
+var readFile = (file) => require('fs').existsSync(file) ? require('fs').readFileSync(file, 'utf8') : null;
+var evaluate=(res)=> require('vm').runInContext(res, Object.assign(require('vm').createContext(global), {console, require, module}));
+var deps=(url) => fetch(url).then(res => res.text()).then(evaluate);
+var state = state || {};
+var isRunnable = (value) => (value.lang === "js" && value.params.eval === "true" && value.params.runtime==='node');
+var isServeable = (value) => (value.params.serve === 'true' && value.params.path );
+var concatBlock = (block, fn) => block.reduce((acc, value)=>(fn(value) ? acc.concat(`\n${value.content}`) : acc), '');
+var groupBlock = (block, fn) => block.reduce((acc, value)=>{  
+  if(fn(value)){
+    let path = value.params.path;
+    if(!acc[path]) acc[path] = `\n${value.content}`;
+    if(acc[path]) acc[path].concat(`\n${value.content}`);
+    return acc;
+  }
+  return acc;
+}, {});
+var reload = () =>{
+  state.block = captureCodeBlocks(readFile(`${process.cwd()}/readme.md`));
+  state.codes = concatBlock(state.block, isRunnable);    
+  state.files = groupBlock(state.block, isServeable);
+  evaluate(state.codes);
+}
+reload();
 ```
