@@ -23,12 +23,21 @@
 ```
 
 ### watch file
-```js name=watch
-var watch = (file, callback) => require('fs').watchFile(
+```js name=watchFile
+var watchFile = (file, callback) => require('fs').watchFile(
   file,
   {persistent:true, interval:200 },
   (prev, cur)=> callback()
 );
+```
+
+### watch dir 
+```js name=watchDir
+var watchDir = (file, callback) => require('fs').watch(
+  file,
+  {persistent:true },
+  (prev, cur)=> callback()
+)
 ```
 
 ### basic http
@@ -86,6 +95,29 @@ var matchRoute = (pathname, routes) => {
 
 ```sh name=dockerNode
 docker run --name "$container_name" --rm -it -w /work --network host -v $(pwd):/work node:20-alpine /bin/sh -c "node && /bin/sh"
+```
+### docker redis
+
+```sh name=dockerRedis
+cat > conf/redis.conf <<EOF
+bind 0.0.0.0
+port 6379
+appendonly yes
+maxmemory 8192mb
+requirepass redispass
+save 900 1
+save 60 100
+EOF
+
+docker run --rm -it --name redis-stack --network=host --workdir=/work -v "$(pwd)/conf/":/work/conf redis/redis-stack-server:7.2.4 /bin/sh
+redis-server conf/redis.conf
+```
+
+### ssh local
+ssh -L 13045:localhost:13405 -AJ kbm-knife kbm-redis
+
+```sh name=sshLocalForwarding
+ssh -L 11001:localhost:11001 ns01
 ```
 
 ### Simple HTTP Server
