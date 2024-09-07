@@ -205,3 +205,21 @@ var reload = () =>{
 }
 reload();
 ```
+
+### runtime index
+```js name=runtime
+var merge = Object.assign;
+var evaluate = (res)=> require('vm').runInContext(res, Object.assign(require('vm').createContext(global), {console, require, module, setTimeout, setInterval }));
+var captureCodeBlocks = (markdown) =>  Array.from(markdown.matchAll(/\`\`\`(\w+)((?:\s+\w+=[\w./-]+)*)\s*([\s\S]*?)\`\`\`/g), match => {
+  return merge({ lang: match[1], content: match[3].trim()}, match[2].trim().split(/\s+/).reduce((acc, attr)=>{
+    let [key, value] = attr.split('=');
+    return (key && value) ? (acc[key] = value, acc) : acc;
+  }, {}));
+});
+var readFile = (file) => require('fs').existsSync(file) ? require('fs').readFileSync(file, 'utf8') : null;
+var runtime = (path) => {
+  let runtimeNode = captureCodeBlocks(readFile(path)).filter(i=> i.runtime && i.runtime === 'node').map(i=> i.content).join('\n\n');
+  evaluate(runtimeNode);
+}
+runtime('./index.md');
+```
