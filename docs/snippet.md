@@ -153,19 +153,12 @@ var handler = (req, res) => {
 ### Capture Code Blocks
 
 ```js name=captureCode
-var captureCodeBlocks = (markdown) => {
-  let codeBlockRegex = /```(\w+)((?:\s+\w+=[\w./-]+)*)\s*([\s\S]*?)```/g;
-  let matches = markdown.matchAll(codeBlockRegex);
-  return Array.from(matches, match => {
-    let attr = match[2].trim();
-    let params = attr.split(/\s+/).reduce((acc, attr)=>{
-      let [key, value] = attr.split('=');
-      return (key && value) ? (acc[key] = value, acc) : acc;
-    }, {});    
-    return { lang: match[1] , params, content: match[3].trim() };
-  });
-}
-
+var captureCodeBlocks = (markdown) =>  Array.from(markdown.matchAll(/\`\`\`(\w+)((?:\s+\w+=[\w./-]+)*)\s*([\s\S]*?)\`\`\`/g), match => {
+  return merge({ lang: match[1], content: match[3].trim()}, match[2].trim().split(/\s+/).reduce((acc, attr)=>{
+    let [key, value] = attr.split('=');
+    return (key && value) ? (acc[key] = value, acc) : acc;
+  }, {}));
+});
 ```
 
 ### Read file
