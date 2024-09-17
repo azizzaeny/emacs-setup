@@ -43,11 +43,11 @@ repl
   (with-current-buffer repl-process
     (goto-char (point-max))
     (term-line-mode)
-    ;;(insert (format repl-wrap (repl-escape-char content)));
-    (insert (format repl-wrap content));
+    (if (string= repl-wrap "$s") ;; not normal meaning client side
+        (insert (format repl-wrap content));      
+      (insert (format repl-wrap (repl-escape-char content))))
     (term-send-input)
-    (term-char-mode))
-   )
+    (term-char-mode)))
 
 (defun repl-send-buffer ()
   "send the whole buffer"
