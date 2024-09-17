@@ -57,6 +57,7 @@ configure the package
 ;; emmet-mode
 ;; yasnippet
 ;; github-theme
+;; iy-go-to-char
 
 ```elisp
 
@@ -71,4 +72,10 @@ configure the package
     (when (not (package-installed-p p))
       (package-install p))))
 
+```
+
+adding the list manual package
+
+```elisp
+(add-to-list 'load-path "~/.emacs.d/manual-packages/")
 ```

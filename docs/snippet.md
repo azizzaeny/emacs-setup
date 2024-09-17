@@ -258,3 +258,15 @@ var output = extract(SOURCE_DIR);
 console.log('extracted');
 "
 ```
+
+### Patch require
+```js name=patchRequire
+
+const Module = require('module');
+const originalRequire = Module.prototype.require;
+Module.prototype.require = function patchedRequire(modulePath) {
+  delete require.cache[require.resolve(modulePath)];
+  return originalRequire.call(this, modulePath);
+};
+
+```

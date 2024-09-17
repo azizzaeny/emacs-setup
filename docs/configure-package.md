@@ -6,7 +6,8 @@ uniqufy dired
 
 ```
 
-counsel ivy swiper
+counsel ivy swiper, iy-go-to-char
+
 
 ```elisp
 
@@ -31,6 +32,8 @@ counsel ivy swiper
 ;; (setq search-default-mode #'char-fold-to-regexp)
 ;; (unless (ivy-state-dynamic-collection ivy-last)
 ;;   (completion-metadata "" minibuffer-completion-table minibuffer-completion-predicate))
+
+(require 'iy-go-to-char)
 
 ```
 
@@ -92,6 +95,9 @@ js2 mode indent
 (setq tab-stop-list (number-sequence 2 200 2))
 (set-default 'truncate-lines t)
 
+(with-eval-after-load 'js2-mode
+  (add-to-list 'auto-mode-alist '("\\.mjs" . js2-mode)))
+
 ```
 
 multiple cursor
@@ -122,10 +128,10 @@ key bind
 ```elisp
 
 ;; Multi Cursrs
-(global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
-(global-set-key (kbd "C->") 'mc/mark-next-like-this)
-(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
-(global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+;;(global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+(global-set-key (kbd "C-c .") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-c ,") 'mc/mark-previous-like-this)
+;;(global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
 
 ;; Emmet
 (global-set-key (kbd "C-j") 'emmet-expand-line)
@@ -185,4 +191,7 @@ key bind
 (global-set-key (kbd "C-x a a") 'ansi-term)
 (global-set-key (kbd "C-x r b") 'rename-buffer)
 
+;; iy-go-to-char
+(global-set-key (kbd "C-c f") 'iy-go-to-char)
+(global-set-key (kbd "C-c F") 'iy-go-to-char-backward)
 ```
