@@ -123,7 +123,6 @@ ssh -L 11001:localhost:11001 ns01
 ### Simple HTTP Server
 
 ```js name=httpServer
-
 var parseRequest = (request, buffer) => (request.$parsed = require('url').parse(request.url, true), request.params = Object.assign({}, request.$parsed.query), request.pathname = request.$parsed.pathname, request);
 var responseWrite = (ctx, request, response) => (
   response.writeHead(ctx.status || 404, ctx.headers || {}), response.write(ctx.body || ''), response.end()
@@ -220,45 +219,6 @@ var runtime = (path) => evaluate(captureCodeBlocks(readFile(path)).filter(i=> i.
 runtime('./index.md');
 ```
 
-### Extract
-```sh name=extract
-#!/bin/sh
-node -e "
-var evaluate = (res)=> require('vm').runInContext(res, Object.assign(require('vm').createContext(global), {console, require, module, setTimeout, setInterval }));
-var captureCodeBlocks = (markdown) =>  Array.from(markdown.matchAll(/\`\`\`(\w+)((?:\s+\w+=[\w./-]+)*)\s*([\s\S]*?)\`\`\`/g), match => {
-  return Object.assign({ lang: match[1], content: match[3].trim()}, match[2].trim().split(/\s+/).reduce((acc, attr)=>{
-    let [key, value] = attr.split('=');
-    return (key && value) ? (acc[key] = value, acc) : acc;
-  }, {}));
-});
-var readDir = (dirPath) => require('fs').readdirSync(dirPath);
-var readFile = (file) => require('fs').existsSync(file) ? require('fs').readFileSync(file, 'utf8') : null;
-var runtime = (path) => evaluate(captureCodeBlocks(readFile(path)).filter(i=> i.runtime && i.runtime === 'node').map(i=> i.content).join('\n\n'));
-var onlyMarkdown = (path) => path.endsWith('.md');
-var captureCode = path => captureCodeBlocks(readFile('./'+path));
-var groupByPath = (acc, value) => {
-  if(value.out !== '1') return acc;
-  if(value.path) return (!acc[value.path])
-    ? Object.assign(acc, { [value.path]: [value] })
-    : (acc[value.path] = acc[value.path].concat(value) ,acc);
-  return acc;
-}
-var extractFileContents = ([path, data])=>{
-  let contents = data.map(v => v.content).join('\n');
-  require('fs').writeFileSync(path, contents, 'utf8');
-  return [path, contents];
-}
-var extract = (path='./') =>{ 
-  let codes = readDir(path).filter(onlyMarkdown).map(captureCode).flat().reduce(groupByPath, {});
-  let output = Object.entries(codes).map(extractFileContents);
-  return output;
-}
-var SOURCE_DIR='./';
-var output = extract(SOURCE_DIR);
-console.log('extracted');
-"
-```
-
 ### Patch require
 ```js name=patchRequire
 
@@ -269,4 +229,9 @@ Module.prototype.require = function patchedRequire(modulePath) {
   return originalRequire.call(this, modulePath);
 };
 
+```
+
+### fetch
+```js name=loadRepl
+var loadRepl = url => fetch(url).then(res => res.text()).then(res => (eval(res), setTimeout(()=>loadRepl(url), 200)));
 ```

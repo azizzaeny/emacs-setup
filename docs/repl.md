@@ -34,13 +34,17 @@ repl
   (interactive)
   (setq repl-wrap (read-string "Enter wrap text: ")))
 
+(defun repl-escape-char (content)
+  (replace-regexp-in-string "\n" "\\\\n" (replace-regexp-in-string "\"" "\\\\\"" content)))
+
 (defun repl-send-content (content)
   "simulate entering into repl-process"
   (interactive)
   (with-current-buffer repl-process
     (goto-char (point-max))
     (term-line-mode)
-    (insert (format repl-wrap content))
+    ;;(insert (format repl-wrap (repl-escape-char content)));
+    (insert (format repl-wrap content));
     (term-send-input)
     (term-char-mode))
    )
@@ -152,7 +156,7 @@ repl
 
 repl nodejs
 
-```elisp
+```lisp
 
 (defun start-node-repl ()
   "Start a Node.js REPL in `ansi-term`."
@@ -172,8 +176,8 @@ repl nodejs
   (interactive)
   (ansi-term "node" "Node.js REPL")
   (let ((proc (get-buffer-process "*Node.js REPL*")))
-    (comint-send-string proc "function hello(){ return 1;}")
-    (comint-send-string proc "hello()")))
+    (comint-send-string proc "function hello(){ return 1;}\nhello();\n")
+    (comint-send-string proc "hello()\n")))
 
 (defvar node-repl-timer nil
   "Timer to delay sending `hello(1)` to the Node.js REPL.")
@@ -224,8 +228,9 @@ keybind repl
 (global-set-key (kbd "C-c c p") 'repl-set-process)
 
 ;; (global-set-key (kbd "C-c c c") 'repl-connect-socket);
-(global-set-key (kbd "C-c c d") 'repl-disconnect-socket);
+;; (global-set-key (kbd "C-c c d") 'repl-disconnect-socket);
 ;; (global-set-key (kbd "C-c c s") 'repl-start-ansi)
+
 (global-set-key (kbd "C-c c w") 'repl-set-wrap)
 (global-set-key (kbd "C-c c l") 'repl-send-line)
 (global-set-key (kbd "C-c c r") 'repl-send-region)
