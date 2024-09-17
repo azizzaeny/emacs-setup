@@ -1,4 +1,13 @@
-uniqufy dired
+dired
+
+```elisp
+;;(require 'dired-details)
+;; (setq-default dired-details-hidden-string "---")
+(add-hook 'dired-mode-hook #'dired-hide-details-mode)
+;;(setq dired-dwim-target t)
+;;(dired-details-install)
+```
+uniqufy
 ```elisp
 
 (require 'uniquify)
@@ -6,7 +15,7 @@ uniqufy dired
 
 ```
 
-counsel ivy swiper, iy-go-to-char
+counsel ivy swiper, ido
 
 
 ```elisp
@@ -15,7 +24,9 @@ counsel ivy swiper, iy-go-to-char
 (require 'ivy)
 (require 'swiper)
 (ivy-mode 1)
+(ido-mode 1)
 (setq ivy-use-virtual-buffers t)
+(setq ido-use-virtual-buffers t)
 (setq enable-recursive-minibuffers nil)
 (setq ivy-initial-inputs-alist nil)
 (setq ivy-count-format "")
@@ -33,8 +44,12 @@ counsel ivy swiper, iy-go-to-char
 ;; (unless (ivy-state-dynamic-collection ivy-last)
 ;;   (completion-metadata "" minibuffer-completion-table minibuffer-completion-predicate))
 
-(require 'iy-go-to-char)
 
+
+```
+iy-go-to-char
+```elisp
+(require 'iy-go-to-char)
 ```
 
 expand-region
@@ -122,7 +137,6 @@ web-mode
 
 ```
 
-
 key bind
 
 ```elisp
@@ -141,16 +155,21 @@ key bind
 (global-unset-key (kbd "C-h")) ;; help
 (global-unset-key (kbd "C-x C-t")) ;;transpse line
 
-(global-set-key (kbd "C-s") 'swiper)
-(global-set-key (kbd "C-g") 'minibuffer-keyboard-quit)
-;; (global-set-key (kbd "C-s") 'counsel-grep-or-swiper)
-(global-set-key (kbd "C-s") 'swiper)
 
+(global-set-key (kbd "C-g") 'minibuffer-keyboard-quit)
+
+;; searcning mini buffer
 (global-unset-key (kbd "C-r"))
 (global-set-key (kbd "C-r") 'replace-string)
 
-(global-set-key (kbd "C-x C-f") 'counsel-find-file)
-(global-set-key (kbd "C-x f") 'counsel-find-library)
+;; Ido Dired Ivy Swiper
+;; (global-set-key (kbd "C-s") 'counsel-grep-or-swiper)
+;; (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+(global-set-key (kbd "M-x") 'counsel-M-x)
+(global-set-key (kbd "C-s") 'swiper)
+(global-set-key (kbd "C-x b") 'ido-switch-buffer)
+(global-set-key (kbd "C-x C-f") 'ido-find-file)
+(global-set-key (kbd "C-x d") 'ido-dired)
 
 ;; moving
 (global-set-key (kbd "C-x g") 'goto-line)
@@ -163,12 +182,12 @@ key bind
 (global-set-key (kbd "C-x C-<right>") 'windmove-right)
 
 ;; markdonw
-(global-set-key (kbd "C-c f") 'polymode-next-chunk)
-;;(global-set-key (kbd "C-c c f") 'polymode-next-chunk)
-(global-set-key (kbd "C-c p") 'polymode-previous-chunk)
-;;(global-set-key (kbd "C-c C-f") 'markdown-forward-same-level)
-;;(global-set-key (kbd "C-c C-p") 'markdown-backward-same-level)
-;;(global-set-key (kbd "C-c m") 'polymode-mark-or-extend-chunk)
+;; (global-set-key (kbd "C-c f") 'polymode-next-chunk)
+;; (global-set-key (kbd "C-c c f") 'polymode-next-chunk)
+;; (global-set-key (kbd "C-c p") 'polymode-previous-chunk)
+;; (global-set-key (kbd "C-c C-f") 'markdown-forward-same-level)
+;; (global-set-key (kbd "C-c C-p") 'markdown-backward-same-level)
+;; (global-set-key (kbd "C-c m") 'polymode-mark-or-extend-chunk)
 
 ;; push view
 (global-set-key (kbd "C-x v v") 'ivy-push-view)
@@ -194,4 +213,6 @@ key bind
 ;; iy-go-to-char
 (global-set-key (kbd "C-c f") 'iy-go-to-char)
 (global-set-key (kbd "C-c F") 'iy-go-to-char-backward)
+;; expand region
+;; (global-set-key (kbd "C-c e") 'er/expand-region)
 ```

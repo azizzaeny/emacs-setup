@@ -58,6 +58,12 @@ configure the package
 ;; yasnippet
 ;; github-theme
 ;; iy-go-to-char
+;; visual-regexp
+;; ido-at-point
+;; ido-completing-read+
+;; ido-vertical-mode
+;; restclient
+;; helm
 
 ```elisp
 
