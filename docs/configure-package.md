@@ -176,10 +176,10 @@ key bind
 (global-unset-key (kbd "C-x C-t")) ;;transpse line
 
 
-(global-set-key (kbd "C-g") 'minibuffer-keyboard-quit)
+;; (global-set-key (kbd "C-g") 'minibuffer-keyboard-quit)
 
 ;; searcning mini buffer
-;;(global-unset-key (kbd "C-r"))
+;; (global-unset-key (kbd "C-r"))
 ;; Ido Dired Ivy Swiper
 ;; (global-set-key (kbd "C-s") 'counsel-grep-or-swiper)
 ;; (global-set-key (kbd "C-x C-f") 'counsel-find-file)
