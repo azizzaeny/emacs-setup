@@ -225,11 +225,6 @@ key bind
 (global-unset-key (kbd "C-x l"))
 (global-set-key (kbd "C-x l") 'global-display-line-numbers-mode)
 
-;; ansi-term
-(global-unset-key (kbd "C-x r"))
-(global-unset-key (kbd "C-x a"))
-(global-set-key (kbd "C-x a a") 'ansi-term)
-(global-set-key (kbd "C-x r b") 'rename-buffer)
 
 ;; iy-go-to-char
 (global-set-key (kbd "C-c f") 'iy-go-to-char)
@@ -240,7 +235,4 @@ key bind
 ;; restclient
 (global-set-key (kbd "C-c C-v") 'restclient-http-send-current-stay-in-window)
 
-;; git helper to quick commit
-(global-set-key (kbd "C-c g m") 'git-commit)
-(global-set-key (kbd "C-c g p") 'git-push)
 ```

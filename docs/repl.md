@@ -153,6 +153,23 @@ repl
 
 ```
 
+control ansi process
+
+```elisp
+(defun create-ansi-proc ()
+  "create ansi process with name"
+  (interactive)
+  (let ((name (read-string "proc name: ")))
+    (ansi-term "/bin/zsh" name)))
+
+;; ansi-term
+(global-unset-key (kbd "C-x r"))
+(global-unset-key (kbd "C-x a"))
+(global-set-key (kbd "C-x a a") 'create-ansi-proc)
+(global-set-key (kbd "C-x r b") 'rename-buffer)
+
+```
+
 git helper commit ansi term
 
 ```elisp
@@ -182,7 +199,9 @@ git helper commit ansi term
     (message "Git push initiated.")))
 
 ;; todo: top level project dir
-
+;; git helper to quick commit
+(global-set-key (kbd "C-c g m") 'git-commit)
+(global-set-key (kbd "C-c g p") 'git-push)
 ```
 
 repl nodejs
