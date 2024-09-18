@@ -162,10 +162,12 @@ key bind
 ```elisp
 
 ;; Multi Cursrs
-;;(global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+;; (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+;; (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+
 (global-set-key (kbd "C-c .") 'mc/mark-next-like-this)
 (global-set-key (kbd "C-c ,") 'mc/mark-previous-like-this)
-;;(global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+
 
 ;; Emmet
 (global-set-key (kbd "C-j") 'emmet-expand-line)
@@ -177,9 +179,6 @@ key bind
 
 
 ;; (global-set-key (kbd "C-g") 'minibuffer-keyboard-quit)
-
-;; searcning mini buffer
-;; (global-unset-key (kbd "C-r"))
 
 ;; Ido Dired Ivy Swiper
 ;; (global-set-key (kbd "C-s") 'counsel-grep-or-swiper)
@@ -203,7 +202,8 @@ key bind
 (global-set-key (kbd "C-x C-<left>") 'windmove-left)
 (global-set-key (kbd "C-x C-<right>") 'windmove-right)
 
-;; markdonw
+;; markdown
+
 ;; (global-set-key (kbd "C-c f") 'polymode-next-chunk)
 ;; (global-set-key (kbd "C-c c f") 'polymode-next-chunk)
 ;; (global-set-key (kbd "C-c p") 'polymode-previous-chunk)
