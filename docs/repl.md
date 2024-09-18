@@ -177,9 +177,9 @@ git helper commit ansi term
       (message "Git add and commit initiated."))))
 
 ;; assign key context
-(global-set-key (kbd "C-c g m") 'git-commit)
+;;(global-set-key (kbd "C-c g m") 'git-commit)
 
-;; top level project dir
+;; todo: top level project dir
 
 ```
 

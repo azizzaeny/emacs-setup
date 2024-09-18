@@ -239,4 +239,7 @@ key bind
 
 ;; restclient
 (global-set-key (kbd "C-c C-v") 'restclient-http-send-current-stay-in-window)
+
+;; git helper to quick commit
+(global-set-key (kbd "C-c g m") 'git-commit)
 ```
