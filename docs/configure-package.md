@@ -180,6 +180,7 @@ key bind
 
 ;; searcning mini buffer
 ;; (global-unset-key (kbd "C-r"))
+
 ;; Ido Dired Ivy Swiper
 ;; (global-set-key (kbd "C-s") 'counsel-grep-or-swiper)
 ;; (global-set-key (kbd "C-x C-f") 'counsel-find-file)
@@ -218,12 +219,11 @@ key bind
 (global-unset-key (kbd "C-x e"))
 (global-set-key (kbd "C-x e") 'eval-region)
 
-;; wrap-un-wrap text
-(global-set-key (kbd "C-x w v") 'visual-line-mode)
 
 ;; line number mode
 (global-unset-key (kbd "C-x l"))
-(global-set-key (kbd "C-x l") 'global-display-line-numbers-mode)
+(global-set-key (kbd "C-x l l") 'global-display-line-numbers-mode)
+(global-set-key (kbd "C-x l v") 'visual-line-mode) ;; wrap-un-wrap text
 
 
 ;; iy-go-to-char
