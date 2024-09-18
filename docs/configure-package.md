@@ -172,11 +172,9 @@ key bind
 ;; Emmet
 (global-set-key (kbd "C-j") 'emmet-expand-line)
 
-
 (global-unset-key (kbd "C-t")) ;; tranpose
 (global-unset-key (kbd "C-h")) ;; help
 (global-unset-key (kbd "C-x C-t")) ;;transpse line
-
 
 ;; (global-set-key (kbd "C-g") 'minibuffer-keyboard-quit)
 
@@ -203,7 +201,6 @@ key bind
 (global-set-key (kbd "C-x C-<right>") 'windmove-right)
 
 ;; markdown
-
 ;; (global-set-key (kbd "C-c f") 'polymode-next-chunk)
 ;; (global-set-key (kbd "C-c c f") 'polymode-next-chunk)
 ;; (global-set-key (kbd "C-c p") 'polymode-previous-chunk)
