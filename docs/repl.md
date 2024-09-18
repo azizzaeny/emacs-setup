@@ -171,11 +171,12 @@ git helper commit ansi term
 ;; commit
 (defun git-commit ()
   (interactive)
-  (let ((msg (read-string "commit messsage: "))
-        (proc (git-proc)))
-    (comint-send-string proc "git add .\n")
-    (comint-send-string proc (format "git commit -m \"%s\"\n" msg))
-    (message "Git add and commit initiated.")))
+  (save-excursion
+    (let ((msg (read-string "commit messsage: "))
+          (proc (git-proc)))
+      (comint-send-string proc "git add .\n")
+      (comint-send-string proc (format "git commit -m \"%s\"\n" msg))
+      (message "Git add and commit initiated."))))
 
 ;; assign key context
 (global-set-key (kbd "C-c g m") 'git-commit)
