@@ -242,4 +242,5 @@ key bind
 
 ;; git helper to quick commit
 (global-set-key (kbd "C-c g m") 'git-commit)
+(global-set-key (kbd "C-c g p") 'git-push)
 ```

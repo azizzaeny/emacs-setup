@@ -156,18 +156,18 @@ repl
 git helper commit ansi term
 
 ```elisp
-;; starting the *git* process
+
 (setq git-proc "git")
 
 (defun create-git-proc ()
-  "create persistence process git"
+  "create persistence process git process"
   (interactive)
   (if (get-buffer "*git*")
       (get-buffer-process "*git*")
     (get-buffer-process (ansi-term "/bin/zsh" git-proc))))
 
-;; commit
 (defun git-commit ()
+  "helper to quick commit C-c g m"
   (interactive)
   (save-excursion
     (let ((msg (read-string "commit messsage: "))
@@ -176,8 +176,12 @@ git helper commit ansi term
       (comint-send-string proc (format "git commit -m \"%s\"\n" msg))
       (message "Git add and commit initiated."))))
 
-;; assign key context
-;;(global-set-key (kbd "C-c g m") 'git-commit)
+(defun git-push ()
+  "helper to quick push C-c g p"
+  (interactive)
+  (let ((proc (create-git-proc)))
+    (comint-send-string proc "git push origin HEAD\n")
+    (message "Git push initiated.")))
 
 ;; todo: top level project dir
 
