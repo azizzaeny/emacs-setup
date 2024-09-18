@@ -18,7 +18,7 @@ var cors = (origin="*", method='GET, POST, PUT, DELETE, OPTIONS', headers='Conte
 
 var bufferContent = bufferContent || [];
 var bufferRelease = (txt) => {
-  bufferContent.forEach(({res}) => (res.writeHead(200, cors()), res.end(txt)));
+  bufferContent.forEach((res) => (res.writeHead(200, cors()), res.end(txt)));
   bufferContent = [];
   return true;
 }
