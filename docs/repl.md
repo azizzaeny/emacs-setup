@@ -43,9 +43,7 @@ repl
   (with-current-buffer repl-process
     (goto-char (point-max))
     (term-line-mode)
-    (if (string= repl-wrap "$s") ;; not normal meaning client side
-        (insert (format repl-wrap content));      
-      (insert (format repl-wrap (repl-escape-char content))))
+    (insert (format repl-wrap content))    
     (term-send-input)
     (term-char-mode)))
 
