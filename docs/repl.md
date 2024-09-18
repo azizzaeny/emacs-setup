@@ -157,23 +157,21 @@ git helper commit ansi term
 
 ```elisp
 ;; starting the *git* process
+(setq git-proc "git")
 
-(defun git-proc ()
-  "create persistence proces git"
+(defun create-git-proc ()
+  "create persistence process git"
   (interactive)
-   (let* ((buffer-name "*git*")
-          (existing-proc (get-buffer-process buffer-name)))
-      (if existing-proc
-        existing-proc
-      (let ((term-buffer (ansi-term "/bin/zsh" buffer-name)))
-        (get-buffer-process term-buffer)))))
-     
+  (if (get-buffer "*git*")
+      (get-buffer-process "*git*")
+    (get-buffer-process (ansi-term "/bin/zsh" git-proc))))
+
 ;; commit
 (defun git-commit ()
   (interactive)
   (save-excursion
     (let ((msg (read-string "commit messsage: "))
-          (proc (git-proc)))
+          (proc (create-git-proc)))
       (comint-send-string proc "git add .\n")
       (comint-send-string proc (format "git commit -m \"%s\"\n" msg))
       (message "Git add and commit initiated."))))
