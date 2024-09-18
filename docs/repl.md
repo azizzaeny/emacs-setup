@@ -232,6 +232,8 @@ create browser repl server
       )))
 
 ;; todo: create with difference port
+;; todo: we want to bufferRelease into the browser-repl
+
 (global-set-key (kbd "C-c n b") 'create-browser-repl)
 
 ```
