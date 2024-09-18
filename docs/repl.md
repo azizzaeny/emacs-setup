@@ -154,11 +154,14 @@ repl
 control ansi process
 
 ```elisp
+
 (defun create-ansi-proc ()
   "create ansi process with name"
   (interactive)
   (let ((name (read-string "proc name: ")))
-    (ansi-term "/bin/zsh" name)))
+    (if (get-buffer (format "*%s*" name))
+        (get-buffer-process (format "*%s*" name))
+      (get-buffer-process (ansi-term "/bin/zsh" name)))))
 
 ;; ansi-term
 (global-unset-key (kbd "C-x r"))
@@ -203,6 +206,38 @@ git helper commit ansi term
 ```
 
 repl nodejs
+
+```elisp
+(defun create-node-repl (name)
+  "create node.js repl"
+  (interactive)
+    (if (get-buffer "*Node*")
+        (get-buffer-process "*Node*")      
+      (get-buffer-process (ansi-term "node" "Node"))))
+
+(global-set-key (kbd "C-c n n") 'create-node-repl)
+```
+create browser repl server
+
+```elisp
+
+(defun create-browser-repl ()
+  "create node.js browser repl and send evaluate content to repl"
+  (interactive)
+  (if (get-buffer "*browser-repl*")
+      (message "*browser-repl* already exists")
+    (let (proc (get-buffer-process (ansi-term "node" "browser-repl")))
+      (comint-send-string proc "var os = require('os');\nvar evaluate = (res)=> require('vm').runInContext(res, Object.assign(require('vm').createContext(global), {console, require, module, setTimeout, setInterval }));\n")
+      (comint-send-string proc "evaluate(fs.readFileSync(os.homedir()+'/.emacs.d/docs/browser-repl.js', 'utf8'));\n")
+      )))
+
+;; todo: create with difference port
+(global-set-key (kbd "C-c n b") 'create-browser-repl)
+
+```
+
+
+test creating node.js
 
 ```lisp
 
