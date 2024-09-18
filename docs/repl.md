@@ -157,14 +157,12 @@ git helper commit ansi term
 
 ```elisp
 
-(setq git-proc "git")
-
 (defun create-git-proc ()
   "create persistence process git process"
   (interactive)
   (if (get-buffer "*git*")
       (get-buffer-process "*git*")
-    (get-buffer-process (ansi-term "/bin/zsh" git-proc))))
+    (get-buffer-process (ansi-term "/bin/zsh" "git"))))
 
 (defun git-commit ()
   "helper to quick commit C-c g m"
