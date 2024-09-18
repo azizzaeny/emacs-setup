@@ -153,6 +153,36 @@ repl
 
 ```
 
+git helper commit ansi term
+
+```elisp
+;; starting the *git* process
+
+(defun git-proc ()
+  "create persistence proces git"
+  (interactive)
+   (let* ((buffer-name "*git*")
+          (existing-proc (get-buffer-process buffer-name)))
+      (if existing-proc
+        existing-proc
+      (let ((term-buffer (ansi-term "/bin/zsh" buffer-name)))
+        (get-buffer-process term-buffer)))))
+     
+;; commit
+(defun git-commit ()
+  (interactive)
+  (let ((msg (read-string "commit messsage: "))
+        (proc (git-proc)))
+    (comint-send-string proc "git add .\n")
+    (comint-send-string proc (format "git commit -m \"%s\"\n" msg))
+    (message "Git add and commit initiated.")))
+
+;; assign key context
+(global-set-key (kbd "C-c g m") 'git-commit)
+
+;; top level project dir
+
+```
 
 repl nodejs
 

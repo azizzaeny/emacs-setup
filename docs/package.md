@@ -38,6 +38,7 @@ refresh package contents
     dotenv-mode
     json-mode
     yaml-mode
+    restclient
     )
   )
 ```

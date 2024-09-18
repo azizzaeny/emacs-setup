@@ -236,4 +236,7 @@ key bind
 (global-set-key (kbd "C-c F") 'iy-go-to-char-backward)
 ;; expand region
 ;; (global-set-key (kbd "C-c e") 'er/expand-region)
+
+;; restclient
+(global-set-key (kbd "C-c C-v") 'restclient-http-send-current-stay-in-window)
 ```
