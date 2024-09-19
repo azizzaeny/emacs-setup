@@ -67,7 +67,6 @@ configure the package
 ;; helm
 
 ```elisp
-
 (defun my-packages-installed-p ()
   (cl-loop for p in my-packages
            when (not (package-installed-p p)) do (cl-return nil)

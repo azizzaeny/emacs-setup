@@ -14,6 +14,7 @@ theme and visual apperaence
 (setq indicate-empty-lines t)
 (setq global-hl-line-mode t)
 (global-hl-line-mode t)
+
 (setq tab-width 2)
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 2)

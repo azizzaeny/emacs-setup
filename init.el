@@ -1,3 +1,4 @@
+
 (when (string= system-type "darwin")       
   (setq dired-use-ls-dired nil))
 
@@ -45,7 +46,6 @@
 (load-markdown "~/.emacs.d/docs/expand-abbrev.md")
 (load-markdown "~/.emacs.d/docs/repl.md")
 (load-markdown "~/.emacs.d/docs/align.md")
-
 ;; (setq load-verbose t)
 ;; (setq debug-on-error t)
 

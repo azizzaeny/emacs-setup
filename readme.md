@@ -22,3 +22,29 @@ cp .tmux.conf ~
 export TERM=xterm-256color
 
 ```
+
+### setup tmux conf
+
+```txt
+
+#set -g mouse on
+set -g mouse off
+#set-option -g mode-keys emacs
+
+#set -g terminal-overrides 'xterm*:smcup@:rmcup@'
+#set -g alternate-screen off
+    
+#bind-key C-v run-shell 'echo "hellow world" > /tmp/output.txt'
+#bind-key C-f command-prompt -p "Session name:" "run-shell '~/find-and-switch-session.sh %1'"
+bind-key f command-prompt -p "Session name:" "run-shell 'tmux switch-client -t %1 || tmux display-message \"Session %1 not found.\"'"
+bind-key C-r source-file ~/.tmux.conf
+#bind-key f command-prompt -p "Session name:" "run-shell 'tmux switch-client -t %1 || echo Session %1 not found.'"
+
+bind | split-window -h
+bind - split-window -v
+
+unbind ]
+bind C-c copy-mode
+bind C-v paste-buffer
+
+```

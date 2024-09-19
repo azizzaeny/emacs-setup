@@ -1,4 +1,24 @@
+reloading markdown
+
+```elisp
+(defun reload-markdown ()
+  (interactive)
+  (load-markdown "~/.emacs.d/docs/package.md")
+  (load-markdown "~/.emacs.d/docs/configure-package.md")
+  (load-markdown "~/.emacs.d/docs/visual.md")
+  (load-markdown "~/.emacs.d/docs/simple-httpd.md")
+  (load-markdown "~/.emacs.d/docs/copy-paste.md")
+  (load-markdown "~/.emacs.d/docs/note.md")
+  (load-markdown "~/.emacs.d/docs/expand-abbrev.md")
+  (load-markdown "~/.emacs.d/docs/repl.md")
+  (load-markdown "~/.emacs.d/docs/align.md")
+  (message "reloaded-markdown"))
+
+(global-unset-key (kbd "C-x r"))
+(global-set-key (kbd "C-x r m") 'reload-markdown)
+```
 isarch
+
 ```elisp
 (require 'isearch)
 (setq search-whitespace-regexp ".*?" ; one `setq' here to make it obvious they are a bundle
@@ -185,6 +205,7 @@ key bind
 (global-set-key (kbd "C-c r") 'replace-string)
 (global-set-key (kbd "C-r") 'isearch-backward)
 (global-set-key (kbd "C-s") 'isearch-forward)
+(global-set-key (kbd "C-S") 'counsel-grep-or-swiper)
 (global-set-key (kbd "M-x") 'counsel-M-x)
 (global-set-key (kbd "C-x b") 'ido-switch-buffer)
 (global-set-key (kbd "C-x C-f") 'ido-find-file)
@@ -213,7 +234,7 @@ key bind
 (global-set-key (kbd "C-x v p") 'ivy-pop-view)
 
 ;; evaling
-(global-unset-key (kbd "C-x e"))
+;;(global-unset-key (kbd "C-x e"))
 (global-set-key (kbd "C-x e") 'eval-region)
 
 
@@ -231,5 +252,4 @@ key bind
 
 ;; restclient
 (global-set-key (kbd "C-c C-v") 'restclient-http-send-current-stay-in-window)
-
 ```
