@@ -17,6 +17,7 @@ reloading markdown
 (global-unset-key (kbd "C-x r"))
 (global-set-key (kbd "C-x r m") 'reload-markdown)
 ```
+
 isarch
 
 ```elisp
@@ -24,6 +25,7 @@ isarch
 (setq search-whitespace-regexp ".*?" ; one `setq' here to make it obvious they are a bundle
         isearch-lax-whitespace t
         isearch-regexp-lax-whitespace nil)
+
 (setq search-highlight t)
 (setq isearch-lazy-highlight t)
 (setq lazy-highlight-initial-delay 0.5)
@@ -205,7 +207,7 @@ key bind
 (global-set-key (kbd "C-c r") 'replace-string)
 (global-set-key (kbd "C-r") 'isearch-backward)
 (global-set-key (kbd "C-s") 'isearch-forward)
-(global-set-key (kbd "C-S") 'counsel-grep-or-swiper)
+;; (global-set-key (kbd "C-S") 'counsel-grep-or-swiper)
 (global-set-key (kbd "M-x") 'counsel-M-x)
 (global-set-key (kbd "C-x b") 'ido-switch-buffer)
 (global-set-key (kbd "C-x C-f") 'ido-find-file)
@@ -251,5 +253,5 @@ key bind
 ;; (global-set-key (kbd "C-c e") 'er/expand-region)
 
 ;; restclient
-(global-set-key (kbd "C-c C-v") 'restclient-http-send-current-stay-in-window)
+(global-set-key (kbd "C-c c v") 'restclient-http-send-current-stay-in-window)
 ```
