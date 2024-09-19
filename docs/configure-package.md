@@ -182,7 +182,6 @@ web-mode
 key bind
 
 ```elisp
-
 ;; Multi Cursrs
 ;; (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
 ;; (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
@@ -207,7 +206,7 @@ key bind
 (global-set-key (kbd "C-c r") 'replace-string)
 (global-set-key (kbd "C-r") 'isearch-backward)
 (global-set-key (kbd "C-s") 'isearch-forward)
-;; (global-set-key (kbd "C-S") 'counsel-grep-or-swiper)
+(global-set-key (kbd "M-s") 'counsel-grep-or-swiper)
 (global-set-key (kbd "M-x") 'counsel-M-x)
 (global-set-key (kbd "C-x b") 'ido-switch-buffer)
 (global-set-key (kbd "C-x C-f") 'ido-find-file)
