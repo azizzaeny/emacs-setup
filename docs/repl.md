@@ -178,9 +178,11 @@ git helper commit ansi term
 (defun create-git-proc ()
   "create persistence process git process"
   (interactive)
-  (if (get-buffer "*git*")
-      (get-buffer-process "*git*")
-    (get-buffer-process (ansi-term "/bin/zsh" "git"))))
+  (let ((current-buffer (current-buffer)))
+    (if (get-buffer "*git*")
+        (get-buffer-process "*git*")
+      (get-buffer-process (ansi-term "/bin/zsh" "git"))
+      (switch-to-buffer current-buffer))))
 
 (defun git-commit ()
   "helper to quick commit C-c g m"
