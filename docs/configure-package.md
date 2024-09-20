@@ -249,6 +249,11 @@ key bind
 ;; iy-go-to-char
 (global-set-key (kbd "C-x g f") 'iy-go-to-char)
 (global-set-key (kbd "C-x g b") 'iy-go-to-char-backward)
+
+;; moving expression
+(global-set-key (kbd "C-f") 'forward-sexp)
+(global-set-key (kbd "C-b") 'backward-sexp)
+
 ;; expand region
 ;; (global-set-key (kbd "C-c e") 'er/expand-region)
 

@@ -1,8 +1,43 @@
 
-repl
+send to repl/terminal, send into an incremental execution environment
+add send javascript, send plain, send wrap, send paragrap, send region and send buffer
+set wrap send plain, 
+send specific command
 
 ```elisp
+;; prefix
+;; C-c c -> plain, (common l,p,r,b,s) -> into targeted process plain,
+;; C-c n -> nodejs javascript (common l, e, r, b)
+;; C-c m -> send markdown targeted environemnt if exist, (m, l, e, r, b)
+;; C-c b-> browser javascript (using wraped)
+;; C-c o-> end of line send cat  (l, e, r, b);
+;; C-c w -> wrap, into single line ;;wrap manipulation, if browser
+;; create if not exists, then eval, if exists just eval
+(setq repl-default-proc "*ansi-term*")
 
+(defun repl-create-proc (name)
+  "create persistence repl process"
+  (interactive)
+  (let ((current-buffer (current-buffer)))
+    (if (get-buffer (format "*%s*" name))
+        (get-buffer-process (format "*%s*" name))
+      (get-buffer-process (ansi-term "/bin/zsh" name))
+      (switch-to-buffer current-buffer))))
+
+(defun repl-send-to (proc str)
+  "repl send message to proces"
+  (interactive)
+  (let ((proc (repl-create-proc proc)))
+    (comint-send-string proc str)
+    (message "repl sent ."))) ;; TODO: fix need to sent twice when starting
+
+;; main functions
+(defun repl-send-last-exp (proc)) ;; s
+(defun repl-send-line (proc)) ;; l
+(defun repl-send-buffer (proc)) ;; b
+(defun repl-send-region-or-paragraph (proc)) ;; r
+
+  
 ```
 
 control ansi process
@@ -80,7 +115,8 @@ create browser repl server
 (defun create-browser-repl ()
   "create node.js browser repl and send evaluate content to repl"
   (interactive)
-  (let ((current-buffer (current-buffer)))    
+  (let ((current-buffer (current-buffer))
+        (port (read-string "port: 5050")))
     (if (get-buffer "*browser-repl*")
         (message "*browser-repl* already exists")
       (let (proc (get-buffer-process (ansi-term "node" "browser-repl")))
@@ -92,7 +128,7 @@ create browser repl server
 ;; todo: create with difference port
 ;; todo: we want to bufferRelease into the browser-repl
 
-(global-set-key (kbd "C-c n b") 'create-browser-repl)
+(global-set-key (kbd "C-x p b") 'create-browser-repl)
 
 ```
 experiment create send to repl
@@ -245,6 +281,20 @@ experiment create send to repl
   (repl-send-content (buffer-substring-no-properties start end))
   (setq repl-wrap "%s"))
 
+(defun js-comint-send-last-sexp ()
+  "Send the previous sexp to the inferior Javascript process."
+  (interactive)
+  (let* ((b (save-excursion
+              (backward-sexp)
+              (move-beginning-of-line nil)
+              (point)))
+         (e (if (and (boundp 'evil-mode)
+                     evil-mode
+                     (eq evil-state 'normal))
+                (+ 1 (point))
+              (point)))
+         (str (buffer-substring-no-properties b e)))
+    
 ```
 
 experiment test creating node.js
