@@ -185,13 +185,13 @@ key bind
 ;; Multi Cursrs
 ;; (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
 ;; (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
-
-(global-set-key (kbd "C-c .") 'mc/mark-next-like-this)
-(global-set-key (kbd "C-c ,") 'mc/mark-previous-like-this)
+(global-unset-key (kbd "C-x m")) ;; mail 
+(global-set-key (kbd "C-x m n") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-x m p") 'mc/mark-previous-like-this)
 
 
 ;; Emmet
-(global-set-key (kbd "C-j") 'emmet-expand-line)
+;; (global-set-key (kbd "C-j") 'emmet-expand-line)
 
 (global-unset-key (kbd "C-t")) ;; tranpose
 (global-unset-key (kbd "C-h")) ;; help
@@ -203,7 +203,7 @@ key bind
 ;; (global-set-key (kbd "C-s") 'counsel-grep-or-swiper)
 ;; (global-set-key (kbd "C-x C-f") 'counsel-find-file)
 ;; (global-set-key (kbd "C-s") 'swiper)
-(global-set-key (kbd "C-c r") 'replace-string)
+(global-set-key (kbd "C-x r r") 'replace-string)
 (global-set-key (kbd "C-r") 'isearch-backward)
 (global-set-key (kbd "C-s") 'isearch-forward)
 (global-set-key (kbd "M-s") 'counsel-grep-or-swiper)
@@ -213,7 +213,8 @@ key bind
 (global-set-key (kbd "C-x d") 'ido-dired)
 
 ;; moving
-(global-set-key (kbd "C-x g") 'goto-line)
+(global-unset-key (kbd "C-x g")) 
+(global-set-key (kbd "C-x g l") 'goto-line)
 (global-set-key (kbd "C-x <up>") 'windmove-up)
 (global-set-key (kbd "C-x <up>") 'windmove-up)
 (global-set-key (kbd "C-x <down>") 'windmove-down)
@@ -246,11 +247,11 @@ key bind
 
 
 ;; iy-go-to-char
-(global-set-key (kbd "C-c f") 'iy-go-to-char)
-(global-set-key (kbd "C-c F") 'iy-go-to-char-backward)
+(global-set-key (kbd "C-x g f") 'iy-go-to-char)
+(global-set-key (kbd "C-x g b") 'iy-go-to-char-backward)
 ;; expand region
 ;; (global-set-key (kbd "C-c e") 'er/expand-region)
 
 ;; restclient
-(global-set-key (kbd "C-c c v") 'restclient-http-send-current-stay-in-window)
+(global-set-key (kbd "C-x r s") 'restclient-http-send-current-stay-in-window)
 ```

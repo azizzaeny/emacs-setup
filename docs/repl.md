@@ -3,6 +3,102 @@ repl
 
 ```elisp
 
+```
+
+control ansi process
+
+```elisp
+
+(defun create-ansi-proc ()
+  "create ansi process with name"
+  (interactive)
+  (let ((name (read-string "proc name: "))
+        (bin (read-string "bin: ")))
+    (if (get-buffer (format "*%s*" name))
+        (get-buffer-process (format "*%s*" name))
+      (get-buffer-process (ansi-term "/bin/zsh" name)))))
+
+;; ansi-term
+(global-unset-key (kbd "C-x a"))
+(global-set-key (kbd "C-x p a") 'create-ansi-proc)
+(global-set-key (kbd "C-x r b") 'rename-buffer)
+
+```
+
+git helper commit ansi term
+
+```elisp
+
+(defun create-git-proc ()
+  "create persistence process git process"
+  (interactive)
+  (let ((current-buffer (current-buffer)))
+    (if (get-buffer "*git*")
+        (get-buffer-process "*git*")
+      (get-buffer-process (ansi-term "/bin/zsh" "git"))
+      (switch-to-buffer current-buffer))))
+
+(defun git-commit ()
+  "helper to quick commit C-c g m"
+  (interactive)
+  (save-excursion
+    (let ((msg (read-string "commit messsage: "))
+          (proc (create-git-proc)))
+      (comint-send-string proc "git add .\n")
+      (comint-send-string proc (format "git commit -m \"%s\"\n" msg))
+      (message "Git add and commit initiated."))))
+
+(defun git-push ()
+  "helper to quick push C-c g p"
+  (interactive)
+  (let ((proc (create-git-proc)))
+    (comint-send-string proc "git push origin HEAD\n")
+    (message "Git push initiated.")))
+
+;; todo: top level project dir
+;; git helper to quick commit
+(global-set-key (kbd "C-x g c") 'git-commit)
+(global-set-key (kbd "C-x g p") 'git-push)
+```
+
+repl nodejs
+
+```elisp
+(defun create-node-repl ()
+  "create node.js repl"
+  (interactive)
+  (if (get-buffer "*Node*")
+      (get-buffer-process "*Node*")      
+    (get-buffer-process (ansi-term "node" "Node"))))
+
+(global-set-key (kbd "C-x p n") 'create-node-repl)
+```
+create browser repl server
+
+```elisp
+
+(defun create-browser-repl ()
+  "create node.js browser repl and send evaluate content to repl"
+  (interactive)
+  (let ((current-buffer (current-buffer)))    
+    (if (get-buffer "*browser-repl*")
+        (message "*browser-repl* already exists")
+      (let (proc (get-buffer-process (ansi-term "node" "browser-repl")))
+        (comint-send-string proc "var os = require('os');\nvar evaluate = (res)=> require('vm').runInContext(res, Object.assign(require('vm').createContext(global), {console, require, module, setTimeout, setInterval }));\n")
+        (comint-send-string proc "evaluate(fs.readFileSync(os.homedir()+'/.emacs.d/docs/browser-repl.js', 'utf8'));\n")
+        (switch-to-buffer current-buffer)
+        (message "Browser repl created")))))
+
+;; todo: create with difference port
+;; todo: we want to bufferRelease into the browser-repl
+
+(global-set-key (kbd "C-c n b") 'create-browser-repl)
+
+```
+experiment create send to repl
+
+```lisp
+
 ;; repl
 (defvar repl-process "*ansi-term*") ;; main repl process window
 (defvar repl-wrap  "%s")
@@ -151,97 +247,7 @@ repl
 
 ```
 
-control ansi process
-
-```elisp
-
-(defun create-ansi-proc ()
-  "create ansi process with name"
-  (interactive)
-  (let ((name (read-string "proc name: ")))
-    (if (get-buffer (format "*%s*" name))
-        (get-buffer-process (format "*%s*" name))
-      (get-buffer-process (ansi-term "/bin/zsh" name)))))
-
-;; ansi-term
-(global-unset-key (kbd "C-x r"))
-(global-unset-key (kbd "C-x a"))
-(global-set-key (kbd "C-x a a") 'create-ansi-proc)
-(global-set-key (kbd "C-x r b") 'rename-buffer)
-
-```
-
-git helper commit ansi term
-
-```elisp
-
-(defun create-git-proc ()
-  "create persistence process git process"
-  (interactive)
-  (let ((current-buffer (current-buffer)))
-    (if (get-buffer "*git*")
-        (get-buffer-process "*git*")
-      (get-buffer-process (ansi-term "/bin/zsh" "git"))
-      (switch-to-buffer current-buffer))))
-
-(defun git-commit ()
-  "helper to quick commit C-c g m"
-  (interactive)
-  (save-excursion
-    (let ((msg (read-string "commit messsage: "))
-          (proc (create-git-proc)))
-      (comint-send-string proc "git add .\n")
-      (comint-send-string proc (format "git commit -m \"%s\"\n" msg))
-      (message "Git add and commit initiated."))))
-
-(defun git-push ()
-  "helper to quick push C-c g p"
-  (interactive)
-  (let ((proc (create-git-proc)))
-    (comint-send-string proc "git push origin HEAD\n")
-    (message "Git push initiated.")))
-
-;; todo: top level project dir
-;; git helper to quick commit
-(global-set-key (kbd "C-c g m") 'git-commit)
-(global-set-key (kbd "C-c g p") 'git-push)
-```
-
-repl nodejs
-
-```elisp
-(defun create-node-repl (name)
-  "create node.js repl"
-  (interactive)
-    (if (get-buffer "*Node*")
-        (get-buffer-process "*Node*")      
-      (get-buffer-process (ansi-term "node" "Node"))))
-
-(global-set-key (kbd "C-c n n") 'create-node-repl)
-```
-create browser repl server
-
-```elisp
-
-(defun create-browser-repl ()
-  "create node.js browser repl and send evaluate content to repl"
-  (interactive)
-  (if (get-buffer "*browser-repl*")
-      (message "*browser-repl* already exists")
-    (let (proc (get-buffer-process (ansi-term "node" "browser-repl")))
-      (comint-send-string proc "var os = require('os');\nvar evaluate = (res)=> require('vm').runInContext(res, Object.assign(require('vm').createContext(global), {console, require, module, setTimeout, setInterval }));\n")
-      (comint-send-string proc "evaluate(fs.readFileSync(os.homedir()+'/.emacs.d/docs/browser-repl.js', 'utf8'));\n")
-      )))
-
-;; todo: create with difference port
-;; todo: we want to bufferRelease into the browser-repl
-
-(global-set-key (kbd "C-c n b") 'create-browser-repl)
-
-```
-
-
-test creating node.js
+experiment test creating node.js
 
 ```lisp
 
