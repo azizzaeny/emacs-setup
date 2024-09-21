@@ -62,12 +62,12 @@ send specific command
 
 (global-set-key (kbd "C-c b s") 'repl-browser-send-last-exp)
 
-(defun repl-send-line (&optional proc)
+(defun repl-send-line (&optional proc wrap)
   "send line"
   (interactive)
   (let* ((begin (save-excursion (beginning-of-line) (point)))
          (end (save-excursion (end-of-line) (point)))
-         (str (buffer-substring-no-properties begin end)))
+         (str (format  (or wrap repl-default-wrapper) (buffer-substring-no-properties begin end))))
     (highlight-region begin end)
     (repl-send-to (or proc repl-default-proc) str)))
 
