@@ -89,11 +89,11 @@ send specific command
 
 (global-set-key (kbd "C-c c r") 'repl-send-region-or-paragraph)
 
-(defun repl-send-buffer (&optional proc)
+(defun repl-send-buffer (&optional proc wrap)
   "send the whole buffer"
   (interactive)
   (highlight-region (point-min) (point-max))
-  (repl-send-to (or proc repl-default-proc) (buffer-substring-no-properties (point-min) (point-max))))
+  (repl-send-to (or proc repl-default-proc) (format (or wrap repl-default-wrapper) (buffer-substring-no-properties (point-min) (point-max)))))
 
 (global-set-key (kbd "C-c c b") 'repl-send-buffer)
 
