@@ -6,13 +6,6 @@ send specific command
 
 ```elisp
 ;; prefix
-;; C-c c -> plain, (common l,p,r,b,s) -> into targeted process plain,
-;; C-c n -> nodejs javascript (common l, e, r, b)
-;; C-c m -> send markdown targeted environemnt if exist, (m, l, e, r, b)
-;; C-c b-> browser javascript (using wraped)
-;; C-c o-> end of line send cat  (l, e, r, b);
-;; C-c w -> wrap, into single line ;;wrap manipulation, if browser
-;; create if not exists, then eval, if exists just eval
 
 (setq repl-default-proc "ansi-term")
 
@@ -23,7 +16,7 @@ send specific command
     (if (get-buffer (format "*%s*" name))
         (get-buffer-process (format "*%s*" name))
       (get-buffer-process (ansi-term "/bin/zsh" name))
-      ;; (switch-to-buffer current-buffer) 
+      (switch-to-buffer current-buffer) 
       (message "repl-process created"))));; TODO: fix need to sent twice when starting
 
 (defun repl-send-to (proc str)
@@ -48,6 +41,20 @@ send specific command
     (repl-send-to (or proc repl-default-proc) str)))
 
 (global-set-key (kbd "C-c c s") 'repl-send-last-exp)
+
+(defun repl-node-send-last-exp ()
+  "send last expression to node proc"
+  (interactive)
+  (repl-send-last-exp "node"))
+
+(global-set-key (kbd "C-c n s") 'repl-node-send-last-exp)
+
+(defun repl-browser-send-last-exp ()
+  "send last expression to browser proc"
+  (interactive)
+  (repl-send-last-exp "browser"))
+
+(global-set-key (kbd "C-c b s") 'repl-browser-send-last-exp)
 
 (defun repl-send-line (&optional proc)
   "send line"
@@ -96,6 +103,16 @@ send specific command
         (repl-send-to (or proc repl-default-proc) (buffer-substring-no-properties start-content end-pos))))))
 
 (global-set-key (kbd "C-c c m") 'repl-send-markdown-block)
+
+;; C-c c -> plain, (common l,p,r,b,s) -> into targeted process plain,
+
+;; C-c n -> nodejs javascript (common l, e, r, b)
+;; C-c m -> send markdown targeted environemnt if exist, (m, l, e, r, b)
+;; C-c b-> browser javascript (using wraped)
+;; C-c o-> end of line send cat  (l, e, r, b);
+;; C-c w -> wrap, into single line ;;wrap manipulation, if browser
+;; create if not exists, then eval, if exists just eval
+
 ```
 
 control ansi process
@@ -150,6 +167,7 @@ git helper commit ansi term
 
 ;; todo: top level project dir
 ;; git helper to quick commit
+(global-set-key (kbd "C-x p g") 'create-git-proc)
 (global-set-key (kbd "C-x g c") 'git-commit)
 (global-set-key (kbd "C-x g p") 'git-push)
 ```
