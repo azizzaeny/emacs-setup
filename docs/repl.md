@@ -23,7 +23,8 @@ send specific command
     (if (get-buffer (format "*%s*" name))
         (get-buffer-process (format "*%s*" name))
       (get-buffer-process (ansi-term "/bin/zsh" name))
-      (switch-to-buffer current-buffer))))
+      ;; (switch-to-buffer current-buffer) 
+      (message "repl-process created"))));; TODO: fix need to sent twice when starting
 
 (defun repl-send-to (proc str)
   "repl send message to proces"
@@ -32,10 +33,10 @@ send specific command
     (comint-send-string proc str)
     (comint-send-string proc "\n")  
     (message "repl sent .")))
-;; TODO: fix need to sent twice when starting
+
 
 ;; main functions
-(defun repl-send-last-exp (proc)
+(defun repl-send-last-exp (&optional proc)
   "send last expression"
   (interactive)
   (let* ((begin (save-excursion
@@ -45,24 +46,51 @@ send specific command
          (end (point))
          (str (buffer-substring-no-properties begin end)))
     (highlight-region begin end)
-    (repl-send-to (if proc proc repl-default-proc) str)))
+    (repl-send-to (or proc repl-default-proc) str)))
+
+(global-set-key (kbd "C-c c s") 'repl-send-last-exp)
 
 ;; (repl-send-to "ansi-term" "ls")
-;; (repl-send-last-exp nil)
+;; (repl-send-last-exp)
 
-(defun repl-send-line (proc)
+(defun repl-send-line (&optional proc)
   "send line"
   (interactive)
   (let* ((begin (save-excursion (beginning-of-line) (point)))
          (end (save-excursion (end-of-line) (point)))
          (str (buffer-substring-no-properties begin end)))
     (highlight-region begin end)
-    (repl-send-to (if proc proc repl-default-proc) str)))
+    (repl-send-to (or proc repl-default-proc) str)))
 
-(repl-send-line nil)
+(global-set-key (kbd "C-c c l") 'repl-send-line)
 
-(defun repl-send-buffer (&proc)) ;; b
-(defun repl-send-region-or-paragraph (&proc)) ;; r
+;; (repl-send-line nil)
+
+(defun repl-send-region-or-paragraph (&optional proc)
+  "Send region if selected, otherwise send the current paragraph."
+  (interactive)
+  (if (use-region-p)
+      (let ((start (region-beginning))
+            (end (region-end)))
+        (repl-send-to (or proc repl-default-proc) 
+                      (buffer-substring-no-properties start end)))
+    (let* ((start (progn (backward-paragraph) (point)))
+           (end (progn (forward-paragraph) (point))))
+      (highlight-region start end)
+      (repl-send-to (or proc repl-default-proc) 
+                    (buffer-substring-no-properties start end)))))
+
+;; Global key binding
+(global-set-key (kbd "C-c c r") 'repl-send-region-or-paragraph)
+
+(defun repl-send-buffer (&optional proc)
+  "send the whole buffer"
+  (interactive)
+  (highlight-region (point-min) (point-max))
+  (repl-send-to (or proc repl-default-proc) (buffer-substring-no-properties (point-min) (point-max))))
+
+(global-set-key (kbd "C-c c b") 'repl-send-buffer)
+
 (defun repl-send-markdown-block (&proc))
 
 ;; (global-set-key (kbd "C-c c s") 'repl-send-last-exp)  

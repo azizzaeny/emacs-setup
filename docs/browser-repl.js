@@ -8,8 +8,10 @@ var processRequest = (ctx) => (request, response) => {
   request.on('data', chunk => (chunk ? buffer.push(chunk) : null));
   request.on('end', _  => setTimeout(async ()=>  responseWrite( await ctx.handler( parseRequest(request, buffer), response),request,response), 0)) 
 };
+
 var httpServer = (ctx) => require('http').createServer(processRequest(ctx)).listen(ctx.port);
 var readFile = (file) => require('fs').existsSync(file) ? require('fs').readFileSync(file, 'utf8') : null;
+
 var cors = (origin="*", method='GET, POST, PUT, DELETE, OPTIONS', headers='Content-Type, Authorization') => ({
   'Access-Control-Allow-Origin': origin,
   'Access-Control-Allow-Methods': method,
