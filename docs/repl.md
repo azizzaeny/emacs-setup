@@ -8,6 +8,12 @@ send specific command
 ;; prefix
 
 (setq repl-default-proc "ansi-term")
+(setq repl-default-wrapper "%s")
+
+(defface my-highlight-face
+  '((t (:background "##f0f8ff"))) ; Customize background color here
+  "Face for highlighting text."
+  :group 'basic-faces)
 
 (defun repl-create-proc (name)
   "create persistence repl process"
@@ -28,7 +34,7 @@ send specific command
     (message "repl sent .")))
 
 ;; main functions
-(defun repl-send-last-exp (&optional proc)
+(defun repl-send-last-exp (&optional proc wrap)
   "send last expression"
   (interactive)
   (let* ((begin (save-excursion
@@ -36,7 +42,7 @@ send specific command
               (move-beginning-of-line nil)
               (point)))
          (end (point))
-         (str (buffer-substring-no-properties begin end)))
+         (str (format (or wrap repl-default-wrapper) (buffer-substring-no-properties begin end))))
     (highlight-region begin end)
     (repl-send-to (or proc repl-default-proc) str)))
 
@@ -52,7 +58,7 @@ send specific command
 (defun repl-browser-send-last-exp ()
   "send last expression to browser proc"
   (interactive)
-  (repl-send-last-exp "browser"))
+  (repl-send-last-exp "browser" "bufferRelease(\"%s\");"))
 
 (global-set-key (kbd "C-c b s") 'repl-browser-send-last-exp)
 
