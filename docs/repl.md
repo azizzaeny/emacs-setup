@@ -155,6 +155,8 @@ git helper commit ansi term
       (get-buffer-process (ansi-term "/bin/zsh" "git"))
       (switch-to-buffer current-buffer))))
 
+(global-set-key (kbd "C-x p g") 'create-git-proc)
+
 (defun git-commit ()
   "helper to quick commit C-c g m"
   (interactive)
@@ -165,6 +167,8 @@ git helper commit ansi term
       (comint-send-string proc (format "git commit -m \"%s\"\n" msg))
       (message "Git add and commit initiated."))))
 
+(global-set-key (kbd "C-c g c") 'git-commit)
+
 (defun git-push ()
   "helper to quick push C-c g p"
   (interactive)
@@ -172,11 +176,12 @@ git helper commit ansi term
     (comint-send-string proc "git push origin HEAD\n")
     (message "Git push initiated.")))
 
+(global-set-key (kbd "C-c g p") 'git-push)
 ;; todo: top level project dir
 ;; git helper to quick commit
-(global-set-key (kbd "C-x p g") 'create-git-proc)
-(global-set-key (kbd "C-x g c") 'git-commit)
-(global-set-key (kbd "C-x g p") 'git-push)
+
+
+
 ```
 
 repl nodejs
