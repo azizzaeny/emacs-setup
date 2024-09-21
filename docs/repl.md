@@ -13,7 +13,8 @@ send specific command
 ;; C-c o-> end of line send cat  (l, e, r, b);
 ;; C-c w -> wrap, into single line ;;wrap manipulation, if browser
 ;; create if not exists, then eval, if exists just eval
-(setq repl-default-proc "*ansi-term*")
+
+(setq repl-default-proc "ansi-term")
 
 (defun repl-create-proc (name)
   "create persistence repl process"
@@ -29,15 +30,42 @@ send specific command
   (interactive)
   (let ((proc (repl-create-proc proc)))
     (comint-send-string proc str)
-    (message "repl sent ."))) ;; TODO: fix need to sent twice when starting
+    (comint-send-string proc "\n")  
+    (message "repl sent .")))
+;; TODO: fix need to sent twice when starting
 
 ;; main functions
-(defun repl-send-last-exp (proc)) ;; s
-(defun repl-send-line (proc)) ;; l
-(defun repl-send-buffer (proc)) ;; b
-(defun repl-send-region-or-paragraph (proc)) ;; r
+(defun repl-send-last-exp (proc)
+  "send last expression"
+  (interactive)
+  (let* ((begin (save-excursion
+              (backward-sexp)
+              (move-beginning-of-line nil)
+              (point)))
+         (end (point))
+         (str (buffer-substring-no-properties begin end)))
+    (highlight-region begin end)
+    (repl-send-to (if proc proc repl-default-proc) str)))
 
-  
+;; (repl-send-to "ansi-term" "ls")
+;; (repl-send-last-exp nil)
+
+(defun repl-send-line (proc)
+  "send line"
+  (interactive)
+  (let* ((begin (save-excursion (beginning-of-line) (point)))
+         (end (save-excursion (end-of-line) (point)))
+         (str (buffer-substring-no-properties begin end)))
+    (highlight-region begin end)
+    (repl-send-to (if proc proc repl-default-proc) str)))
+
+(repl-send-line nil)
+
+(defun repl-send-buffer (&proc)) ;; b
+(defun repl-send-region-or-paragraph (&proc)) ;; r
+(defun repl-send-markdown-block (&proc))
+
+;; (global-set-key (kbd "C-c c s") 'repl-send-last-exp)  
 ```
 
 control ansi process
