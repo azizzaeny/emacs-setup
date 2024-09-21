@@ -34,7 +34,6 @@ send specific command
     (comint-send-string proc "\n")  
     (message "repl sent .")))
 
-
 ;; main functions
 (defun repl-send-last-exp (&optional proc)
   "send last expression"
@@ -50,9 +49,6 @@ send specific command
 
 (global-set-key (kbd "C-c c s") 'repl-send-last-exp)
 
-;; (repl-send-to "ansi-term" "ls")
-;; (repl-send-last-exp)
-
 (defun repl-send-line (&optional proc)
   "send line"
   (interactive)
@@ -63,8 +59,6 @@ send specific command
     (repl-send-to (or proc repl-default-proc) str)))
 
 (global-set-key (kbd "C-c c l") 'repl-send-line)
-
-;; (repl-send-line nil)
 
 (defun repl-send-region-or-paragraph (&optional proc)
   "Send region if selected, otherwise send the current paragraph."
@@ -80,7 +74,6 @@ send specific command
       (repl-send-to (or proc repl-default-proc) 
                     (buffer-substring-no-properties start end)))))
 
-;; Global key binding
 (global-set-key (kbd "C-c c r") 'repl-send-region-or-paragraph)
 
 (defun repl-send-buffer (&optional proc)
@@ -91,9 +84,18 @@ send specific command
 
 (global-set-key (kbd "C-c c b") 'repl-send-buffer)
 
-(defun repl-send-markdown-block (&proc))
+(defun repl-send-markdown-block (&optional proc)
+  "send current markdown code block, search block backwarnd and then forward"
+  (interactive)
+  (save-excursion
+    (let ((starting-pos (progn (re-search-backward "^```" (point-min) t) (match-end 0)))
+          (end-pos (progn (re-search-forward md-block-end (point-max) t) (match-beginning 0))))
+      (let ((file-ref (or (progn (re-search-backward "```" starting-pos t) (match-string 1)) nil))
+            (start-content (progn (goto-char starting-pos) (beginning-of-line) (forward-line 1) (point))))
+        (highlight-region start-content end-pos)
+        (repl-send-to (or proc repl-default-proc) (buffer-substring-no-properties start-content end-pos))))))
 
-;; (global-set-key (kbd "C-c c s") 'repl-send-last-exp)  
+(global-set-key (kbd "C-c c m") 'repl-send-markdown-block)
 ```
 
 control ansi process
