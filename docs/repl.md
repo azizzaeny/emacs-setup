@@ -73,19 +73,19 @@ send specific command
 
 (global-set-key (kbd "C-c c l") 'repl-send-line)
 
-(defun repl-send-region-or-paragraph (&optional proc)
+(defun repl-send-region-or-paragraph (&optional proc wrap)
   "Send region if selected, otherwise send the current paragraph."
   (interactive)
   (if (use-region-p)
       (let ((start (region-beginning))
-            (end (region-end)))
-        (repl-send-to (or proc repl-default-proc) 
-                      (buffer-substring-no-properties start end)))
+            (end (region-end))
+            (str (format (or wrap repl-default-wrapper) (buffer-substring-no-properties start end))))
+        (repl-send-to (or proc repl-default-proc) str))
     (let* ((start (progn (backward-paragraph) (point)))
-           (end (progn (forward-paragraph) (point))))
+           (end (progn (forward-paragraph) (point)))
+           (str (format (or wrap repl-default-wrapper) (buffer-substring-no-properties start end))))
       (highlight-region start end)
-      (repl-send-to (or proc repl-default-proc) 
-                    (buffer-substring-no-properties start end)))))
+      (repl-send-to (or proc repl-default-proc) str))))
 
 (global-set-key (kbd "C-c c r") 'repl-send-region-or-paragraph)
 
