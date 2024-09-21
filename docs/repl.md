@@ -97,7 +97,7 @@ send specific command
 
 (global-set-key (kbd "C-c c b") 'repl-send-buffer)
 
-(defun repl-send-markdown-block (&optional proc)
+(defun repl-send-markdown-block (&optional proc wrap)
   "send current markdown code block, search block backwarnd and then forward"
   (interactive)
   (save-excursion
@@ -106,7 +106,8 @@ send specific command
       (let ((file-ref (or (progn (re-search-backward "```" starting-pos t) (match-string 1)) nil))
             (start-content (progn (goto-char starting-pos) (beginning-of-line) (forward-line 1) (point))))
         (highlight-region start-content end-pos)
-        (repl-send-to (or proc repl-default-proc) (buffer-substring-no-properties start-content end-pos))))))
+        (repl-send-to (or proc repl-default-proc) (format (or wrap repl-default-wrapper) (buffer-substring-no-properties start-content end-pos)))))))
+
 
 (global-set-key (kbd "C-c c m") 'repl-send-markdown-block)
 
