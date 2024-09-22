@@ -1,4 +1,3 @@
-
 send to repl/terminal, send into an incremental execution environment
 add send javascript, send plain, send wrap, send paragrap, send region and send buffer
 set wrap send plain, 
@@ -8,7 +7,6 @@ send specific command
 ;; prefix
 
 (setq repl-default-proc "ansi-term")
-(setq repl-default-wrapper "%s")
 
 (defface my-highlight-face
   '((t (:background "##f0f8ff"))) ; Customize background color here
@@ -34,7 +32,7 @@ send specific command
     (message "repl sent .")))
 
 ;; main functions
-(defun repl-send-last-exp (&optional proc wrap)
+(defun repl-send-last-exp (&optional proc)
   "send last expression"
   (interactive)
   (let* ((begin (save-excursion
@@ -42,58 +40,51 @@ send specific command
               (move-beginning-of-line nil)
               (point)))
          (end (point))
-         (str (format (or wrap repl-default-wrapper) (buffer-substring-no-properties begin end))))
+         (str (buffer-substring-no-properties begin end)))
     (highlight-region begin end)
     (repl-send-to (or proc repl-default-proc) str)))
 
 (global-set-key (kbd "C-c c s") 'repl-send-last-exp)
 
-(defun repl-node-send-last-exp ()
-  "send last expression to node proc"
-  (interactive)
-  (repl-send-last-exp "node"))
-
-(global-set-key (kbd "C-c n s") 'repl-node-send-last-exp)
-
-(defun repl-browser-send-last-exp ()
-  "send last expression to browser proc"
-  (interactive)
-  (repl-send-last-exp "browser-repl" "bufferRelease(`%s`);"))
-
-(global-unset-key (kbd "C-c b"))
-(global-set-key (kbd "C-c b s") 'repl-browser-send-last-exp)
-
-(defun repl-send-line (&optional proc wrap)
+(defun repl-send-line (&optional proc)
   "send line"
   (interactive)
   (let* ((begin (save-excursion (beginning-of-line) (point)))
          (end (save-excursion (end-of-line) (point)))
-         (str (format  (or wrap repl-default-wrapper) (buffer-substring-no-properties begin end))))
-    ;;(highlight-region begin end)
+         (str (buffer-substring-no-properties begin end)))
+    (highlight-region begin end)
     (repl-send-to (or proc repl-default-proc) str)))
 
 (global-set-key (kbd "C-c c l") 'repl-send-line)
 
-(defun repl-send-region-or-paragraph (&optional proc)
+(defun repl-send-paragraph (&optional proc)
   "Send region if selected, otherwise send the current paragraph."
   (interactive)
     (let* ((start (progn (backward-paragraph) (point)))
            (end (progn (forward-paragraph) (point)))
            (str (buffer-substring-no-properties start end)))
-      ;;(highlight-region start end)
+      (highlight-region begin end)      
       (repl-send-to (or proc repl-default-proc) str)))
 
-(global-set-key (kbd "C-c c r") 'repl-send-region-or-paragraph)
+(global-set-key (kbd "C-c c e") 'repl-send-paragraph)
 
-(defun repl-send-buffer (&optional proc wrap)
+(defun repl-send-region (&option proc)
+  "Send region"
+  (interactive "r")
+  (highlight-region begin end)
+  (repl-send-to (or proc repl-default-proc) (buffer-substring-no-properties start end)))
+
+(global-set-key (kbd "C-c c r") 'repl-send-region)
+
+(defun repl-send-buffer (&optional proc)
   "send the whole buffer"
   (interactive)
   (highlight-region (point-min) (point-max))
-  (repl-send-to (or proc repl-default-proc) (format (or wrap repl-default-wrapper) (buffer-substring-no-properties (point-min) (point-max)))))
+  (repl-send-to (or proc repl-default-proc) (buffer-substring-no-properties (point-min) (point-max))))
 
 (global-set-key (kbd "C-c c b") 'repl-send-buffer)
 
-(defun repl-send-markdown-block (&optional proc wrap)
+(defun repl-send-markdown-block (&optional proc)
   "send current markdown code block, search block backwarnd and then forward"
   (interactive)
   (save-excursion
@@ -102,10 +93,20 @@ send specific command
       (let ((file-ref (or (progn (re-search-backward "```" starting-pos t) (match-string 1)) nil))
             (start-content (progn (goto-char starting-pos) (beginning-of-line) (forward-line 1) (point))))
         (highlight-region start-content end-pos)
-        (repl-send-to (or proc repl-default-proc) (format (or wrap repl-default-wrapper) (buffer-substring-no-properties start-content end-pos)))))))
+        (repl-send-to (or proc repl-default-proc) (buffer-substring-no-properties start-content end-pos))))))
+
 
 
 (global-set-key (kbd "C-c c m") 'repl-send-markdown-block)
+
+
+(defun repl-browser-send-last-exp ()
+  "send last expression to browser-repl proc"
+  (interactive)
+  (repl-send-last-exp "browser-repl"))
+
+(global-unset-key (kbd "C-c b"))
+(global-set-key (kbd "C-c b s") 'repl-browser-send-last-exp)
 
 ;; C-c c -> plain, (common l,p,r,b,s) -> into targeted process plain,
 
