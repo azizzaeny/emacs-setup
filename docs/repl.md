@@ -1,7 +1,54 @@
+
 send to repl/terminal, send into an incremental execution environment
 add send javascript, send plain, send wrap, send paragrap, send region and send buffer
 set wrap send plain, 
 send specific command
+
+
+control ansi process
+
+```elisp
+
+(defun create-ansi-proc ()
+  "create ansi process with name"  
+  (interactive)
+  (let ((name (read-string "proc name (default: ansi-term): " nil nil "ansi-term"))
+        (bin (read-string "bin (default: /bin/zsh): " nil nil "/bin/zsh")))
+    (if (get-buffer (format "*%s*" name))
+        (get-buffer-process (format "*%s*" name))
+      (get-buffer-process (ansi-term bin name)))))
+
+;; ansi-term
+(global-set-key (kbd "C-x p a") 'create-ansi-proc)
+
+;; rename buffer
+(global-set-key (kbd "C-x r b") 'rename-buffer)
+
+```
+create browser repl server
+
+```elisp
+
+(defun create-browser-repl ()
+  "create node.js browser repl and send evaluate content to repl"
+  (interactive)
+  (let ((current-buffer (current-buffer))
+        (port (read-string "port (default: 5050): " nil nil "5050"))
+        (bin (read-string "bin (default: /bin/zsh): " nil nil "/bin/zsh"))    
+        (repl-script (expand-file-name "~/.emacs.d/docs/browser-repl.js")))
+    (if (get-buffer "*browser-repl*")
+        (message "*browser-repl* already exists")
+      (let (proc (get-buffer-process (ansi-term bin "browser-repl")))
+        (comint-send-string proc (format "PORT=%s node %s\n" port repl-script))
+        (switch-to-buffer current-buffer)
+        (message "Browser repl created")))))
+
+;; todo: create with difference port
+
+(global-set-key (kbd "C-x p b") 'create-browser-repl)
+
+```
+
 
 ```elisp
 ;; prefix
@@ -41,7 +88,7 @@ send specific command
               (point)))
          (end (point))
          (str (buffer-substring-no-properties begin end)))
-    (highlight-region begin end)
+    ;;(highlight-region begin end)
     (repl-send-to (or proc repl-default-proc) str)))
 
 (global-set-key (kbd "C-c c s") 'repl-send-last-exp)
@@ -52,7 +99,7 @@ send specific command
   (let* ((begin (save-excursion (beginning-of-line) (point)))
          (end (save-excursion (end-of-line) (point)))
          (str (buffer-substring-no-properties begin end)))
-    (highlight-region begin end)
+    ;;(highlight-region begin end)
     (repl-send-to (or proc repl-default-proc) str)))
 
 (global-set-key (kbd "C-c c l") 'repl-send-line)
@@ -63,7 +110,7 @@ send specific command
     (let* ((start (progn (backward-paragraph) (point)))
            (end (progn (forward-paragraph) (point)))
            (str (buffer-substring-no-properties start end)))
-      (highlight-region begin end)      
+      ;;(highlight-region begin end)      
       (repl-send-to (or proc repl-default-proc) str)))
 
 (global-set-key (kbd "C-c c e") 'repl-send-paragraph)
@@ -71,7 +118,7 @@ send specific command
 (defun repl-send-region (&option proc)
   "Send region"
   (interactive "r")
-  (highlight-region begin end)
+  ;;(highlight-region begin end)
   (repl-send-to (or proc repl-default-proc) (buffer-substring-no-properties start end)))
 
 (global-set-key (kbd "C-c c r") 'repl-send-region)
@@ -79,7 +126,7 @@ send specific command
 (defun repl-send-buffer (&optional proc)
   "send the whole buffer"
   (interactive)
-  (highlight-region (point-min) (point-max))
+  ;;(highlight-region (point-min) (point-max))
   (repl-send-to (or proc repl-default-proc) (buffer-substring-no-properties (point-min) (point-max))))
 
 (global-set-key (kbd "C-c c b") 'repl-send-buffer)
@@ -92,21 +139,57 @@ send specific command
           (end-pos (progn (re-search-forward md-block-end (point-max) t) (match-beginning 0))))
       (let ((file-ref (or (progn (re-search-backward "```" starting-pos t) (match-string 1)) nil))
             (start-content (progn (goto-char starting-pos) (beginning-of-line) (forward-line 1) (point))))
-        (highlight-region start-content end-pos)
+        ;;(highlight-region start-content end-pos)
         (repl-send-to (or proc repl-default-proc) (buffer-substring-no-properties start-content end-pos))))))
-
-
 
 (global-set-key (kbd "C-c c m") 'repl-send-markdown-block)
 
+(global-unset-key (kbd "C-c b"))
 
 (defun repl-browser-send-last-exp ()
   "send last expression to browser-repl proc"
   (interactive)
   (repl-send-last-exp "browser-repl"))
 
-(global-unset-key (kbd "C-c b"))
 (global-set-key (kbd "C-c b s") 'repl-browser-send-last-exp)
+
+(defun repl-browser-send-line ()
+  "send browser line"
+  (interactive)
+  (repl-send-line "browser-repl"))
+
+(global-set-key (kbd "C-c b l") 'repl-browser-send-line)
+
+(defun repl-browser-send-buffer ()
+  "send browser buffer"
+  (interactive)
+  (repl-send-buffer "browser-repl"))
+
+(global-set-key (kbd "C-c b b") 'repl-browser-send-buffer)
+
+(defun repl-browser-send-paragraph ()
+  "send browser paragraph"
+  (interactive)
+  (repl-send-paragraph "browser-repl"))
+
+(global-set-key (kbd "C-c b e") 'repl-browser-send-paragraph)
+
+(defun repl-browser-send-region ()
+  "send browser region"
+  (interactive)
+  (repl-send-region "browser-repl"))
+
+(global-set-key (kbd "C-c b r") 'repl-browser-send-region)
+
+
+(defun repl-browser-send-markdown-block ()
+  "send browser markdown-block"
+  (interactive)
+  (repl-send-markdown-block "browser-repl"))
+
+(global-set-key (kbd "C-c b m") 'repl-repl-browser-send-markdown-block)
+
+
 
 ;; C-c c -> plain, (common l,p,r,b,s) -> into targeted process plain,
 
@@ -116,26 +199,6 @@ send specific command
 ;; C-c o-> end of line send cat  (l, e, r, b);
 ;; C-c w -> wrap, into single line ;;wrap manipulation, if browser
 ;; create if not exists, then eval, if exists just eval
-
-```
-
-control ansi process
-
-```elisp
-
-(defun create-ansi-proc ()
-  "create ansi process with name"
-  (interactive)
-  (let ((name (read-string "proc name: "))
-        (bin (read-string "bin: ")))
-    (if (get-buffer (format "*%s*" name))
-        (get-buffer-process (format "*%s*" name))
-      (get-buffer-process (ansi-term "/bin/zsh" name)))))
-
-;; ansi-term
-(global-unset-key (kbd "C-x a"))
-(global-set-key (kbd "C-x p a") 'create-ansi-proc)
-(global-set-key (kbd "C-x r b") 'rename-buffer)
 
 ```
 
@@ -193,29 +256,7 @@ repl nodejs
 
 (global-set-key (kbd "C-x p n") 'create-node-repl)
 ```
-create browser repl server
 
-```elisp
-
-(defun create-browser-repl ()
-  "create node.js browser repl and send evaluate content to repl"
-  (interactive)
-  (let ((current-buffer (current-buffer))
-        (port (read-string "port: 5050")))
-    (if (get-buffer "*browser-repl*")
-        (message "*browser-repl* already exists")
-      (let (proc (get-buffer-process (ansi-term "node" "browser-repl")))
-        (comint-send-string proc "var os = require('os');\nvar evaluate = (res)=> require('vm').runInContext(res, Object.assign(require('vm').createContext(global), {console, require, module, setTimeout, setInterval }));\n")
-        (comint-send-string proc "evaluate(fs.readFileSync(os.homedir()+'/.emacs.d/docs/browser-repl.js', 'utf8'));\n")
-        (switch-to-buffer current-buffer)
-        (message "Browser repl created")))))
-
-;; todo: create with difference port
-;; todo: we want to bufferRelease into the browser-repl
-
-(global-set-key (kbd "C-x p b") 'create-browser-repl)
-
-```
 experiment create send to repl
 
 ```lisp
