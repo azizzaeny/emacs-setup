@@ -19,14 +19,52 @@ var cors = (origin="*", method='GET, POST, PUT, DELETE, OPTIONS', headers='Conte
 });
 
 var bufferContent = bufferContent || [];
+
 var bufferRelease = (txt) => {
   bufferContent.forEach((res) => (res.writeHead(200, cors()), res.end(txt)));
   bufferContent = [];
   return true;
 }
+
 var os = require('os');
+
 var mainHandler = (req, res) => {
   if(req.pathname === '/client.js') return { status: 200, body: readFile(os.homedir()+'/.emacs.d/docs/browser-client.js'), headers: {'Content-Type': 'text/javascript'}};
   return (bufferContent.push(res), null);
 }
+
 var server = httpServer({ port: 5050, handler: (req, res)=> mainHandler(req, res)});
+
+var repl = require('repl');
+var vm = require('vm');
+
+var  myEval = (cmd, context, filename, callback) => {
+  cmd = cmd.replace(/;+$/, '');
+  if (cmd.trim()) {
+    try {
+      // Try to compile the command
+      new vm.Script(cmd);
+      // If compilation succeeds, it's a complete expression
+      bufferRelease(cmd);
+      callback(null);
+    } catch (e) {
+      if (e instanceof SyntaxError) {
+        // If it's a syntax error, it might be an incomplete input
+        callback(new repl.Recoverable(e));
+      } else {
+        // For other errors, call foo() with the input and return the error
+        bufferRelease(cmd);        
+        callback(e);
+      }
+    }
+  } else {
+    callback(null);
+  }
+}
+
+// Create a custom REPL server
+var replServer = repl.start({
+  prompt: '> ',
+  eval: myEval,
+  ignoreUndefined: true
+});

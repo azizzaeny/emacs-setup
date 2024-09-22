@@ -33,10 +33,6 @@ send specific command
     (comint-send-string proc "\n")  
     (message "repl sent .")))
 
-(defun escape-backtick (str)
-  "Replace all occurrences of backtick (`) with escaped form (\\`)"
-  (replace-regexp-in-string "`" "\\\\`" str))
-
 ;; main functions
 (defun repl-send-last-exp (&optional proc wrap)
   "send last expression"
@@ -46,8 +42,8 @@ send specific command
               (move-beginning-of-line nil)
               (point)))
          (end (point))
-         (str (format (or wrap repl-default-wrapper) (escape-backtick (buffer-substring-no-properties begin end)))))
-    ;;(highlight-region begin end)
+         (str (format (or wrap repl-default-wrapper) (buffer-substring-no-properties begin end))))
+    (highlight-region begin end)
     (repl-send-to (or proc repl-default-proc) str)))
 
 (global-set-key (kbd "C-c c s") 'repl-send-last-exp)
@@ -81,16 +77,11 @@ send specific command
 (defun repl-send-region-or-paragraph (&optional proc)
   "Send region if selected, otherwise send the current paragraph."
   (interactive)
-  (if (use-region-p)
-      (let ((start (region-beginning))
-            (end (region-end))
-            (str (buffer-substring-no-properties start end)))
-        (repl-send-to (or proc repl-default-proc) str))
     (let* ((start (progn (backward-paragraph) (point)))
            (end (progn (forward-paragraph) (point)))
            (str (buffer-substring-no-properties start end)))
       ;;(highlight-region start end)
-      (repl-send-to (or proc repl-default-proc) str))))
+      (repl-send-to (or proc repl-default-proc) str)))
 
 (global-set-key (kbd "C-c c r") 'repl-send-region-or-paragraph)
 
@@ -282,9 +273,6 @@ experiment create send to repl
 (defun escape-backtick (str)
   "Replace all occurrences of backtick (`) with escaped form (\\`)"
   (replace-regexp-in-string "`" "\\\\`" str))
-
-(defun escape-quote (str))
-
 
 (defun repl-send-buffer-escape ()
   "send the whole buffer escape backtick"
