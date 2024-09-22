@@ -33,6 +33,10 @@ send specific command
     (comint-send-string proc "\n")  
     (message "repl sent .")))
 
+(defun escape-backtick (str)
+  "Replace all occurrences of backtick (`) with escaped form (\\`)"
+  (replace-regexp-in-string "`" "\\\\`" str))
+
 ;; main functions
 (defun repl-send-last-exp (&optional proc wrap)
   "send last expression"
@@ -42,8 +46,8 @@ send specific command
               (move-beginning-of-line nil)
               (point)))
          (end (point))
-         (str (format (or wrap repl-default-wrapper) (buffer-substring-no-properties begin end))))
-    (highlight-region begin end)
+         (str (format (or wrap repl-default-wrapper) (escape-backtick (buffer-substring-no-properties begin end)))))
+    ;;(highlight-region begin end)
     (repl-send-to (or proc repl-default-proc) str)))
 
 (global-set-key (kbd "C-c c s") 'repl-send-last-exp)
@@ -58,8 +62,9 @@ send specific command
 (defun repl-browser-send-last-exp ()
   "send last expression to browser proc"
   (interactive)
-  (repl-send-last-exp "browser" "bufferRelease(\"%s\");"))
+  (repl-send-last-exp "browser-repl" "bufferRelease(`%s`);"))
 
+(global-unset-key (kbd "C-c b"))
 (global-set-key (kbd "C-c b s") 'repl-browser-send-last-exp)
 
 (defun repl-send-line (&optional proc wrap)
@@ -68,23 +73,23 @@ send specific command
   (let* ((begin (save-excursion (beginning-of-line) (point)))
          (end (save-excursion (end-of-line) (point)))
          (str (format  (or wrap repl-default-wrapper) (buffer-substring-no-properties begin end))))
-    (highlight-region begin end)
+    ;;(highlight-region begin end)
     (repl-send-to (or proc repl-default-proc) str)))
 
 (global-set-key (kbd "C-c c l") 'repl-send-line)
 
-(defun repl-send-region-or-paragraph (&optional proc wrap)
+(defun repl-send-region-or-paragraph (&optional proc)
   "Send region if selected, otherwise send the current paragraph."
   (interactive)
   (if (use-region-p)
       (let ((start (region-beginning))
             (end (region-end))
-            (str (format (or wrap repl-default-wrapper) (buffer-substring-no-properties start end))))
+            (str (buffer-substring-no-properties start end)))
         (repl-send-to (or proc repl-default-proc) str))
     (let* ((start (progn (backward-paragraph) (point)))
            (end (progn (forward-paragraph) (point)))
-           (str (format (or wrap repl-default-wrapper) (buffer-substring-no-properties start end))))
-      (highlight-region start end)
+           (str (buffer-substring-no-properties start end)))
+      ;;(highlight-region start end)
       (repl-send-to (or proc repl-default-proc) str))))
 
 (global-set-key (kbd "C-c c r") 'repl-send-region-or-paragraph)
@@ -278,6 +283,9 @@ experiment create send to repl
   "Replace all occurrences of backtick (`) with escaped form (\\`)"
   (replace-regexp-in-string "`" "\\\\`" str))
 
+(defun escape-quote (str))
+
+
 (defun repl-send-buffer-escape ()
   "send the whole buffer escape backtick"
   (interactive)
@@ -462,16 +470,16 @@ keybind repl
 ;; (global-set-key (kbd "C-c c d") 'repl-disconnect-socket);
 ;; (global-set-key (kbd "C-c c s") 'repl-start-ansi)
 
-(global-set-key (kbd "C-c c w") 'repl-set-wrap)
-(global-set-key (kbd "C-c c l") 'repl-send-line)
-(global-set-key (kbd "C-c c r") 'repl-send-region)
-(global-set-key (kbd "C-c c o") 'repl-send-eol-output-region)
-(global-set-key (kbd "C-c c b") 'repl-send-buffer)
-(global-set-key (kbd "C-c c g") 'repl-send-buffer-escape)
-(global-set-key (kbd "C-c c e") 'repl-send-paragraph)
-(global-set-key (kbd "C-c c m") 'repl-send-md-block)
-(global-set-key (kbd "C-c c c") 'repl-send-client-region);
-(global-set-key (kbd "C-c c k") 'repl-send-reload);
-(global-set-key (kbd "C-c c j") 'repl-send-main);
+;; (global-set-key (kbd "C-c c w") 'repl-set-wrap)
+;; (global-set-key (kbd "C-c c l") 'repl-send-line)
+;; (global-set-key (kbd "C-c c r") 'repl-send-region)
+;; (global-set-key (kbd "C-c c o") 'repl-send-eol-output-region)
+;; (global-set-key (kbd "C-c c b") 'repl-send-buffer)
+;; (global-set-key (kbd "C-c c g") 'repl-send-buffer-escape)
+;; (global-set-key (kbd "C-c c e") 'repl-send-paragraph)
+;; (global-set-key (kbd "C-c c m") 'repl-send-md-block)
+;; (global-set-key (kbd "C-c c c") 'repl-send-client-region);
+;; (global-set-key (kbd "C-c c k") 'repl-send-reload);
+;; (global-set-key (kbd "C-c c j") 'repl-send-main);
 
 ```
