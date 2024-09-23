@@ -65,6 +65,8 @@ create browser repl server
   "set second process for evaluation"
   (interactive)
   (setq repl-second-roc (read-string "proc (default: browser-repl): " nil nil "browser-repl")))
+;; todo: assign key
+
 
 (defface my-highlight-face
   '((t (:background "##f0f8ff"))) ; Customize background color here
@@ -480,13 +482,43 @@ define and invoke the `hello` function."
 
 (global-set-key (kbd "C-c s n") 'start-or-switch-to-node-repl-with-hello)
 
+(defun repl-send-markdown-block (&optional proc)
+  "Send current markdown code block to a REPL process based on markdown parameter.
+Search for block backward and forward, extract language and proc if available."
+  (interactive)
+  (save-excursion
+    ;; Find the beginning of the code block (``` ...)
+    (let ((starting-pos (progn (re-search-backward "^```" (point-min) t) (match-end 0)))
+          (end-pos (progn (re-search-forward "^```" (point-max) t) (match-beginning 0)))
+          lang proc-param)
+      
+      ;; Extract the language and optional proc parameter from the block start line
+      (save-excursion
+        (goto-char starting-pos)
+        (when (looking-at "\\([a-zA-Z]+\\)\\(?:[ \t]+proc=\\([a-zA-Z0-9]+\\)\\)?")
+          (setq lang (match-string 1))        ;; Capture language, e.g., js
+          (setq proc-param (match-string 2)))) ;; Capture proc, e.g., node
+
+      ;; Adjust starting position to skip the opening ``` line
+      (let ((start-content (progn (goto-char starting-pos) (forward-line 1) (point))))
+        
+        ;; Highlight the code block
+        (highlight-region start-content end-pos)
+        
+        ;; Send the code block to the appropriate process (either proc-param or default)
+        (repl-send-to (or proc-param (or proc repl-default-proc))
+                      (buffer-substring-no-properties start-content end-pos))))))
+
+;; Example key binding
+(global-set-key (kbd "C-c c b") 'repl-send-markdown-block)
+
 ```
 
 keybind repl
 
-```elisp
+```lisp
 ;; the repl
-(global-set-key (kbd "C-c c p") 'repl-set-process)
+;; (global-set-key (kbd "C-c c p") 'repl-set-process)
 
 ;; (global-set-key (kbd "C-c c c") 'repl-connect-socket);
 ;; (global-set-key (kbd "C-c c d") 'repl-disconnect-socket);
