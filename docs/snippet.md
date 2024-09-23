@@ -235,3 +235,8 @@ Module.prototype.require = function patchedRequire(modulePath) {
 ```js name=loadRepl
 var loadRepl = url => fetch(url).then(res => res.text()).then(res => (eval(res), setTimeout(()=>loadRepl(url), 200)));
 ```
+
+### html string
+```js name=html
+var htm = (strings, ...values) => String.raw({ raw: strings }, ...values);
+```

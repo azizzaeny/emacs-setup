@@ -222,6 +222,11 @@ key bind
 (global-set-key (kbd "C-x <right>") 'windmove-right)
 (global-set-key (kbd "C-x C-<left>") 'windmove-left)
 (global-set-key (kbd "C-x C-<right>") 'windmove-right)
+;; moving expression
+(global-set-key (kbd "C-f") 'forward-sexp)
+(global-set-key (kbd "C-b") 'backward-sexp)
+;; deleting
+(global-set-key (kbd "C-d") 'delete-horizontal-space)   ;
 
 ;; markdown
 ;; (global-set-key (kbd "C-c f") 'polymode-next-chunk)
@@ -250,13 +255,11 @@ key bind
 (global-set-key (kbd "C-x g f") 'iy-go-to-char)
 (global-set-key (kbd "C-x g b") 'iy-go-to-char-backward)
 
-;; moving expression
-(global-set-key (kbd "C-f") 'forward-sexp)
-(global-set-key (kbd "C-b") 'backward-sexp)
-
 ;; expand region
 ;; (global-set-key (kbd "C-c e") 'er/expand-region)
 
 ;; restclient
 (global-set-key (kbd "C-x r s") 'restclient-http-send-current-stay-in-window)
+
+
 ```

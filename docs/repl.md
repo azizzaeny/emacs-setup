@@ -1,9 +1,7 @@
-
 send to repl/terminal, send into an incremental execution environment
 add send javascript, send plain, send wrap, send paragrap, send region and send buffer
 set wrap send plain, 
 send specific command
-
 
 control ansi process
 
@@ -184,9 +182,10 @@ create browser repl server
 (defun repl-send-mark () ;; todo: make it able to send to the second process
   "send marked interctive"
   (interactive)
-  (repl-send-to repl-default-proc  repl-mark))
+  (repl-send-to repl-default-proc repl-mark))
 
-;; todo: send buffer or region
+;; todo: send buffer or region ;;;
+
 (global-set-key (kbd "C-c c 1") 'repl-set-default-proc)
 (global-set-key (kbd "C-c c 2") 'repl-set-second-proc)
 (global-set-key (kbd "C-c c n") 'repl-set-mark)
@@ -208,7 +207,6 @@ create browser repl server
 (global-set-key (kbd "C-c b m") 'repl-b-send-markdown-block)
 
 ;; todo: if possible we can create something similiar like restclient with the same approach
-
 ```
 
 git helper commit ansi term
@@ -224,8 +222,6 @@ git helper commit ansi term
       (get-buffer-process (ansi-term "/bin/zsh" "git"))
       (switch-to-buffer current-buffer))))
 
-(global-set-key (kbd "C-x p g") 'create-git-proc)
-
 (defun git-commit ()
   "helper to quick commit C-c g m"
   (interactive)
@@ -236,8 +232,6 @@ git helper commit ansi term
       (comint-send-string proc (format "git commit -m \"%s\"\n" msg))
       (message "Git add and commit initiated."))))
 
-(global-set-key (kbd "C-c g c") 'git-commit)
-
 (defun git-push ()
   "helper to quick push C-c g p"
   (interactive)
@@ -246,16 +240,15 @@ git helper commit ansi term
     (message "Git push initiated.")))
 
 (global-set-key (kbd "C-c g p") 'git-push)
+(global-set-key (kbd "C-c g c") 'git-commit)
+(global-set-key (kbd "C-x p g") 'create-git-proc)
+
 ;; todo: top level project dir
 ;; git helper to quick commit
-
-
-
 ```
 
 repl nodejs
 
-```elisp
 (defun create-node-repl ()
   "create node.js repl"
   (interactive)
@@ -264,11 +257,6 @@ repl nodejs
     (get-buffer-process (ansi-term "node" "Node"))))
 
 (global-set-key (kbd "C-x p n") 'create-node-repl)
-```
-
-experiment create send to repl
-
-```lisp
 
 ;; repl
 (defvar repl-process "*ansi-term*") ;; main repl process window
@@ -344,17 +332,17 @@ experiment create send to repl
       ;; (repl-send-content (thing-at-point 'line t))
       )))
 
-(defun repl-send-paragraph ()
-  "Send the current paragraph to the REPL."
-  (interactive)
-  (save-excursion
-    (let ((start (progn (backward-paragraph) (point)))
-          (end (progn (forward-paragraph) (point))))
-      (highlight-region start end)
-      (message "send e: %s %s" start end)      
-      (repl-send-content (buffer-substring-no-properties start end))
-      ;;(repl-send-content (thing-at-point 'paragraph t))
-      )))
+# (defun repl-send-paragraph ()
+#   "Send the current paragraph to the REPL."
+#   (interactive)
+#   (save-excursion
+#     (let ((start (progn (backward-paragraph) (point)))
+#           (end (progn (forward-paragraph) (point))))
+#       (highlight-region start end)
+#       (message "send e: %s %s" start end)      
+#       (repl-send-content (buffer-substring-no-properties start end))
+#       ;;(repl-send-content (thing-at-point 'paragraph t))
+#       )))
 
 
 (defun repl-send-region (start end)
@@ -363,19 +351,6 @@ experiment create send to repl
   (highlight-region start end)
   (message "send r: %s %s" start end)  
   (repl-send-content (buffer-substring-no-properties start end)))
-
-(defun repl-send-md-block ()
-  (interactive)
-  (save-excursion
-    (let ((starting-pos (progn (re-search-backward "^```" (point-min) t) (match-end 0)))    
-          (end-pos (progn (re-search-forward md-block-end (point-max) t) (match-beginning 0))))
-      (let ((file-ref (or (progn (re-search-backward "```" starting-pos t) (match-string 1)) nil))
-            (start-content (progn (goto-char starting-pos) (beginning-of-line) (forward-line 1) (point))))
-        (highlight-region start-content end-pos)
-        (message "send m: %s %s" start-content end-pos)  
-        (repl-send-content (buffer-substring-no-properties start-content end-pos))
-        )
-      )))
 
 (defun repl-send-eol ()
   "utility tools to make it easier for us to create files for this entire buffer"
@@ -430,12 +405,6 @@ experiment create send to repl
               (point)))
          (str (buffer-substring-no-properties b e)))
     
-```
-
-experiment test creating node.js
-
-```lisp
-
 (defun start-node-repl ()
   "Start a Node.js REPL in `ansi-term`."
   (interactive)
@@ -497,58 +466,6 @@ define and invoke the `hello` function."
 
 (global-set-key (kbd "C-c s n") 'start-or-switch-to-node-repl-with-hello)
 
-(defun repl-send-markdown-block (&optional proc)
-  "Send current markdown code block to a REPL process based on markdown parameter.
-Search for block backward and forward, extract language and proc if available."
-  (interactive)
-  (save-excursion
-    ;; Find the beginning of the code block (``` ...)
-    (let ((starting-pos (progn (re-search-backward "^```" (point-min) t) (match-end 0)))
-          (end-pos (progn (re-search-forward "^```" (point-max) t) (match-beginning 0)))
-          lang proc-param)
-      
-      ;; Extract the language and optional proc parameter from the block start line
-      (save-excursion
-        (goto-char starting-pos)
-        (when (looking-at "\\([a-zA-Z]+\\)\\(?:[ \t]+proc=\\([a-zA-Z0-9]+\\)\\)?")
-          (setq lang (match-string 1))        ;; Capture language, e.g., js
-          (setq proc-param (match-string 2)))) ;; Capture proc, e.g., node
-
-      ;; Adjust starting position to skip the opening ``` line
-      (let ((start-content (progn (goto-char starting-pos) (forward-line 1) (point))))
-        
-        ;; Highlight the code block
-        (highlight-region start-content end-pos)
-        
-        ;; Send the code block to the appropriate process (either proc-param or default)
-        (repl-send-to (or proc-param (or proc repl-default-proc))
-                      (buffer-substring-no-properties start-content end-pos))))))
-
 ;; Example key binding
-(global-set-key (kbd "C-c c b") 'repl-send-markdown-block)
+;; (global-set-key (kbd "C-c c b") 'repl-send-markdown-block)
 
-```
-
-keybind repl
-
-```lisp
-;; the repl
-;; (global-set-key (kbd "C-c c p") 'repl-set-process)
-
-;; (global-set-key (kbd "C-c c c") 'repl-connect-socket);
-;; (global-set-key (kbd "C-c c d") 'repl-disconnect-socket);
-;; (global-set-key (kbd "C-c c s") 'repl-start-ansi)
-
-;; (global-set-key (kbd "C-c c w") 'repl-set-wrap)
-;; (global-set-key (kbd "C-c c l") 'repl-send-line)
-;; (global-set-key (kbd "C-c c r") 'repl-send-region)
-;; (global-set-key (kbd "C-c c o") 'repl-send-eol-output-region)
-;; (global-set-key (kbd "C-c c b") 'repl-send-buffer)
-;; (global-set-key (kbd "C-c c g") 'repl-send-buffer-escape)
-;; (global-set-key (kbd "C-c c e") 'repl-send-paragraph)
-;; (global-set-key (kbd "C-c c m") 'repl-send-md-block)
-;; (global-set-key (kbd "C-c c c") 'repl-send-client-region);
-;; (global-set-key (kbd "C-c c k") 'repl-send-reload);
-;; (global-set-key (kbd "C-c c j") 'repl-send-main);
-
-```
