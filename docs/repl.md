@@ -128,7 +128,7 @@ create browser repl server
   ;;(highlight-region begin end)
   (repl-send-to (or proc repl-default-proc) (buffer-substring-no-properties start end)))
 
-
+;; todo: sent buffer or region
 (defun repl-send-buffer (&optional proc)
   "send the whole buffer"
   (interactive)
@@ -158,6 +158,7 @@ create browser repl server
   (interactive)
   (repl-send-line repl-second-proc))
 
+;; todo: buffer is sent or region selected
 (defun repl-b-send-buffer ()
   "send buffer to secondary proc"
   (interactive)
@@ -168,43 +169,40 @@ create browser repl server
   (interactive)
   (repl-send-paragraph repl-second-proc))
 
-(defun repl-b-send-region ()
-  "send region to secondary proc"
-  (interactive)
-  (repl-send-region repl-second-proc))
-
 (defun repl-b-send-markdown-block ()
   "send markdown-block to secondary proc"
   (interactive)
   (repl-send-markdown-block repl-second-proc))
 
 
-(setq repl-mark "reload()"); ;; default mark
+(setq repl-mark "reload()") ;; default mark
 
 (defun repl-set-mark ()
   (interactive)
   (setq repl-mark (read-string "set repl-mark: ")))
 
-(defun repl-send-mark ()
+(defun repl-send-mark () ;; todo: make it able to send to the second process
   "send marked interctive"
   (interactive)
-  (repl-send-to proc repl-mark))
+  (repl-send-to repl-default-proc  repl-mark))
 
+;; todo: send buffer or region
 (global-set-key (kbd "C-c c 1") 'repl-set-default-proc)
 (global-set-key (kbd "C-c c 2") 'repl-set-second-proc)
+(global-set-key (kbd "C-c c n") 'repl-set-mark)
 
+(global-set-key (kbd "C-c c k") 'repl-send-mark)
 (global-set-key (kbd "C-c c s") 'repl-send-last-exp)
 (global-set-key (kbd "C-c c l") 'repl-send-line)
 (global-set-key (kbd "C-c c e") 'repl-send-paragraph)
-(global-set-key (kbd "C-c c r") 'repl-send-region)
 (global-set-key (kbd "C-c c b") 'repl-send-buffer)
+
 (global-set-key (kbd "C-c c m") 'repl-send-markdown-block)
 (global-unset-key (kbd "C-c b"))
 (global-set-key (kbd "C-c b s") 'repl-b-send-last-exp)
 (global-set-key (kbd "C-c b l") 'repl-b-send-line)
 (global-set-key (kbd "C-c b b") 'repl-b-send-buffer)
 (global-set-key (kbd "C-c b e") 'repl-b-send-paragraph)
-(global-set-key (kbd "C-c b r") 'repl-b-send-region)
 (global-set-key (kbd "C-c b m") 'repl-b-send-markdown-block)
 
 ```
