@@ -196,14 +196,18 @@ create browser repl server
 (global-set-key (kbd "C-c c l") 'repl-send-line)
 (global-set-key (kbd "C-c c e") 'repl-send-paragraph)
 (global-set-key (kbd "C-c c b") 'repl-send-buffer)
-
 (global-set-key (kbd "C-c c m") 'repl-send-markdown-block)
+
+;; if possilbe dont use secondary process just use one process
+
 (global-unset-key (kbd "C-c b"))
 (global-set-key (kbd "C-c b s") 'repl-b-send-last-exp)
 (global-set-key (kbd "C-c b l") 'repl-b-send-line)
 (global-set-key (kbd "C-c b b") 'repl-b-send-buffer)
 (global-set-key (kbd "C-c b e") 'repl-b-send-paragraph)
 (global-set-key (kbd "C-c b m") 'repl-b-send-markdown-block)
+
+;; todo: if possible we can create something similiar like restclient with the same approach
 
 ```
 
