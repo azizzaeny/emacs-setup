@@ -180,6 +180,17 @@ create browser repl server
   (repl-send-markdown-block repl-second-proc))
 
 
+(setq repl-mark "reload()"); ;; default mark
+
+(defun repl-set-mark ()
+  (interactive)
+  (setq repl-mark (read-string "set repl-mark: ")))
+
+(defun repl-send-mark ()
+  "send marked interctive"
+  (interactive)
+  (repl-send-to proc repl-mark))
+
 (global-set-key (kbd "C-c c s") 'repl-send-last-exp)
 (global-set-key (kbd "C-c c l") 'repl-send-line)
 (global-set-key (kbd "C-c c e") 'repl-send-paragraph)
