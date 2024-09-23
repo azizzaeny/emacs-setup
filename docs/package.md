@@ -16,7 +16,6 @@ refresh package contents
     clojure-mode
     counsel
     ivy
-    auto-complete
     python-mode
     js2-mode
     php-mode
@@ -39,6 +38,7 @@ refresh package contents
     json-mode
     yaml-mode
     restclient
+    company
     )
   )
 ```
@@ -67,6 +67,7 @@ configure the package
 ;; helm
 ;; find-file-in-project
 ;; page-break-lines
+;; auto-complete
 
 ```elisp
 (defun my-packages-installed-p ()

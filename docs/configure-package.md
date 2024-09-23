@@ -18,7 +18,26 @@ reloading markdown
 (global-set-key (kbd "C-x r m") 'reload-markdown)
 ```
 
-isarch
+company 
+
+```elisp
+(require 'company)
+(global-company-mode)
+(setq company-idle-delay
+      (lambda () (if (company-in-string-or-comment) nil 0.1)))
+
+(setq company-global-modes '(not erc-mode message-mode eshell-mode))
+(setq company-minimum-prefix-length 2)
+(setq company-tooltip-align-annotations t)
+(setq company-tooltip-annotation-padding 1)
+(setq company-tooltip-limit 4)
+(setq company-format-margin-function 'company-text-icons-margin)
+(company-preview-frontend t)
+(company-preview-common-frontend t)
+
+
+```
+isearch
 
 ```elisp
 
@@ -46,7 +65,7 @@ isarch
         (progn
           (isearch-mode t)
           (isearch-yank-string word))
-      (message "No word at point"))))
+      (isearch-forward))))
 
 ```
 dired
@@ -193,6 +212,11 @@ web-mode
 (setq web-mode-enable-current-element-highlight t)
 (setq web-mode-enable-current-column-highlight t)
 
+(global-set-key (kbd "C-x w") 'web-mode)
+
+;; (require 'company)
+;; (ac-config-default)
+
 ```
 
 delete word
@@ -245,6 +269,13 @@ delete word
   (delete-horizontal-space)
   (insert " "))
 
+(defun move-line-down ()
+  "Move the current line down by one line."
+  (interactive)
+  (forward-line 1)
+  (transpose-lines 1)
+  (forward-line -1))
+
 ```
 key bind
 
@@ -272,7 +303,9 @@ key bind
 ;; (global-set-key (kbd "C-s") 'swiper)
 (global-set-key (kbd "C-x r r") 'replace-string)
 (global-set-key (kbd "C-r") 'isearch-backward)
-(global-set-key (kbd "C-s") 'isearch-forward)
+
+;;(global-set-key (kbd "C-s") 'isearch-forward)
+(global-set-key (kbd "C-s") 'isearch-current-word)
 (global-set-key (kbd "M-s") 'counsel-grep-or-swiper)
 (global-set-key (kbd "M-x") 'counsel-M-x)
 (global-set-key (kbd "C-x b") 'ido-switch-buffer)
@@ -292,10 +325,13 @@ key bind
 (global-set-key (kbd "C-f") 'forward-sexp)
 (global-set-key (kbd "C-b") 'backward-sexp)
 ;; deleting
+(global-unset-key (kbd "C-d"));
 (global-set-key (kbd "C-d d") 'delete-horizontal-space)      ;
 (global-set-key (kbd "C-d f") 'delete-block-forward)
 (global-set-key (kbd "C-d b") 'delete-block-backward)
 (global-set-key (kbd "C-d l") 'kill-whole-line)
+(global-set-key (kbd "C-d <up>") 'transpose-lines)
+(global-set-key (kbd "C-d <down>") 'move-line-down)
 (global-set-key (kbd "C-d j") 'join-line)
 
 ;; markdown
