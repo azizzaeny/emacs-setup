@@ -59,14 +59,13 @@ create browser repl server
 (defun repl-set-default-proc ()
   "set default process for evaluation"
   (interactive)
-  (setq repl-default-roc (read-string "proc (default: ansi-term): " nil nil "ansi-term")))
+  (setq repl-default-roc (read-string "set default proc (default: ansi-term): " nil nil "ansi-term")))
 
 (defun repl-set-second-proc ()
   "set second process for evaluation"
   (interactive)
-  (setq repl-second-roc (read-string "proc (default: browser-repl): " nil nil "browser-repl")))
+  (setq repl-second-roc (read-string "set second proc (default: browser-repl): " nil nil "browser-repl")))
 ;; todo: assign key
-
 
 (defface my-highlight-face
   '((t (:background "##f0f8ff"))) ; Customize background color here
@@ -190,6 +189,9 @@ create browser repl server
   "send marked interctive"
   (interactive)
   (repl-send-to proc repl-mark))
+
+(global-set-key (kbd "C-c c 1") 'repl-set-default-proc)
+(global-set-key (kbd "C-c c 2") 'repl-set-second-proc)
 
 (global-set-key (kbd "C-c c s") 'repl-send-last-exp)
 (global-set-key (kbd "C-c c l") 'repl-send-line)
