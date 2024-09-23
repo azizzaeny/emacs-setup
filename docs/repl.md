@@ -54,6 +54,17 @@ create browser repl server
 ;; prefix
 
 (setq repl-default-proc "ansi-term")
+(setq repl-second-proc "browser-repl") ;; we can sent to secondary using b, c is primary
+
+(defun repl-set-default-proc ()
+  "set default process for evaluation"
+  (interactive)
+  (setq repl-default-roc (read-string "proc (default: ansi-term): " nil nil "ansi-term")))
+
+(defun repl-set-second-proc ()
+  "set second process for evaluation"
+  (interactive)
+  (setq repl-second-roc (read-string "proc (default: browser-repl): " nil nil "browser-repl")))
 
 (defface my-highlight-face
   '((t (:background "##f0f8ff"))) ; Customize background color here
@@ -91,8 +102,6 @@ create browser repl server
     ;;(highlight-region begin end)
     (repl-send-to (or proc repl-default-proc) str)))
 
-(global-set-key (kbd "C-c c s") 'repl-send-last-exp)
-
 (defun repl-send-line (&optional proc)
   "send line"
   (interactive)
@@ -101,8 +110,6 @@ create browser repl server
          (str (buffer-substring-no-properties begin end)))
     ;;(highlight-region begin end)
     (repl-send-to (or proc repl-default-proc) str)))
-
-(global-set-key (kbd "C-c c l") 'repl-send-line)
 
 (defun repl-send-paragraph (&optional proc)
   "Send region if selected, otherwise send the current paragraph."
@@ -113,7 +120,6 @@ create browser repl server
       ;;(highlight-region begin end)      
       (repl-send-to (or proc repl-default-proc) str)))
 
-(global-set-key (kbd "C-c c e") 'repl-send-paragraph)
 
 (defun repl-send-region (&option proc)
   "Send region"
@@ -121,15 +127,12 @@ create browser repl server
   ;;(highlight-region begin end)
   (repl-send-to (or proc repl-default-proc) (buffer-substring-no-properties start end)))
 
-(global-set-key (kbd "C-c c r") 'repl-send-region)
 
 (defun repl-send-buffer (&optional proc)
   "send the whole buffer"
   (interactive)
   ;;(highlight-region (point-min) (point-max))
   (repl-send-to (or proc repl-default-proc) (buffer-substring-no-properties (point-min) (point-max))))
-
-(global-set-key (kbd "C-c c b") 'repl-send-buffer)
 
 (defun repl-send-markdown-block (&optional proc)
   "send current markdown code block, search block backwarnd and then forward"
@@ -142,63 +145,52 @@ create browser repl server
         ;;(highlight-region start-content end-pos)
         (repl-send-to (or proc repl-default-proc) (buffer-substring-no-properties start-content end-pos))))))
 
+;; TODO: send markdown block using defined proc in the code blocks it selfs
+
+(defun repl-b-send-last-exp ()
+  "send last expression to secondary proc"
+  (interactive)
+  (repl-send-last-exp repl-second-proc))
+
+(defun repl-b-send-line ()
+  "send line to secondary proc"
+  (interactive)
+  (repl-send-line repl-second-proc))
+
+(defun repl-b-send-buffer ()
+  "send buffer to secondary proc"
+  (interactive)
+  (repl-send-buffer repl-second-proc))
+
+(defun repl-b-send-paragraph ()
+  "send paragraph to secondary proc"
+  (interactive)
+  (repl-send-paragraph repl-second-proc))
+
+(defun repl-b-send-region ()
+  "send region to secondary proc"
+  (interactive)
+  (repl-send-region repl-second-proc))
+
+(defun repl-b-send-markdown-block ()
+  "send markdown-block to secondary proc"
+  (interactive)
+  (repl-send-markdown-block repl-second-proc))
+
+
+(global-set-key (kbd "C-c c s") 'repl-send-last-exp)
+(global-set-key (kbd "C-c c l") 'repl-send-line)
+(global-set-key (kbd "C-c c e") 'repl-send-paragraph)
+(global-set-key (kbd "C-c c r") 'repl-send-region)
+(global-set-key (kbd "C-c c b") 'repl-send-buffer)
 (global-set-key (kbd "C-c c m") 'repl-send-markdown-block)
-
 (global-unset-key (kbd "C-c b"))
-
-(defun repl-browser-send-last-exp ()
-  "send last expression to browser-repl proc"
-  (interactive)
-  (repl-send-last-exp "browser-repl"))
-
-(global-set-key (kbd "C-c b s") 'repl-browser-send-last-exp)
-
-(defun repl-browser-send-line ()
-  "send browser line"
-  (interactive)
-  (repl-send-line "browser-repl"))
-
-(global-set-key (kbd "C-c b l") 'repl-browser-send-line)
-
-(defun repl-browser-send-buffer ()
-  "send browser buffer"
-  (interactive)
-  (repl-send-buffer "browser-repl"))
-
-(global-set-key (kbd "C-c b b") 'repl-browser-send-buffer)
-
-(defun repl-browser-send-paragraph ()
-  "send browser paragraph"
-  (interactive)
-  (repl-send-paragraph "browser-repl"))
-
-(global-set-key (kbd "C-c b e") 'repl-browser-send-paragraph)
-
-(defun repl-browser-send-region ()
-  "send browser region"
-  (interactive)
-  (repl-send-region "browser-repl"))
-
-(global-set-key (kbd "C-c b r") 'repl-browser-send-region)
-
-
-(defun repl-browser-send-markdown-block ()
-  "send browser markdown-block"
-  (interactive)
-  (repl-send-markdown-block "browser-repl"))
-
-(global-set-key (kbd "C-c b m") 'repl-repl-browser-send-markdown-block)
-
-
-
-;; C-c c -> plain, (common l,p,r,b,s) -> into targeted process plain,
-
-;; C-c n -> nodejs javascript (common l, e, r, b)
-;; C-c m -> send markdown targeted environemnt if exist, (m, l, e, r, b)
-;; C-c b-> browser javascript (using wraped)
-;; C-c o-> end of line send cat  (l, e, r, b);
-;; C-c w -> wrap, into single line ;;wrap manipulation, if browser
-;; create if not exists, then eval, if exists just eval
+(global-set-key (kbd "C-c b s") 'repl-b-send-last-exp)
+(global-set-key (kbd "C-c b l") 'repl-b-send-line)
+(global-set-key (kbd "C-c b b") 'repl-b-send-buffer)
+(global-set-key (kbd "C-c b e") 'repl-b-send-paragraph)
+(global-set-key (kbd "C-c b r") 'repl-b-send-region)
+(global-set-key (kbd "C-c b m") 'repl-b-send-markdown-block)
 
 ```
 
