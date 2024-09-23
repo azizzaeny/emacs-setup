@@ -38,6 +38,16 @@ isarch
 (setq isearch-repeat-on-direction-change t)
 (setq isearch-case-fold-search t);; incasesensitive
 
+(defun isearch-current-word ()
+  "Perform an incremental search forward for the current word under the cursor."
+  (interactive)
+  (let ((word (thing-at-point 'word)))
+    (if word
+        (progn
+          (isearch-mode t)
+          (isearch-yank-string word))
+      (message "No word at point"))))
+
 ```
 dired
 
@@ -219,6 +229,22 @@ delete word
               (subword-backward)
               (point))))
       (kill-region (point) (max syntax-move-point subword-move-point)))))
+
+
+(defun kill-whole-line ()
+  "Kill the entire current line."
+  (interactive)
+  (beginning-of-line)
+  (kill-line 1))
+
+(defun join-line ()
+  "Join the following line to this one."
+  (interactive)
+  (end-of-line)
+  (delete-char 1)
+  (delete-horizontal-space)
+  (insert " "))
+
 ```
 key bind
 
@@ -269,6 +295,8 @@ key bind
 (global-set-key (kbd "C-d d") 'delete-horizontal-space)      ;
 (global-set-key (kbd "C-d f") 'delete-block-forward)
 (global-set-key (kbd "C-d b") 'delete-block-backward)
+(global-set-key (kbd "C-d l") 'kill-whole-line)
+(global-set-key (kbd "C-d j") 'join-line)
 
 ;; markdown
 ;; (global-set-key (kbd "C-c f") 'polymode-next-chunk)
