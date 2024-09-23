@@ -21,6 +21,7 @@ reloading markdown
 isarch
 
 ```elisp
+
 (require 'isearch)
 (setq search-whitespace-regexp ".*?" ; one `setq' here to make it obvious they are a bundle
         isearch-lax-whitespace t
@@ -89,9 +90,11 @@ counsel ivy swiper, ido
 
 
 ```
-iy-go-to-char
+iy-go-to-char, find-file-in-project
 ```elisp
 (require 'iy-go-to-char)
+(setq ffip-prefer-ido-mode t)
+
 ```
 
 expand-region
@@ -176,16 +179,54 @@ web-mode
 (setq web-mode-script-padding 1)
 (setq web-mode-style-padding 1)
 (setq web-mode-block-padding 0)
+(setq web-mode-enable-heredoc-fontification t)
+(setq web-mode-enable-current-element-highlight t)
+(setq web-mode-enable-current-column-highlight t)
 
 ```
 
+delete word
+
+```elisp
+(require 'subword)
+
+(defun delete-block-forward ()
+  (interactive)
+  (if (eobp)
+      (message "End of buffer")
+    (let* ((syntax-move-point
+            (save-excursion
+              (skip-syntax-forward (string (char-syntax (char-after))))
+              (point)
+              ))
+           (subword-move-point
+            (save-excursion
+              (subword-forward)
+              (point))))
+      (kill-region (point) (min syntax-move-point subword-move-point)))))
+
+(defun delete-block-backward ()
+  (interactive)
+  (if (bobp)
+      (message "Beginning of buffer")
+    (let* ((syntax-move-point
+            (save-excursion
+              (skip-syntax-backward (string (char-syntax (char-before))))
+              (point)
+              ))
+           (subword-move-point
+            (save-excursion
+              (subword-backward)
+              (point))))
+      (kill-region (point) (max syntax-move-point subword-move-point)))))
+```
 key bind
 
 ```elisp
 ;; Multi Cursrs
 ;; (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
 ;; (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
-(global-unset-key (kbd "C-x m")) ;; mail 
+(global-unset-key (kbd "C-x m")) ;; mail
 (global-set-key (kbd "C-x m n") 'mc/mark-next-like-this)
 (global-set-key (kbd "C-x m p") 'mc/mark-previous-like-this)
 
@@ -210,12 +251,11 @@ key bind
 (global-set-key (kbd "M-x") 'counsel-M-x)
 (global-set-key (kbd "C-x b") 'ido-switch-buffer)
 (global-set-key (kbd "C-x C-f") 'ido-find-file)
-(global-set-key (kbd "C-x d") 'ido-dired)
+(global-set-key (kbd "C-x f") 'ido-dired)
 
 ;; moving
 (global-unset-key (kbd "C-x g")) 
 (global-set-key (kbd "C-x g l") 'goto-line)
-(global-set-key (kbd "C-x <up>") 'windmove-up)
 (global-set-key (kbd "C-x <up>") 'windmove-up)
 (global-set-key (kbd "C-x <down>") 'windmove-down)
 (global-set-key (kbd "C-x <left>") 'windmove-left)
@@ -226,7 +266,9 @@ key bind
 (global-set-key (kbd "C-f") 'forward-sexp)
 (global-set-key (kbd "C-b") 'backward-sexp)
 ;; deleting
-(global-set-key (kbd "C-d") 'delete-horizontal-space)   ;
+(global-set-key (kbd "C-d d") 'delete-horizontal-space)      ;
+(global-set-key (kbd "C-d f") 'delete-block-forward)
+(global-set-key (kbd "C-d b") 'delete-block-backward)
 
 ;; markdown
 ;; (global-set-key (kbd "C-c f") 'polymode-next-chunk)

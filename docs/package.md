@@ -65,6 +65,8 @@ configure the package
 ;; ido-vertical-mode
 ;; restclient
 ;; helm
+;; find-file-in-project
+;; page-break-lines
 
 ```elisp
 (defun my-packages-installed-p ()
