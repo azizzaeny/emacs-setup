@@ -119,18 +119,14 @@ create browser repl server
       ;;(highlight-region begin end)      
       (repl-send-to (or proc repl-default-proc) str)))
 
-
-(defun repl-send-region (&option proc)
-  "Send region"
-  (interactive "r")
-  ;;(highlight-region begin end)
-  (repl-send-to (or proc repl-default-proc) (buffer-substring-no-properties start end)))
-
-(defun repl-send-region (start end &optional proc)
-  "Send the selected region between START and END to the process PROC."
-  (interactive "r")
-  (repl-send-to (or proc repl-default-proc) (buffer-substring-no-properties start end)))
-
+(defun repl-send-region (&optional proc)
+  "Send the selected region to the process PROC."
+  (interactive)
+  (when (use-region-p)
+    (let ((start (region-beginning))
+          (end (region-end)))
+      (repl-send-to (or proc repl-default-proc) 
+                    (buffer-substring-no-properties start end)))))
 
 ;; todo: sent buffer or region
 (defun repl-send-buffer (&optional proc)
