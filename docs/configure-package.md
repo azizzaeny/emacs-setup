@@ -280,9 +280,7 @@ delete word
 key bind
 
 ```elisp
-;; Multi Cursrs
-;; (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
-;; (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+;; Multi Cursor
 (global-unset-key (kbd "C-x m")) ;; mail
 (global-set-key (kbd "C-x m n") 'mc/mark-next-like-this)
 (global-set-key (kbd "C-x m p") 'mc/mark-previous-like-this)
@@ -305,7 +303,6 @@ key bind
 ;; (global-set-key (kbd "C-s") 'swiper)
 (global-set-key (kbd "C-x r r") 'replace-string)
 (global-set-key (kbd "C-r") 'isearch-backward)
-
 (global-set-key (kbd "C-s") 'isearch-forward)
 ;;(global-set-key (kbd "C-s") 'isearch-current-word)
 (global-set-key (kbd "M-s") 'counsel-grep-or-swiper)
@@ -369,6 +366,5 @@ key bind
 
 ;; restclient
 (global-set-key (kbd "C-x r s") 'restclient-http-send-current-stay-in-window)
-
 
 ```

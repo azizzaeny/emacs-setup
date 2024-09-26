@@ -13,21 +13,20 @@ refresh package contents
 (defvar
   my-packages
   '(
+    vscode-dark-plus-theme    
     clojure-mode
     counsel
     ivy
-    python-mode
-    js2-mode
-    php-mode
     aggressive-indent
     polymode
     poly-markdown
     expand-region
-    vscode-dark-plus-theme
-    treemacs 
     markdown-mode
     multiple-cursors
     simple-httpd
+    python-mode
+    js2-mode
+    php-mode
     emmet-mode
     web-mode
     rjsx-mode

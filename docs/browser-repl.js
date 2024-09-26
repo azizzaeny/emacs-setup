@@ -16,6 +16,7 @@ var processRequest = (ctx) => (request, response) => {
 };
 
 var httpServer = (ctx) => require('http').createServer(processRequest(ctx)).listen(ctx.port);
+
 var readFile = (file) => require('fs').existsSync(file) ? require('fs').readFileSync(file, 'utf8') : null;
 
 var cors = (origin="*", method='GET, POST, PUT, DELETE, OPTIONS', headers='Content-Type, Authorization') => ({
@@ -87,7 +88,9 @@ var  browserEval = (cmd, context, filename, callback) => {
 
 
 var server = server || httpServer({ port: parseInt(process.env.PORT) || 5050 , handler: (req, res)=> mainHandler(req, res)});
+
 console.log(`Browser Repl created at port ${process.env.PORT}, REPL started`);
+
 var replServer = replServer || repl.start({
   prompt: '> ',
   eval: browserEval,
