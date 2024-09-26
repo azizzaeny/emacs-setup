@@ -77,7 +77,7 @@ var browserEval = (cmd, context, filename, callback) => {
       new vm.Script(cmd);
       bufferCmds.push(cmd);
       if(bufferTimer) clearTimeout(bufferTimeer);
-      bufferTimer = setTimeout( => bufferRelease(bufferCmds.join(' \n ')), 1000);
+      bufferTimer = setTimeout( _ => bufferRelease(bufferCmds.join(' \n ')), 1000);
       callback(null);
     } catch (e) {
       if (e instanceof SyntaxError) {
