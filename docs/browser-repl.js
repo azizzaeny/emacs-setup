@@ -77,7 +77,7 @@ var browserEval = (cmd, context, filename, callback) => {
       new vm.Script(cmd);
       bufferCmds.push(cmd);
       if(bufferTimer) clearTimeout(bufferTimer);
-      bufferTimer = setTimeout( _ => (bufferRelease(bufferCmds.join(' \n ')), bufferCmds = []), 1000);
+      bufferTimer = setTimeout( _ => (bufferRelease(bufferCmds.join(' \n ')), bufferCmds = []), 200);
       callback(null);
     } catch (e) {
       if (e instanceof SyntaxError) {
@@ -85,7 +85,7 @@ var browserEval = (cmd, context, filename, callback) => {
       } else {
         bufferCmds.push(cmd);
         if(bufferTimer) clearTimeout(bufferTimer); 
-        bufferTimer = setTimeout( _ => (bufferRelease(bufferCmds.join(' \n ')), bufferCmds=[]), 1000);
+        bufferTimer = setTimeout( _ => (bufferRelease(bufferCmds.join(' \n ')), bufferCmds=[]), 200);
         callback(e);
       }
     }
