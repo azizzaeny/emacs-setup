@@ -65,19 +65,27 @@ var mainHandler = (req, res) => {
   if(req.pathname === "/") return { status: 200, body: defaultHtml, headers: defaultHeaders({'Content-Type': 'text/html'}) };
   return (bufferContent.push(res), null);
 }
+// todo: instead of jsut releasing it, we want to set timer and clear timer
 
-var  browserEval = (cmd, context, filename, callback) => {
+var bufferCmds = bufferCmds = [];
+var bufferTimer = null;
+
+var browserEval = (cmd, context, filename, callback) => {
   (cmd = cmd.replace(/;+$/, ''));
   if (cmd.trim()) {
     try {
       new vm.Script(cmd);
-      bufferRelease(cmd);
+      bufferCmds.push(cmd);
+      if(bufferTimer) clearTimeout(bufferTimeer);
+      bufferTimer = setTimeout( => bufferRelease(bufferCmds.join(' \n ')), 1000);
       callback(null);
     } catch (e) {
       if (e instanceof SyntaxError) {
         callback(new repl.Recoverable(e));
       } else {
-        bufferRelease(cmd);        
+        bufferCmds.push(cmd);
+        if(bufferTimer) clearTimeout(bufferTimeer); 
+        bufferTimer = setTimeout( _ => bufferRelease(bufferCmds.join(' \n ')), 1000);
         callback(e);
       }
     }

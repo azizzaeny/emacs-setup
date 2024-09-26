@@ -173,6 +173,11 @@ create browser repl server
   (interactive)
   (repl-send-paragraph repl-second-proc))
 
+(defun repl-b-send-region ()
+  "send region to secondary proc"
+  (interactive)
+  (repl-send-region repl-second-proc))
+
 (defun repl-b-send-markdown-block ()
   "send markdown-block to secondary proc"
   (interactive)
@@ -211,6 +216,7 @@ create browser repl server
 (global-set-key (kbd "C-c b s") 'repl-b-send-last-exp)
 (global-set-key (kbd "C-c b l") 'repl-b-send-line)
 (global-set-key (kbd "C-c b b") 'repl-b-send-buffer)
+(global-set-key (kbd "C-c b r") 'repl-b-send-region)
 (global-set-key (kbd "C-c b e") 'repl-b-send-paragraph)
 (global-set-key (kbd "C-c b m") 'repl-b-send-markdown-block)
 

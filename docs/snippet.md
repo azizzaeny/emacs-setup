@@ -237,6 +237,6 @@ var loadRepl = url => fetch(url).then(res => res.text()).then(res => (eval(res),
 ```
 
 ### html string
-```js name=htmString
+```js name=htm
 var htm = (strings, ...values) => String.raw({ raw: strings }, ...values);
 ```
