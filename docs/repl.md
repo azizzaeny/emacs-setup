@@ -202,6 +202,7 @@ create browser repl server
 (global-set-key (kbd "C-c c l") 'repl-send-line)
 (global-set-key (kbd "C-c c e") 'repl-send-paragraph)
 (global-set-key (kbd "C-c c b") 'repl-send-buffer)
+(global-set-key (kbd "C-c c r") 'repl-send-region)
 (global-set-key (kbd "C-c c m") 'repl-send-markdown-block)
 
 ;; if possilbe dont use secondary process just use one process
