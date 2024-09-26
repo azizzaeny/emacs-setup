@@ -40,7 +40,7 @@ company
 isearch
 
 ```elisp
-
+(require 'restclient);
 (require 'isearch)
 (setq search-whitespace-regexp ".*?" ; one `setq' here to make it obvious they are a bundle
         isearch-lax-whitespace t
@@ -295,6 +295,8 @@ key bind
 (global-unset-key (kbd "C-h")) ;; help
 (global-unset-key (kbd "C-x C-t")) ;;transpse line
 
+;; C-x u
+
 ;; (global-set-key (kbd "C-g") 'minibuffer-keyboard-quit)
 
 ;; Ido Dired Ivy Swiper
@@ -304,12 +306,13 @@ key bind
 (global-set-key (kbd "C-x r r") 'replace-string)
 (global-set-key (kbd "C-r") 'isearch-backward)
 
-;;(global-set-key (kbd "C-s") 'isearch-forward)
-(global-set-key (kbd "C-s") 'isearch-current-word)
+(global-set-key (kbd "C-s") 'isearch-forward)
+;;(global-set-key (kbd "C-s") 'isearch-current-word)
 (global-set-key (kbd "M-s") 'counsel-grep-or-swiper)
 (global-set-key (kbd "M-x") 'counsel-M-x)
 (global-set-key (kbd "C-x b") 'ido-switch-buffer)
 (global-set-key (kbd "C-x C-f") 'ido-find-file)
+(global-unset-key (kbd "C-x d"))
 (global-set-key (kbd "C-x f") 'ido-dired)
 
 ;; moving

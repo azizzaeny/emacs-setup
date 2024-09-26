@@ -1,6 +1,7 @@
 theme and visual apperaence
 
 ```elisp
+(set-face-attribute 'default nil :font "Source Code Pro for powerline")
 
 (menu-bar-mode -1)
 

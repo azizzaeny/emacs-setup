@@ -186,9 +186,10 @@ create browser repl server
 
 ;; todo: send buffer or region ;;;
 
-(global-set-key (kbd "C-c c 1") 'repl-set-default-proc)
-(global-set-key (kbd "C-c c 2") 'repl-set-second-proc)
-(global-set-key (kbd "C-c c n") 'repl-set-mark)
+(global-unset-key (kbd "C-x c"))
+(global-set-key (kbd "C-x c 1") 'repl-set-default-proc)
+(global-set-key (kbd "C-x c 2") 'repl-set-second-proc)
+(global-set-key (kbd "C-x c n") 'repl-set-mark)
 
 (global-set-key (kbd "C-c c k") 'repl-send-mark)
 (global-set-key (kbd "C-c c s") 'repl-send-last-exp)

@@ -41,9 +41,9 @@ key bind
 ```elisp
 
 ;; code folding
-(global-set-key (kbd "C-c b m") 'hs-minor-mode)
-(global-set-key (kbd "C-c b h") 'hs-hide-block)
-(global-set-key (kbd "C-c b s") 'hs-show-block)
+;; (global-set-key (kbd "C-c b m") 'hs-minor-mode)
+;; (global-set-key (kbd "C-c b h") 'hs-hide-block)
+;; (global-set-key (kbd "C-c b s") 'hs-show-block)
 
 ;; align
 (global-set-key (kbd "C-c a c") 'align-to-colon)
