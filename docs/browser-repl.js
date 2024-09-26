@@ -76,16 +76,16 @@ var browserEval = (cmd, context, filename, callback) => {
     try {
       new vm.Script(cmd);
       bufferCmds.push(cmd);
-      if(bufferTimer) clearTimeout(bufferTimeer);
-      bufferTimer = setTimeout( _ => bufferRelease(bufferCmds.join(' \n ')), 1000);
+      if(bufferTimer) clearTimeout(bufferTimer);
+      bufferTimer = setTimeout( _ => (bufferRelease(bufferCmds.join(' \n ')), bufferCmds = []), 1000);
       callback(null);
     } catch (e) {
       if (e instanceof SyntaxError) {
         callback(new repl.Recoverable(e));
       } else {
         bufferCmds.push(cmd);
-        if(bufferTimer) clearTimeout(bufferTimeer); 
-        bufferTimer = setTimeout( _ => bufferRelease(bufferCmds.join(' \n ')), 1000);
+        if(bufferTimer) clearTimeout(bufferTimer); 
+        bufferTimer = setTimeout( _ => (bufferRelease(bufferCmds.join(' \n ')), bufferCmds=[]), 1000);
         callback(e);
       }
     }
