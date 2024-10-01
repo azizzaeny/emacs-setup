@@ -362,7 +362,7 @@ key bind
 (global-set-key (kbd "C-x g b") 'iy-go-to-char-backward)
 
 ;; expand region
-;; (global-set-key (kbd "C-c e") 'er/expand-region)
+(global-set-key (kbd "C-c <up>") 'er/expand-region)
 
 ;; restclient
 (global-set-key (kbd "C-x r s") 'restclient-http-send-current-stay-in-window)
