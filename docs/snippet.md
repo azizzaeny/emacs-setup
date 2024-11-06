@@ -9,7 +9,7 @@
 ```
 
 ### html tailwind initial
-```js name=html
+```js name=dochtml
 <!doctype html>
 <html lang="en">
   <head>
@@ -237,6 +237,17 @@ var loadRepl = url => fetch(url).then(res => res.text()).then(res => (eval(res),
 ```
 
 ### html string
-```js name=htm
-var htm = (strings, ...values) => String.raw({ raw: strings }, ...values);
+```js name=html
+var html = (strings, ...values) => String.raw({ raw: strings }, ...values);
 ```
+
+### fns function
+```js name=htm
+var  = () => {}
+```
+
+### cmt comments
+```js name=cmt
+/*  */
+```
+

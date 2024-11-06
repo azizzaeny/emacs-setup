@@ -74,6 +74,7 @@ dired
 ;;(require 'dired-details)
 ;; (setq-default dired-details-hidden-string "---")
 (add-hook 'dired-mode-hook #'dired-hide-details-mode)
+;;(define-key dired-mode-map (kbd "*") 'dired-create-empty-file)
 ;;(setq dired-dwim-target t)
 ;;(dired-details-install)
 ```
@@ -302,8 +303,10 @@ key bind
 ;; (global-set-key (kbd "C-x C-f") 'counsel-find-file)
 ;; (global-set-key (kbd "C-s") 'swiper)
 (global-set-key (kbd "C-x r r") 'replace-string)
-(global-set-key (kbd "C-r") 'isearch-backward)
-(global-set-key (kbd "C-s") 'isearch-forward)
+(global-unset-key (kbd "C-s"))
+(global-unset-key (kbd "C-r"))
+(global-set-key (kbd "C-s r") 'isearch-backward)
+(global-set-key (kbd "C-s s") 'isearch-forward)
 ;;(global-set-key (kbd "C-s") 'isearch-current-word)
 (global-set-key (kbd "M-s") 'counsel-grep-or-swiper)
 (global-set-key (kbd "M-x") 'counsel-M-x)
@@ -345,6 +348,7 @@ key bind
 ;; push view
 (global-set-key (kbd "C-x v v") 'ivy-push-view)
 (global-set-key (kbd "C-x v p") 'ivy-pop-view)
+(global-set-key (kbd "C-x v s") 'ivy-switch-view)
 
 ;; evaling
 ;;(global-unset-key (kbd "C-x e"))
