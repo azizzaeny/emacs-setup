@@ -20,7 +20,7 @@ control ansi process
 (global-set-key (kbd "C-x p a") 'create-ansi-proc)
 
 ;; rename buffer
-(global-set-key (kbd "C-x r b") 'rename-buffer)
+(global-set-key (kbd "C-x p b") 'rename-buffer)
 
 ```
 create browser repl server
@@ -43,7 +43,7 @@ create browser repl server
 
 ;; todo: create with difference port
 
-(global-set-key (kbd "C-x p b") 'create-browser-repl)
+;; (global-set-key (kbd "C-x p b") 'create-browser-repl)
 
 ```
 

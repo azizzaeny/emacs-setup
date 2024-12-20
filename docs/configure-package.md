@@ -14,8 +14,8 @@ reloading markdown
   (load-markdown "~/.emacs.d/docs/align.md")
   (message "reloaded-markdown"))
 
-(global-unset-key (kbd "C-x r"))
-(global-set-key (kbd "C-x r m") 'reload-markdown)
+;; (global-unset-key (kbd "C-x r"))
+;; (global-set-key (kbd "C-x r m") 'reload-markdown)
 ```
 
 company 
@@ -307,6 +307,9 @@ key bind
 (global-unset-key (kbd "C-r"))
 (global-set-key (kbd "C-s r") 'isearch-backward)
 (global-set-key (kbd "C-s s") 'isearch-forward)
+(global-set-key (kbd "C-s b") 'isearch-backward-symbol-at-point)
+(global-set-key (kbd "C-s f") 'isearch-forward-symbol-at-point)
+
 ;;(global-set-key (kbd "C-s") 'isearch-current-word)
 (global-set-key (kbd "M-s") 'counsel-grep-or-swiper)
 (global-set-key (kbd "M-x") 'counsel-M-x)
@@ -325,11 +328,15 @@ key bind
 (global-set-key (kbd "C-x C-<left>") 'windmove-left)
 (global-set-key (kbd "C-x C-<right>") 'windmove-right)
 ;; moving expression
-(global-set-key (kbd "C-f") 'forward-sexp)
-(global-set-key (kbd "C-b") 'backward-sexp)
+
+;; (global-set-key (kbd "C-f") 'forward-sexp)
+;; (global-set-key (kbd "C-b") 'backward-sexp)
+;; Jump to Matching Parentheses
+;; Place the cursor near a parenthesis and press C-M-u to move outwards, or C-M-d to move inwards.
+;; C-M-n Move to next block C-M-d
 ;; deleting
 (global-unset-key (kbd "C-d"));
-(global-set-key (kbd "C-d d") 'delete-horizontal-space)      ;
+(global-set-key (kbd "C-d d") 'delete-horizontal-space);
 (global-set-key (kbd "C-d f") 'delete-block-forward)
 (global-set-key (kbd "C-d b") 'delete-block-backward)
 (global-set-key (kbd "C-d l") 'kill-whole-line)
@@ -369,6 +376,7 @@ key bind
 (global-set-key (kbd "C-c <up>") 'er/expand-region)
 
 ;; restclient
-(global-set-key (kbd "C-x r s") 'restclient-http-send-current-stay-in-window)
+;;(global-set-key (kbd "C-x r s") 'restclient-http-send-current-stay-in-window)
+(global-set-key (kbd "C-x r s") 'restclient-http-send-current-suppress-response-buffer)
 
 ```
