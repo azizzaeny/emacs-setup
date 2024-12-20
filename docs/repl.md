@@ -208,13 +208,13 @@ create browser repl server
 
 ;; if possilbe dont use secondary process just use one process
 
-(global-unset-key (kbd "C-c b"))
-(global-set-key (kbd "C-c b s") 'repl-b-send-last-exp)
-(global-set-key (kbd "C-c b l") 'repl-b-send-line)
-(global-set-key (kbd "C-c b b") 'repl-b-send-buffer)
-(global-set-key (kbd "C-c b r") 'repl-b-send-region)
-(global-set-key (kbd "C-c b e") 'repl-b-send-paragraph)
-(global-set-key (kbd "C-c b m") 'repl-b-send-markdown-block)
+;; (global-unset-key (kbd "C-c b"))
+;; (global-set-key (kbd "C-c b s") 'repl-b-send-last-exp)
+;; (global-set-key (kbd "C-c b l") 'repl-b-send-line)
+;; (global-set-key (kbd "C-c b b") 'repl-b-send-buffer)
+;; (global-set-key (kbd "C-c b r") 'repl-b-send-region)
+;; (global-set-key (kbd "C-c b e") 'repl-b-send-paragraph)
+;; (global-set-key (kbd "C-c b m") 'repl-b-send-markdown-block)
 
 ;; todo: if possible we can create something similiar like restclient with the same approach
 ```

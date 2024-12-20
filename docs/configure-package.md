@@ -220,6 +220,53 @@ web-mode
 
 ```
 
+popper 
+
+```elisp 
+
+;; (defun my-popup-buffer (buffer-name)
+;;   "Open a buffer in a temporary popup window at the bottom of the screen."
+;;   (interactive "BBuffer name: ")
+;;   (let ((popup-window (split-window (frame-root-window) 
+;;                                     (floor (* 0.8 (window-total-height))) 
+;;                                     'below)))
+;;     (set-window-buffer popup-window (get-buffer-create buffer-name))
+;;     (select-window popup-window)))
+
+(defvar my-popup-window nil
+  "The current popup window, if any.")
+
+(defun my-popup-open-or-switch (buffer-name)
+  "Open a temporary popup window and display the specified BUFFER-NAME.
+If the popup is already open, switch to the specified buffer."
+  (interactive "BBuffer name: ")
+  (let* ((buffer (get-buffer-create buffer-name))
+         (popup-window (or my-popup-window
+                           (split-window (frame-root-window)
+                                         (floor (* 0.8 (window-total-height)))
+                                         'below))))
+    (set-window-buffer popup-window buffer)
+    (setq my-popup-window popup-window)
+    (select-window popup-window)))
+
+(defun my-popup-close ()
+  "Close the current popup window, if it exists."
+  (interactive)
+  (when (window-live-p my-popup-window)
+    (delete-window my-popup-window)
+    (setq my-popup-window nil)))
+
+(defun my-popup-toggle (buffer-name)
+  "Toggle the popup window with the specified BUFFER-NAME.
+If the popup is open, close it. Otherwise, open or switch to the buffer."
+  (interactive "BBuffer name: ")
+  (if (and my-popup-window (window-live-p my-popup-window))
+      (my-popup-close)
+    (my-popup-open-or-switch buffer-name)))
+
+(global-set-key (kbd "C-x p o") 'my-popup-toggle) ; Toggle or open popup
+(global-set-key (kbd "C-x p c") 'my-popup-close)  ; Close popup
+```
 delete word
 
 ```elisp
@@ -297,7 +344,6 @@ key bind
 ;; C-x u
 
 ;; (global-set-key (kbd "C-g") 'minibuffer-keyboard-quit)
-
 ;; Ido Dired Ivy Swiper
 ;; (global-set-key (kbd "C-s") 'counsel-grep-or-swiper)
 ;; (global-set-key (kbd "C-x C-f") 'counsel-find-file)
@@ -373,10 +419,14 @@ key bind
 (global-set-key (kbd "C-x g b") 'iy-go-to-char-backward)
 
 ;; expand region
-(global-set-key (kbd "C-c <up>") 'er/expand-region)
+(global-set-key (kbd "C-c <up>") 'er/expand-region);; popper
 
 ;; restclient
 ;;(global-set-key (kbd "C-x r s") 'restclient-http-send-current-stay-in-window)
 (global-set-key (kbd "C-x r s") 'restclient-http-send-current-suppress-response-buffer)
 
 ```
+
+
+
+
