@@ -224,15 +224,6 @@ popper
 
 ```elisp 
 
-;; (defun my-popup-buffer (buffer-name)
-;;   "Open a buffer in a temporary popup window at the bottom of the screen."
-;;   (interactive "BBuffer name: ")
-;;   (let ((popup-window (split-window (frame-root-window) 
-;;                                     (floor (* 0.8 (window-total-height))) 
-;;                                     'below)))
-;;     (set-window-buffer popup-window (get-buffer-create buffer-name))
-;;     (select-window popup-window)))
-
 (defvar my-popup-window nil
   "The current popup window, if any.")
 
@@ -243,7 +234,7 @@ If the popup is already open, switch to the specified buffer."
   (let* ((buffer (get-buffer-create buffer-name))
          (popup-window (or my-popup-window
                            (split-window (frame-root-window)
-                                         (floor (* 0.8 (window-total-height)))
+                                         (floor (* 0.75 (window-total-height)))
                                          'below))))
     (set-window-buffer popup-window buffer)
     (setq my-popup-window popup-window)
@@ -256,13 +247,22 @@ If the popup is already open, switch to the specified buffer."
     (delete-window my-popup-window)
     (setq my-popup-window nil)))
 
-(defun my-popup-toggle (buffer-name)
-  "Toggle the popup window with the specified BUFFER-NAME.
-If the popup is open, close it. Otherwise, open or switch to the buffer."
-  (interactive "BBuffer name: ")
-  (if (and my-popup-window (window-live-p my-popup-window))
+;; (defun my-popup-toggle (buffer-name)
+;;   "Toggle the popup window with the specified BUFFER-NAME.
+;; If the popup is open, close it. Otherwise, open or switch to the buffer."
+;;   (interactive "BBuffer name: ")
+;;   (if (window-live-p my-popup-window)
+;;       (my-popup-close)
+;;     (my-popup-open-or-switch buffer-name)))
+
+(defun my-popup-toggle ()
+  "Toggle the popup window.
+If it exists, close it. Otherwise, prompt for a buffer to open."
+  (interactive)
+  (if (window-live-p my-popup-window)
       (my-popup-close)
-    (my-popup-open-or-switch buffer-name)))
+    (let ((buffer-name (read-buffer "Buffer name to display: ")))
+      (my-popup-open-or-switch buffer-name))))
 
 (global-set-key (kbd "C-x p o") 'my-popup-toggle) ; Toggle or open popup
 (global-set-key (kbd "C-x p c") 'my-popup-close)  ; Close popup
