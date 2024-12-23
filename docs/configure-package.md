@@ -136,6 +136,7 @@ expand-region
 ```
 
 
+
 clojure paren 
 
 ```elisp
@@ -166,10 +167,10 @@ polymarkdown, markdown
 
 ;; markdown-mode
 (require 'markdown-mode)
-(with-eval-after-load 'markdown-mode
-  (autoload 'gfm-mode "markdown-mode"
-    "Major mode for editing GitHub Flavored Markdown files" t)
-  (add-to-list 'auto-mode-alist '("README\\.md\\'" . gfm-mode)))
+;; (with-eval-after-load 'markdown-mode
+;;   (autoload 'gfm-mode "markdown-mode"
+;;     "Major mode for editing GitHub Flavored Markdown files" t)
+;;   (add-to-list 'auto-mode-alist '("README\\.md\\'" . gfm-mode)))
 
 ```
 
@@ -247,14 +248,6 @@ If the popup is already open, switch to the specified buffer."
     (delete-window my-popup-window)
     (setq my-popup-window nil)))
 
-;; (defun my-popup-toggle (buffer-name)
-;;   "Toggle the popup window with the specified BUFFER-NAME.
-;; If the popup is open, close it. Otherwise, open or switch to the buffer."
-;;   (interactive "BBuffer name: ")
-;;   (if (window-live-p my-popup-window)
-;;       (my-popup-close)
-;;     (my-popup-open-or-switch buffer-name)))
-
 (defun my-popup-toggle ()
   "Toggle the popup window.
 If it exists, close it. Otherwise, prompt for a buffer to open."
@@ -264,9 +257,11 @@ If it exists, close it. Otherwise, prompt for a buffer to open."
     (let ((buffer-name (read-buffer "Buffer name to display: ")))
       (my-popup-open-or-switch buffer-name))))
 
+(global-unset-key (kbd "C-x p")) 
 (global-set-key (kbd "C-x p o") 'my-popup-toggle) ; Toggle or open popup
 (global-set-key (kbd "C-x p c") 'my-popup-close)  ; Close popup
 ```
+
 delete word
 
 ```elisp
