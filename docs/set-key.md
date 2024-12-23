@@ -1,4 +1,5 @@
 set key binding
+
 ```elisp 
 ;; Multi Cursor
 (global-unset-key (kbd "C-x m")) ;; mail
@@ -46,6 +47,7 @@ set key binding
 
 ;; (global-set-key (kbd "C-f") 'forward-sexp)
 ;; (global-set-key (kbd "C-b") 'backward-sexp)
+
 ;; Jump to Matching Parentheses
 ;; Place the cursor near a parenthesis and press C-M-u to move outwards, or C-M-d to move inwards.
 ;; C-M-n Move to next block C-M-d
@@ -88,8 +90,6 @@ set key binding
 (global-set-key (kbd "C-x g f") 'iy-go-to-char)
 (global-set-key (kbd "C-x g b") 'iy-go-to-char-backward)
 
-;; expand region
-(global-set-key (kbd "C-c <up>") 'er/expand-region);; popper
 
 ;; restclient
 ;;(global-set-key (kbd "C-x r s") 'restclient-http-send-current-stay-in-window)
@@ -136,6 +136,7 @@ set key binding
 (global-set-key (kbd "C-x p a") 'create-ansi-proc)
 
 ;; rename buffer
+(global-unset-key (kbd "C-x p r")) ;; query replace
 (global-set-key (kbd "C-x p b") 'rename-buffer)
 
 ;; the repl
@@ -152,12 +153,13 @@ set key binding
 (global-set-key (kbd "C-c c r") 'repl-send-region)
 (global-set-key (kbd "C-c c m") 'repl-send-markdown-block)
 
-;; git 
-(global-set-key (kbd "C-c g p") 'git-push)
-(global-set-key (kbd "C-c g c") 'git-commit)
+;; git
+(global-unset-key (kbd "C-x p p")) ;; select project
+(global-set-key (kbd "C-c p h") 'git-push)
+(global-set-key (kbd "C-x p c") 'git-commit)
 (global-set-key (kbd "C-x p g") 'create-git-proc)
 
 ;; simple-httpd
-(global-set-key (kbd "C-c c s") 'httpd-start-with-port)
+;;(global-set-key (kbd "C-c c s") 'httpd-start-with-port)
 
 ```
