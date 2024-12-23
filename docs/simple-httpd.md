@@ -19,11 +19,3 @@ simple httpd
 ```
 
 
-keybind
-
-```elisp
-
-;; simple-httpd
-(global-set-key (kbd "C-c c s") 'httpd-start-with-port)
-
-```

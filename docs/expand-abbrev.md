@@ -60,15 +60,3 @@ expand abbreviations custom snippets
 
 ```
 
-keybind snippets
-
-```elisp
-
-;; expand region
-(global-set-key (kbd "C-c e") 'er/expand-region)
-
-;; (global-set-key (kbd "C-c s r") 'reload-snippets)
-(global-set-key (kbd "C-c s e") 'expand-abbrev-snippet)
-(global-set-key (kbd "C-c s l") 'region-to-single-line)
-
-```

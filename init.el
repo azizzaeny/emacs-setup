@@ -48,6 +48,8 @@
 (load-markdown "~/.emacs.d/docs/expand-abbrev.md")
 (load-markdown "~/.emacs.d/docs/repl.md")
 (load-markdown "~/.emacs.d/docs/align.md")
+(load-markdown "~/.emacs.d/docs/set-key.md")
+
 ;; (setq load-verbose t)
 ;; (setq debug-on-error t)
 
