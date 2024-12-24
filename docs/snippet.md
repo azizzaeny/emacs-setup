@@ -123,16 +123,18 @@ ssh -L 11001:localhost:11001 ns01
 ### Simple HTTP Server
 
 ```js name=httpServer
-var parseRequest = (request, buffer) => (request.$parsed = require('url').parse(request.url, true), request.params = Object.assign({}, request.$parsed.query), request.pathname = request.$parsed.pathname, request);
-var responseWrite = (ctx, request, response) => (
-  response.writeHead(ctx.status || 404, ctx.headers || {}), response.write(ctx.body || ''), response.end()
-);
-var processRequest = (ctx) => (request, response) => {
+
+var parseRequest = (request, buffer) => (request.$parsed = require('url').parse(request.url, true), request.params = Object.assign({}, request.$parsed.query), request.pathname = request.$parsed.pathname, request.body = buffer, request);
+var writeResponse = (ctx, request, response) => ctx === null ? null : (response.writeHead(ctx.status || 404, ctx.headers || {}), response.write(ctx.body || ''), response.end());
+var createServer = (handler) => require('http').createServer((req, res)=>{
   let buffer = [];
-  request.on('data', chunk => (chunk ? buffer.push(chunk) : null));
-  request.on('end', _  => setTimeout(async ()=>  responseWrite( await ctx.handler( parseRequest(request, buffer), response),request,response), 0)) 
-};
-var httpServer = (ctx) => require('http').createServer(processRequest(ctx)).listen(ctx.port);
+  req.on('data', chunk => (chunk ? buffer.push(chunk) : null));
+  req.on('end', async ()  => (parseRequest(req, buffer), writeResponse(await handler(req, res),  req, res))); 
+});
+
+var handler = (req, res) => ({body: `hellow brow ${req.buffer}`});
+var server = createServer((req, res) => handler(req, res));
+server.listen(8080);
 
 ```
 ### Simple Handler
@@ -221,7 +223,6 @@ runtime('./index.md');
 
 ### Patch require
 ```js name=patchRequire
-
 const Module = require('module');
 const originalRequire = Module.prototype.require;
 Module.prototype.require = function patchedRequire(modulePath) {
@@ -237,17 +238,7 @@ var loadRepl = url => fetch(url).then(res => res.text()).then(res => (eval(res),
 ```
 
 ### html string
-```js name=html
+```js name=htmlFn
 var html = (strings, ...values) => String.raw({ raw: strings }, ...values);
-```
-
-### fns function
-```js name=htm
-var  = () => {}
-```
-
-### cmt comments
-```js name=cmt
-/*  */
 ```
 
