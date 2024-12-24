@@ -43,6 +43,10 @@ set key binding
 (global-set-key (kbd "C-x g <down>") 'windmove-down)
 (global-set-key (kbd "C-x g <left>") 'windmove-left)
 (global-set-key (kbd "C-x g <right>") 'windmove-right)
+(global-set-key (kbd "C-x <up>") 'windmove-up)
+(global-set-key (kbd "C-x <down>") 'windmove-down)
+(global-set-key (kbd "C-x <left>") 'windmove-left)
+(global-set-key (kbd "C-x <right>") 'windmove-right)
 ;; moving expression
 
 ;; (global-set-key (kbd "C-f") 'forward-sexp)
