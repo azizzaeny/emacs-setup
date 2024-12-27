@@ -14,7 +14,15 @@ copy paste problem
   (interactive)
   (let ((text (current-kill 0)))
     (shell-command (concat "echo " (shell-quote-argument text) " > ~/clipboard/clipboard.txt"))))
+
 (global-set-key (kbd "C-c C-y") 'copy-kill-ring-to-remote-clipboard)
+
+(when (eq system-type 'gnu/linux) ;; Check if the system is Linux
+  (setq interprogram-cut-function
+        (lambda (text &optional push)
+          (with-temp-buffer
+            (insert text)  ;; Insert the copied/cut text
+            (write-file "~/clipboard/clipboard.txt"))))) ;; Write to the clipboard file on the server
 
 ```
 
