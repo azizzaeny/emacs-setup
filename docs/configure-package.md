@@ -1,3 +1,18 @@
+tramp setup 
+
+```elisp 
+(setq tramp-default-method "ssh")
+(setq tramp-verbose 2) ; Debugging level (optional)
+;;/ssh:user@remote-host:/path/to/file
+
+(setq tramp-auto-save-directory "~/.emacs.d/tramp-autosave")
+(setq tramp-persistency-file-name "~/.emacs.d/tramp-persistency")
+(setq remote-file-name-inhibit-cache nil)
+(setq tramp-completion-reread-directory-timeout nil)
+(require 'tramp-term)
+
+```
+
 reloading markdown
 
 ```elisp
