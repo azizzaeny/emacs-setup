@@ -14,6 +14,10 @@ copy paste problem
   (interactive)
   (let ((text (current-kill 0)))
     (shell-command (concat "echo " (shell-quote-argument text) " > ~/clipboard/clipboard.txt"))))
+
+(when (string-equal system-type "gnu/linux")
+  (setq interprogram-cut-function 'copy-kill-ring-to-remote-clipboard ))
+
 (global-set-key (kbd "C-c C-y") 'copy-kill-ring-to-remote-clipboard)
 
 ```
