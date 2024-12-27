@@ -25,9 +25,6 @@ copy paste problem
               (unless (string= (car kill-ring) xclip-output)
                 xclip-output))))))
 ```
-ssh -X user@remote-server "xclip -o -selection clipboard" | pbcopy
-echo "test" | xclip -selection clipboard
-xclip -o -selection clipboard
 
 ```lisp
 (defun fetch-local-clipboard-to-emacs ()
