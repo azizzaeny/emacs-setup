@@ -15,8 +15,6 @@ copy paste problem
   (let ((text (current-kill 0)))
     (shell-command (concat "echo " (shell-quote-argument text) " > ~/clipboard/clipboard.txt"))))
 
-(global-set-key (kbd "C-c C-y") 'copy-kill-ring-to-remote-clipboard)
-
 (when (eq system-type 'gnu/linux) ;; Check if the system is Linux
   (setq interprogram-cut-function
         (lambda (text &optional push)
@@ -24,30 +22,13 @@ copy paste problem
             (insert text)  ;; Insert the copied/cut text
             (write-file "~/clipboard/clipboard.txt"))))) ;; Write to the clipboard file on the server
 
+(defun update-clipboard-from-file ()
+  "Read clipboard content from the file and update Emacs kill-ring."
+  (when (file-exists-p "~/clipboard/clipboard.txt")
+    (with-temp-buffer
+      (insert-file-contents "~/clipboard/clipboard.txt")
+      (push (buffer-string) kill-ring))))
+
 ```
 
-```lisp 
-;; (unless (display-graphic-p)
-;;   (when (executable-find "xclip")
-;;     (setq select-enable-clipboard t)
-;;     (setq interprogram-cut-function
-;;           (lambda (text &optional push)
-;;             (with-temp-buffer
-;;               (insert text)
-;;               (call-process-region (point-min) (point-max) "xclip" nil 0 nil "-selection" "clipboard"))))
-;;     (setq interprogram-paste-function
-;;           (lambda ()
-;;             (let ((xclip-output (shell-command-to-string "xclip -o -selection clipboard")))
-;;               (unless (string= (car kill-ring) xclip-output)
-;;                 xclip-output))))))
-```
-
-```lisp
-;; (defun fetch-local-clipboard-to-emacs ()
-;;   "Fetch the local macOS clipboard and insert it into Emacs kill ring."
-;;   (interactive)
-;;   (let ((text (shell-command-to-string "pbpaste")))
-;;     (kill-new text)
-;;     (message "Clipboard synced to Emacs kill ring.")))
-;; (global-set-key (kbd "C-c C-l") 'fetch-local-clipboard-to-emacs)
-```
+copy clipboard and paste clipboard
