@@ -1,3 +1,19 @@
+text specifications 
+
+```elisp 
+(add-hook 'text-mode-hook
+          (lambda ()
+            (global-display-line-numbers-mode) ;; enable line 
+            (setq-default paragraph-start "\f\\|[ \t]*$"
+                          paragraph-separate "[ \t\f]*$") ;; hanging indent
+            (setq fill-column 80)    ; Set maximum line width to 80 characters
+            (auto-fill-mode 1)
+            (turn-on-auto-fill)      ; Enable automatic line wrapping
+            (flyspell-mode 1)))      ; Enable spell checking
+
+```
+
+
 tramp setup 
 
 ```elisp 
@@ -9,7 +25,6 @@ tramp setup
 (setq tramp-persistency-file-name "~/.emacs.d/tramp-persistency")
 (setq remote-file-name-inhibit-cache nil)
 (setq tramp-completion-reread-directory-timeout nil)
-(require 'tramp-term)
 
 ```
 
