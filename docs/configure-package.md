@@ -1,3 +1,6 @@
+tmux, mosh, and workflow 
+we want changing things faster
+
 text specifications 
 
 ```elisp 
@@ -17,15 +20,20 @@ text specifications
 tramp setup 
 
 ```elisp 
+(setq create-lockfiles nil); avoid lockfiles when using tramp
+
 (setq tramp-default-method "ssh")
-(setq tramp-verbose 2) ; Debugging level (optional)
-;;/ssh:user@remote-host:/path/to/file
+(setq tramp-verbose 1) ; Debugging level (optional)
+;;/sshx:user@remote-host:/path/to/file
 
 (setq tramp-auto-save-directory "~/.emacs.d/tramp-autosave")
-(setq tramp-persistency-file-name "~/.emacs.d/tramp-persistency")
-(setq remote-file-name-inhibit-cache nil)
-(setq tramp-completion-reread-directory-timeout nil)
+(setq tramp-connection-timeout 10) ;increase timeout
 
+(setq tramp-persistency-file-name "~/.emacs.d/tramp-persistency")
+(setq remote-file-name-inhibit-cache nil) ; cache remote files 
+(setq tramp-completion-reread-directory-timeout nil)
+(setq tramp-ssh-controlmaster-options
+      "-o ControlMaster=auto -o ControlPath='~/.ssh/tramp-%%r@%%h:%%p' -o ControlPersist=yes")
 ```
 
 reloading markdown
