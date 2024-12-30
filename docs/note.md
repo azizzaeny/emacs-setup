@@ -2,7 +2,6 @@ note
 
 ```elisp
 
-
 (defun note-open-today-local (&optional year month day)
   "Open a note for a specific YEAR, MONTH, and DAY. If not provided, use today's date. If the file doesn't exist, create it."
   (interactive)
@@ -45,6 +44,7 @@ If not provided, use today's date. If the file doesn't exist, create it."
   (let* ((remote-directory "/sshx:sandbox:~/daily-note-contents/contents/")
          (filename (format "notes-%04d%02d%02d.md" year month day))
          (fullpath (concat remote-directory filename)))
+    (message "connecting to remote server...")
     (find-file fullpath)
     (when (not (file-exists-p fullpath))
       (insert (format "## Note - %04d%02d%02d\n\n" year month day))
