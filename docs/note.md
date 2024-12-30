@@ -42,7 +42,7 @@ If not provided, use today's date. If the file doesn't exist, create it."
       (setq year (nth 5 current-date)
             month (nth 4 current-date)
             day (nth 3 current-date))))
-  (let* ((remote-directory "/sshx:sandbox:/path/to/daily-note-contents/contents/")
+  (let* ((remote-directory "/sshx:sandbox:~/daily-note-contents/contents/")
          (filename (format "notes-%04d%02d%02d.md" year month day))
          (fullpath (concat remote-directory filename)))
     (find-file fullpath)
