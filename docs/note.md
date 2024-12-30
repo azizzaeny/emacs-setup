@@ -2,7 +2,7 @@ note
 
 ```elisp
 
-(defun note-open-today-local (&optional year month day)
+(defun note-open-today (&optional year month day)
   "Open a note for a specific YEAR, MONTH, and DAY. If not provided, use today's date. If the file doesn't exist, create it."
   (interactive)
   (unless year
@@ -18,21 +18,21 @@ note
       (insert (format "## Note - %04d%02d%02d\n\n" year month day))
       (save-buffer))))
 
-(defun note-open-n-day-local (n)
-  "Open note n days before"
-  (interactive "p")
-  (let* ((target-date (time-subtract (current-time) (days-to-time n)))
-         (year (string-to-number (format-time-string "%Y" target-date)))
-         (month (string-to-number (format-time-string "%m" target-date)))
-         (day (string-to-number (format-time-string "%d" target-date)))
-         (directory "~/daily-note-contents/contents/")
-         (filename (format "notes-%04d%02d%02d.md" year month day))
-         (fullpath (concat directory filename)))    
-     (if (file-exists-p fullpath)
-        (find-file fullpath)
-       (message "Note for date %s does not exist." (format-time-string "%Y-%m-%d" target-date)))))
+;; (defun note-open-n-day-local (n)
+;;   "Open note n days before"
+;;   (interactive "p")
+;;   (let* ((target-date (time-subtract (current-time) (days-to-time n)))
+;;          (year (string-to-number (format-time-string "%Y" target-date)))
+;;          (month (string-to-number (format-time-string "%m" target-date)))
+;;          (day (string-to-number (format-time-string "%d" target-date)))
+;;          (directory "~/daily-note-contents/contents/")
+;;          (filename (format "notes-%04d%02d%02d.md" year month day))
+;;          (fullpath (concat directory filename)))    
+;;      (if (file-exists-p fullpath)
+;;         (find-file fullpath)
+;;        (message "Note for date %s does not exist." (format-time-string "%Y-%m-%d" target-date)))))
 
-(defun note-open-today (&optional year month day)
+(defun note-open-today-remote (&optional year month day)
   "Open a note for a specific YEAR, MONTH, and DAY on a remote server using TRAMP with sshx.
 If not provided, use today's date. If the file doesn't exist, create it."
   (interactive)
