@@ -11,8 +11,7 @@ text specifications
                           paragraph-separate "[ \t\f]*$") ;; hanging indent
             (setq fill-column 80)    ; Set maximum line width to 80 characters
             (auto-fill-mode 1)
-            (turn-on-auto-fill)      ; Enable automatic line wrapping
-            (flyspell-mode 1)))      ; Enable spell checking
+            (turn-on-auto-fill))) ; Enable automatic line wrapping 
 
 ```
 
