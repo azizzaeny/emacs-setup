@@ -122,7 +122,7 @@ set key binding
 ;; expand region
 (global-set-key (kbd "C-c e e") 'er/expand-region)
 
-;; (global-set-key (kbd "C-c s r") 'reload-snippets)
+(global-set-key (kbd "C-c s r") 'reload-snippets)
 (global-set-key (kbd "C-c s e") 'expand-abbrev-snippet)
 (global-set-key (kbd "C-c s l") 'region-to-single-line)
 
