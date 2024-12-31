@@ -1,7 +1,5 @@
 tmux, mosh, and workflow 
-we want changing things faster
-
-text specifications 
+text specifications, faster  
 
 ```elisp 
 (add-hook 'text-mode-hook
@@ -15,29 +13,159 @@ text specifications
 
 ```
 
-
-tramp setup 
-
+async saving , increase performances 
 ```elisp 
+
+(setq gc-cons-threshold (* 50 1000 1000)) ; Increase threshold to 50MB
+(setq gc-cons-percentage 0.1) ; Adjust GC frequency
+(setq create-lockfiles nil)
+(setq make-backup-files nil)
+
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (setq gc-cons-threshold (* 2 1000 1000)))) ; Lower after startup
+
+(setq comp-deferred-compilation t) ; Enable native compilation
+
+
 (require 'async)
 (async-bytecomp-package-mode 1); Edit large files asynchronously using packages like async to avoid blocking
 
 (setq create-lockfiles nil); avoid lockfiles when using tramp
 (setq vc-handled-backends nil) ; Disable version control for better performance
 
-(setq tramp-default-method "ssh")
+;;(auto-save-visited-mode 1)
+
+(so-long-enable); for better handling of large or minified files:
+
+(global-auto-revert-mode 1)
+(setq auto-revert-interval 1) ; Update every 1 second
+
+;; (defun async-save-via-scp ()
+;;   "Save the current buffer asynchronously to the remote server using scp.
+;; The file will be saved in the same directory as the local file."
+;;   (interactive)
+;;   (let ((buffer-file (buffer-file-name)))
+;;     (if buffer-file
+;;         (let* ((local-directory (file-name-directory buffer-file))   ;; Get local directory
+;;                (file-name (file-name-nondirectory buffer-file))       ;; Get the file name
+;;                (remote-directory "~/")                    ;; Example remote base directory
+;;                (remote-destination (concat remote-directory
+;;                                            (substring local-directory (length (expand-file-name "~")))  ;; Keep directory structure
+;;                                            file-name)))
+;;           ;; Run async shell command to upload the file with scp
+;;           (async-shell-command
+;;            (concat "scp " buffer-file " sandbox:" remote-destination))
+;;           (message "Buffer is not visiting a file!")))))
+
+;; (defun async-save-via-rsync-silent ()
+;;   "Save the current buffer asynchronously to a remote server using rsync, suppressing output."
+;;   (interactive)
+;;   (let ((buffer-file (buffer-file-name)))
+;;     (if buffer-file
+;;         (let* ((local-directory (file-name-directory buffer-file))   ;; Get local directory
+;;                (file-name (file-name-nondirectory buffer-file))       ;; Get the file name
+;;                (remote-directory "~/")                    ;; Remote base directory (customize as needed)
+;;                (remote-destination (concat remote-directory
+;;                                            (substring local-directory (length (expand-file-name "~")))  ;; Keep directory structure
+;;                                            file-name)))
+;;           ;; Use rsync for faster file transfer, hide the output buffer
+;;           (let ((async-process-buffer "*async-save-rsync*"))
+;;             (async-shell-command
+;;              (concat "rsync -avz --checksum " buffer-file " sandbox:" remote-destination)
+;;              async-process-buffer)
+;;             (set-process-sentinel (get-buffer-process async-process-buffer)
+;;                                   (lambda (process event)
+;;                                     (when (string= event "finished\n")
+;;                                       (kill-buffer async-process-buffer)))))
+;; 		  (message "Buffer is not visiting a file!")))))
+
+;; (defun run-async-shell-command-silent (command)
+;;   "Run a shell command asynchronously, suppressing the output buffer.
+;; The process remains available in the background for inspection if needed."
+;;   (let ((buffer (generate-new-buffer " *hidden-async-shell*")))
+;;     (async-shell-command command buffer)
+;;     (with-current-buffer buffer
+;;       (delete-other-windows)) ;; Ensure buffer isn't visible
+;;     buffer)) ;; Return buffer in case user wants to inspect
+
+(defun run-async-shell-command-silent (command)
+  "Run a shell command asynchronously, suppressing the output buffer and killing it after execution.
+The process remains available in the background while running, and the current buffer is unaffected."
+  (let ((buffer (generate-new-buffer " *hidden-async-shell*")))
+    (async-shell-command command buffer)
+    (with-current-buffer buffer
+      ;; Ensure buffer is not displayed
+      (delete-other-windows))
+    ;; Set up a process sentinel to kill the buffer once the command is done
+    (set-process-sentinel
+     (get-buffer-process buffer)
+     (lambda (process _event)
+       (when (memq (process-status process) '(exit signal))
+         (kill-buffer (process-buffer process)))))
+    buffer)) ;; Return buffer in case user needs to inspect it before termination
+
+(defun pull-file-from-remote (relative-remote-file)
+  "Pull a file from the remote server, ensuring directories are created locally.
+RELATIVE-REMOTE-FILE is the path relative to /home/aziz/workspaces on the server."
+  (interactive "sRelative remote file (e.g., mydir/dir/anotherdir/file.md): ")
+  (let* ((remote-base "/home/aziz/workspaces/")
+         (remote-file (concat remote-base relative-remote-file))
+         (local-base "~/workspaces/")
+         (local-file (expand-file-name relative-remote-file local-base))
+         (local-dir (file-name-directory local-file)))
+    ;; Ensure local directory exists
+    (unless (file-directory-p local-dir)
+      (make-directory local-dir t))
+    ;; Pull file from remote
+    (run-async-shell-command-silent
+     (format "scp sandbox:%s %s" remote-file local-file))))
+
+(defun save-and-sync-to-remote ()
+  "Save the current file and sync it to the remote server, ensuring directories exist remotely."
+  (interactive)
+  (save-buffer)
+  (let* ((local-base "~/workspaces/")
+         (remote-base "/home/aziz/workspaces/")
+         (relative-path (file-relative-name (buffer-file-name) (expand-file-name local-base)))
+         (remote-file (concat remote-base relative-path))
+         (remote-dir (file-name-directory remote-file)))
+    ;; Create remote directory if it doesn't exist
+    (run-async-shell-command-silent
+     (format "ssh sandbox 'mkdir -p %s'" remote-dir))
+    ;; Sync file to remote
+    (run-async-shell-command-silent
+     (format "rsync -avz --checksum %s sandbox:%s"
+             (shell-quote-argument (buffer-file-name))
+             (shell-quote-argument remote-file)))))
+
+(global-set-key (kbd "C-x C-y") 'save-and-sync-to-remote)
+(global-set-key (kbd "C-x C-u") 'pull-file-from-remote)
+
+```
+
+tramp setup 
+
+```elisp 
+
+
+(setq tramp-default-method "sshx")
 (setq tramp-verbose 1) ; Debugging level (optional)
 ;;/sshx:user@remote-host:/path/to/file
 
 (setq tramp-auto-save-directory "~/.emacs.d/tramp-autosave")
+(setq tramp-persistency-file-name "~/.emacs.d/tramp-persistency")
+
 (setq tramp-connection-timeout 10) ;increase timeout
 (setq tramp-cache-enabled t)
+(setq tramp-use-ssh-controlmaster-options nil) ; Prevent blocking on ControlMaster
 
-(setq tramp-persistency-file-name "~/.emacs.d/tramp-persistency")
 (setq remote-file-name-inhibit-cache nil) ; cache remote files 
-(setq tramp-completion-reread-directory-timeout nil)
+(setq tramp-completion-reread-directory-timeout nil) ; Reduce rereads
+
 (setq tramp-ssh-controlmaster-options
       "-o ControlMaster=auto -o ControlPath='~/.ssh/tramp-%%r@%%h:%%p' -o ControlPersist=yes")
+(setq tramp-async-args '("--async"))
 
 ;; working with sshfs in macs is better
 ;; sshfs -o cache=yes,compression=no,kernel_cache,reconnect,ServerAliveInterval=15,ServerAliveCountMax=3 sandbox:/home/aziz/workspace ~/workspace
@@ -264,3 +392,7 @@ web-mode
 ;; (ac-config-default)
 
 ```
+
+configuration
+
+business owner

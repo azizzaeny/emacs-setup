@@ -1,6 +1,9 @@
 set key binding
 
 ```elisp 
+;; saving async
+;;(global-set-key (kbd "C-x C-s") 'async-save-buffer)
+
 ;; Multi Cursor
 (global-unset-key (kbd "C-x m")) ;; mail
 (global-set-key (kbd "C-x m n") 'mc/mark-next-like-this)
