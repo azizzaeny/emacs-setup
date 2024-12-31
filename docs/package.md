@@ -38,6 +38,7 @@ refresh package contents
     yaml-mode
     restclient
     company
+	async
     )
   )
 ```

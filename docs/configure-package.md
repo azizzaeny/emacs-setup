@@ -19,7 +19,11 @@ text specifications
 tramp setup 
 
 ```elisp 
+(require 'async)
+(async-bytecomp-package-mode 1); Edit large files asynchronously using packages like async to avoid blocking
+
 (setq create-lockfiles nil); avoid lockfiles when using tramp
+(setq vc-handled-backends nil) ; Disable version control for better performance
 
 (setq tramp-default-method "ssh")
 (setq tramp-verbose 1) ; Debugging level (optional)
@@ -27,12 +31,18 @@ tramp setup
 
 (setq tramp-auto-save-directory "~/.emacs.d/tramp-autosave")
 (setq tramp-connection-timeout 10) ;increase timeout
+(setq tramp-cache-enabled t)
 
 (setq tramp-persistency-file-name "~/.emacs.d/tramp-persistency")
 (setq remote-file-name-inhibit-cache nil) ; cache remote files 
 (setq tramp-completion-reread-directory-timeout nil)
 (setq tramp-ssh-controlmaster-options
       "-o ControlMaster=auto -o ControlPath='~/.ssh/tramp-%%r@%%h:%%p' -o ControlPersist=yes")
+
+;; working with sshfs in macs is better
+;; sshfs -o cache=yes,compression=no,kernel_cache,reconnect,ServerAliveInterval=15,ServerAliveCountMax=3 sandbox:/home/aziz/workspace ~/workspace
+;; sudo diskutil umount ~/workspaces
+
 ```
 
 reloading markdown
