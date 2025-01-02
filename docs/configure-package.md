@@ -16,10 +16,34 @@ repl, sent tmux
       (read-string "No target set. Specify tmux target (e.g., session:window.pane): ")))
 
 (defun tmux-send-keys (target command)
-  "Send a COMMAND string to a specific tmux TARGET (session:window.pane)."
-  (let ((formatted-command (format "tmux send-keys -t %s \"%s\" C-m" target command)))
+  "Send a COMMAND string to a specific tmux TARGET (session:window.pane).
+Escape special characters like $ and \" before sending."
+  (let* ((step1 (replace-regexp-in-string "\"" "\\\"" command t t))
+         ;; Handle dollar sign differently - just escape it without capturing
+         (step2 (replace-regexp-in-string "\\$" "\\$" step1 t t))
+         ;; Handle semicolon by escaping it
+         (step3 (replace-regexp-in-string ";" "\\;" step2 t t))
+         (formatted-command (concat "tmux send-keys -t " target " \"" step3 "\" C-m")))
     (start-process-shell-command "tmux-send-keys" nil formatted-command)
     (message "Sent to tmux: %s" command)))
+
+;; (defun tmux-send-keys (target command)
+;;   "Send a COMMAND string to a specific tmux TARGET (session:window.pane).
+;; Escape special characters for shell interpretation."
+;;   (let* ((step1 (replace-regexp-in-string "\"" "\\\"" command t t))
+;;          (step2 (replace-regexp-in-string "\\$" "\\$" step1 t t))
+;;          (step3 (replace-regexp-in-string ";" "\\;" step2 t t))
+;;          ;; Additional shell special characters that might need escaping
+;;          (step4 (replace-regexp-in-string "|" "\\|" step3 t t))
+;;          (step5 (replace-regexp-in-string ">" "\\>" step4 t t))
+;;          (step6 (replace-regexp-in-string "<" "\\<" step5 t t))
+;;          (step7 (replace-regexp-in-string "&" "\\&" step6 t t))
+;;          (step8 (replace-regexp-in-string "`" "\\`" step7 t t))
+;;          (step9 (replace-regexp-in-string "(" "\\(" step8 t t))
+;;          (step10 (replace-regexp-in-string ")" "\\)" step9 t t))
+;;          (formatted-command (concat "tmux send-keys -t " target " \"" step10 "\" C-m")))
+;;     (start-process-shell-command "tmux-send-keys" nil formatted-command)
+;;     (message "Sent to tmux: %s" command)))
 
 (defun tmux-send-control-key (key)
   "Send a control KEY (e.g., C-c, C-d, C-z) to the last tmux target."
