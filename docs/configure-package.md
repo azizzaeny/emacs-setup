@@ -1,3 +1,102 @@
+repl, sent tmux 
+
+```elisp
+(defvar tmux-last-target nil
+  "Stores the last tmux target used.")
+
+(defun tmux-set-target (target)
+  "Set the tmux TARGET for subsequent commands."
+  (interactive "sTmux target (e.g., session:window.pane): ")
+  (setq tmux-last-target target)
+  (message "Tmux target set to: %s" tmux-last-target))
+
+(defun tmux-get-target ()
+  "Get the current tmux target, or prompt if none is set."
+  (or tmux-last-target
+      (read-string "No target set. Specify tmux target (e.g., session:window.pane): ")))
+
+(defun tmux-send-keys (target command)
+  "Send a COMMAND string to a specific tmux TARGET (session:window.pane)."
+  (let ((formatted-command (format "tmux send-keys -t %s \"%s\" C-m" target command)))
+    (start-process-shell-command "tmux-send-keys" nil formatted-command)
+    (message "Sent to tmux: %s" command)))
+
+(defun tmux-send-control-key (key)
+  "Send a control KEY (e.g., C-c, C-d, C-z) to the last tmux target."
+  (let ((target (tmux-get-target))
+        (control-key (pcase key
+                       ('C-c "C-c")
+                       ('C-d "C-d")
+                       ('C-z "C-z")
+                       (_ (error "Unsupported control key")))))
+    (let ((formatted-command (format "tmux send-keys -t %s %s" target control-key)))
+      (start-process-shell-command "tmux-send-keys" nil formatted-command)
+      (message "Sent to tmux: %s" control-key))))
+
+(defun tmux-send-last-command (command)
+  "Send COMMAND to the last tmux target."
+  (tmux-send-keys (tmux-get-target) command))
+
+(defun tmux-send-line-to-repl ()
+  "Send the current line to the tmux target."
+  (interactive)
+  (let ((line-text (thing-at-point 'line t)))
+    (tmux-send-last-command line-text)))
+
+(defun tmux-send-region-to-repl (start end)
+  "Send the selected region (START to END) to the tmux target."
+  (interactive "r")
+  (let ((region-text (buffer-substring-no-properties start end)))
+    (tmux-send-last-command region-text)))
+
+(defun tmux-send-paragraph-to-repl ()
+  "Send the current paragraph to the tmux target."
+  (interactive)
+  (let ((paragraph-text (thing-at-point 'paragraph t)))
+    (tmux-send-last-command paragraph-text)))
+
+(defun tmux-send-control-c ()
+  "Send C-c to the tmux target."
+  (interactive)
+  (tmux-send-control-key 'C-c))
+
+(defun tmux-send-control-d ()
+  "Send C-d to the tmux target."
+  (interactive)
+  (tmux-send-control-key 'C-d))
+
+(defun tmux-send-control-z ()
+  "Send C-z to the tmux target."
+  (interactive)
+  (tmux-send-control-key 'C-z))
+
+(global-set-key (kbd "C-c t t") 'tmux-set-target)          ;; Set target
+(global-set-key (kbd "C-c t r") 'tmux-send-region-to-repl) ;; Send region
+(global-set-key (kbd "C-c t l") 'tmux-send-line-to-repl)   ;; Send line
+(global-set-key (kbd "C-c t p") 'tmux-send-paragraph-to-repl) ;; Send paragraph
+(global-set-key (kbd "C-c t c") 'tmux-send-control-c)      ;; Send C-c
+(global-set-key (kbd "C-c t d") 'tmux-send-control-d)      ;; Send C-d
+(global-set-key (kbd "C-c t z") 'tmux-send-control-z)      ;; Send C-z
+
+```
+
+test sending javascript 
+```js 
+function test(){ return 1; };
+test();
+
+// "sending multiple lines "
+function test(){
+  return 2;
+};
+
+test();
+
+function writing_error(){
+  asdfs
+ 
+```
+
 tmux, mosh, and workflow 
 text specifications, faster  
 
