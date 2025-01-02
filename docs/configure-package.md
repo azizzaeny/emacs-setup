@@ -81,6 +81,7 @@ repl, sent tmux
 ```
 
 test sending javascript 
+
 ```js 
 function test(){ return 1; };
 test();
@@ -94,7 +95,6 @@ test();
 
 function writing_error(){
   asdfs
- 
 ```
 
 tmux, mosh, and workflow 
