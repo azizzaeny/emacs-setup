@@ -19,10 +19,8 @@ repl, sent tmux
   "Send a COMMAND string to a specific tmux TARGET (session:window.pane).
 Escape special characters like $ and \" before sending."
   (let* ((step1 (replace-regexp-in-string "\"" "\\\"" command t t))
-         ;; Handle dollar sign differently - just escape it without capturing
          (step2 (replace-regexp-in-string "\\$" "\\$" step1 t t))
-         ;; Handle semicolon by escaping it
-         (step3 (replace-regexp-in-string ";" "\\;" step2 t t))
+         (step3 (replace-regexp-in-string "`" "\\`"  step2 t t))
          (formatted-command (concat "tmux send-keys -t " target " \"" step3 "\" C-m")))
     (start-process-shell-command "tmux-send-keys" nil formatted-command)
     (message "Sent to tmux: %s" command)))
