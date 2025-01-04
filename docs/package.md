@@ -23,14 +23,11 @@ refresh package contents
     expand-region
     markdown-mode
     multiple-cursors
-    simple-httpd
     python-mode
     js2-mode
     php-mode
     emmet-mode
     web-mode
-    rjsx-mode
-    xref-js2
     mmm-mode
     nginx-mode
     dotenv-mode
@@ -41,6 +38,7 @@ refresh package contents
 	async
     )
   )
+;; todo use gptel package to interact with llm
 ```
 
 configure the package
