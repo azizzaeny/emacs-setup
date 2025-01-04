@@ -42,7 +42,6 @@
 (load-markdown "~/.emacs.d/docs/package.md")
 (load-markdown "~/.emacs.d/docs/configure-package.md")
 (load-markdown "~/.emacs.d/docs/visual.md")
-(load-markdown "~/.emacs.d/docs/simple-httpd.md")
 (load-markdown "~/.emacs.d/docs/copy-paste.md")
 (load-markdown "~/.emacs.d/docs/note.md")
 (load-markdown "~/.emacs.d/docs/expand-abbrev.md")

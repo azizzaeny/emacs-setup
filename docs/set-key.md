@@ -129,6 +129,12 @@ set key binding
 (global-set-key (kbd "C-c s e") 'expand-abbrev-snippet)
 (global-set-key (kbd "C-c s l") 'region-to-single-line)
 
+;; bookmark
+;; C-x r m ;; make a bookmark
+;; C-x r b ;; jump to location
+;; C-x r l ;; list all bookmark
+;; M-x bookmark-save
+
 ;; the notes
 (global-set-key (kbd "C-c c n") 'note-open-today)
 ;; (global-set-key (kbd "C-c n 1") 'note-open-yesterday)
@@ -145,6 +151,9 @@ set key binding
 ;; rename buffer
 (global-unset-key (kbd "C-x p r")) ;; query replace
 (global-set-key (kbd "C-x p b") 'rename-buffer)
+;; previous bufer & nex buffer
+;; <C-prior> 'previous-buffer
+;; <C-next> 'next-buffer
 
 ;; the repl
 ;; (global-set-key (kbd "C-x p b") 'create-browser-repl)

@@ -126,12 +126,14 @@ text specifications, faster
 (add-hook 'text-mode-hook
           (lambda ()
             (global-display-line-numbers-mode) ;; enable line 
-            (setq-default paragraph-start "\f\\|[ \t]*$"
-                          paragraph-separate "[ \t\f]*$") ;; hanging indent
+            ;; (setq-default paragraph-start "\f\\|[ \t]*$"
+            ;;               paragraph-separate "[ \t\f]*$") ;; hanging indent
             (setq fill-column 80)    ; Set maximum line width to 80 characters
             (auto-fill-mode 1)
             (turn-on-auto-fill))) ; Enable automatic line wrapping 
 
+;; Save & restore sessions
+;; (desktop-save-mode 1)
 ```
 
 remote working, similiar like tramp but non-blocking async 
@@ -272,7 +274,6 @@ reloading markdown
   (load-markdown "~/.emacs.d/docs/package.md")
   (load-markdown "~/.emacs.d/docs/configure-package.md")
   (load-markdown "~/.emacs.d/docs/visual.md")
-  (load-markdown "~/.emacs.d/docs/simple-httpd.md")
   (load-markdown "~/.emacs.d/docs/copy-paste.md")
   (load-markdown "~/.emacs.d/docs/note.md")
   (load-markdown "~/.emacs.d/docs/expand-abbrev.md")
