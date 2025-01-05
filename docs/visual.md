@@ -1,7 +1,27 @@
-theme and visual apperaence
+
+themes set, divider, bottom border
 
 ```elisp
+
+(setq window-divider-default-places 'right-only)
+(setq window-divider-default-bottom-width 1)
+(setq window-divider-default-right-width 1)
+(load-theme 'vscode-dark-plus t)
+(window-divider-mode 1)
+
+;; balck bottom border bg status
+(custom-set-faces
+ '(mode-line ((t (:background "#000000" :foreground "#ffffff"))))
+ '(mode-line-inactive ((t (:background "#000000" :foreground "#888888")))))
+
+;; font 
 (set-face-attribute 'default nil :font "Source Code Pro for powerline")
+
+```
+
+visual apperaence
+ 
+```elisp
 
 (menu-bar-mode -1)
 
@@ -13,8 +33,8 @@ theme and visual apperaence
 
 (setq line-number-mode t)
 (setq indicate-empty-lines t)
-(setq global-hl-line-mode t)
-(global-hl-line-mode t)
+(setq global-hl-line-mode nil)
+;;(global-hl-line-mode nil)
 
 (setq tab-width 2)
 (setq-default indent-tabs-mode nil)
@@ -52,23 +72,6 @@ backup
 
 ```
 
-
-divider
-
-```elisp
-
-(setq window-divider-default-places 'right-only)
-(setq window-divider-default-bottom-width 1)
-(setq window-divider-default-right-width 1)
-(load-theme 'vscode-dark-plus t)
-(window-divider-mode 1)
-
-;; balck bottom border bg status
-(custom-set-faces
- '(mode-line ((t (:background "#000000" :foreground "#ffffff"))))
- '(mode-line-inactive ((t (:background "#000000" :foreground "#888888")))))
-
-```
 
 scroll
 
