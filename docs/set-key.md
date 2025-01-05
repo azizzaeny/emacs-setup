@@ -134,6 +134,7 @@ set key binding
 ;; C-x r b ;; jump to location
 ;; C-x r l ;; list all bookmark
 ;; M-x bookmark-save
+;; M-x bookamrk-delete
 
 ;; the notes
 (global-set-key (kbd "C-c c n") 'note-open-today)
