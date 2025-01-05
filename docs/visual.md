@@ -63,6 +63,11 @@ divider
 (load-theme 'vscode-dark-plus t)
 (window-divider-mode 1)
 
+;; balck bottom border bg status
+(custom-set-faces
+ '(mode-line ((t (:background "#000000" :foreground "#ffffff"))))
+ '(mode-line-inactive ((t (:background "#000000" :foreground "#888888")))))
+
 ```
 
 scroll

@@ -13,7 +13,7 @@ refresh package contents
 (defvar
   my-packages
   '(
-    vscode-dark-plus-theme    
+    vscode-dark-plus-theme
     clojure-mode
     counsel
     ivy
