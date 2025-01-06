@@ -13,4 +13,5 @@
 !/learn-command.md        
 !/docs
 !/docs/*
-!/.tmux.conf    
+!/.tmux.conf
+!/.zshrc  

@@ -1,3 +1,14 @@
+we need to has to switch to tmux 0 runtime 1 runtime and switch into something
+else, so we assign the switch variables, 
+
+understanding the current markdown situations, states and so on, parsed it and
+so on. 
+
+we also need to has temporary overlay.
+
+concept of core emacs setup, and extended 
+
+
 test prove of concept functionality repl tmux with overlay 
 
 ```lisp
@@ -314,6 +325,7 @@ REMOTE-PATH should be a full path like sandbox:/home/user/workspaces/file.txt."
 ```
 
 async saving , increase performances 
+
 ```elisp 
 (setq gc-cons-threshold (* 50 1000 1000)) ; Increase threshold to 50MB
 (setq gc-cons-percentage 0.1) ; Adjust GC frequency
