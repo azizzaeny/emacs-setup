@@ -2,7 +2,6 @@ test diffrence functionality with overlay
 
 ```lisp
 ;; repl-overlay.el - A simple REPL-driven development tool for Emacs
-
 (defun start-repl-process (name command)
   "Start a REPL process with the given NAME and COMMAND."
   (unless (get-process name)
@@ -26,7 +25,7 @@ test diffrence functionality with overlay
           (with-current-buffer output-buffer
             (let ((result (buffer-string)))
               (display-overlay result))))
-      (message "Process %s is not running." process-name))))
+        (message "Process %s is not running." process-name))))
 
 (defun display-overlay (text)
   "Display TEXT as an overlay at the current point."

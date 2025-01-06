@@ -242,3 +242,72 @@ var loadRepl = url => fetch(url).then(res => res.text()).then(res => (eval(res),
 var html = (strings, ...values) => String.raw({ raw: strings }, ...values);
 ```
 
+### simple http server 
+```js name=tcpHttp
+
+var net = require('net');
+var $http1 = 'HTTP/1.1'
+var $endLine = '\r\n';
+var $internalServerError = [500, {}, 'Internal Server Error'];
+var $toKeyVal = ([key,  value]) => `${key}: ${value}`;
+var $lineHeaders = (headers, line) => {
+  let [key, value] = line.split(': ');
+  return { ...headers, [key.toLowerCase()]: value };
+}
+var parseHeaders = lines => lines.filter(line => line.includes(': ')).reduce($lineHeaders, {});
+var parseRequest = (data) => {
+  let request = data.toString();
+  let [firstLine, ...lines] = request.split($endLine);
+  let [method, path, protocol] = firstLine.split(' ');
+  let lastLine = lines.indexOf('');
+  let headers = parseHeaders(lines.slice(0, lastLine));
+  let body = lines.slice(lastLine + 1).join($endLine);
+  let parsed = new URL(`http://${headers.host}${path}`);  
+  let urlObject = {
+    path: parsed.pathname,
+    query: parsed.search,
+    params: Object.fromEntries(new URLSearchParams(parsed.search))
+  };
+  return {method, path, protocol, headers, body, ...urlObject };
+};
+var statusText = (status) => ({
+  200: 'OK',
+  404: 'Not Found',
+  500: 'Internal Server Error'
+}[status]);
+var createResponse = ( status, headers ={}, body='') =>{
+  let response = {
+    'Content-Length': Buffer.from(body).length,
+    'Content-Type': 'text/plain',
+    'Date': new Date().toUTCString(),
+    'Connection': 'close',
+    ...headers    
+  };
+  let responseHeaders = Object.entries(response).map($toKeyVal).join($endLine);
+  return [
+    `${$http1} ${status} ${statusText(status)}`,
+    responseHeaders,
+    '',
+    body
+  ].join($endLine)  
+};
+var writeSocketData = (socket, handler) => async (data) => {
+  try{
+    let request = parseRequest(data);
+    let {status, headers, body} = await handler(request);
+    let response = createResponse(status, headers, body);
+    socket.write(response);
+  }catch(err){
+    console.log(err);
+    socket.write(createResponse(...$internalServerError));    
+  };
+  socket.end();
+};
+var handleConnection = handler => (socket) => socket.on('data', writeSocketData(socket, handler)).on('error', _ => socket.end());
+var createServer = (port, handler) => {
+  let server = net.createServer(handleConnection(handler));
+  server.listen(port);
+  return server;
+}
+
+```
