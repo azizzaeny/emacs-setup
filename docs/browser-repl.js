@@ -105,7 +105,11 @@ var replServer = replServer || repl.start({
 
 console.log(`Browser Repl created at port ${process.env.PORT}, REPL started`);
 
-// simple tmux systems
+// simple tmux systems in sessions
 // tmux new-session -d -s browser-repl 'PORT=5050 node ~/.emacs.d/docs/browser-repl.js'
+// tmux in window
+// tmux new-window -n browser-repl 'PORT=5050 node ~/.emacs.d/docs/browser-repl.js'.
+// tmux in the node.js directly
+// PORT=5050 node ~/.emacs.d/docs/browser-repl.js'
 
 
