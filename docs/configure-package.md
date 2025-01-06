@@ -1,3 +1,86 @@
+test diffrence functionality with overlay 
+
+```lisp
+;; repl-overlay.el - A simple REPL-driven development tool for Emacs
+
+(defun start-repl-process (name command)
+  "Start a REPL process with the given NAME and COMMAND."
+  (unless (get-process name)
+    (start-process name "*repl*" command)))
+
+(defun send-to-repl (process-name code)
+  "Send CODE to the REPL PROCESS-NAME and capture the output."
+  (let* ((process (get-process process-name))
+         (output-buffer (generate-new-buffer "*repl-output*")))
+    (if process
+        (progn
+          (with-current-buffer output-buffer
+            (erase-buffer))
+          (set-process-filter
+           process
+           (lambda (_proc output)
+             (with-current-buffer output-buffer
+               (insert output))))
+          (process-send-string process (concat code "\n"))
+          (sit-for 0.5)  ;; Wait briefly to capture the output
+          (with-current-buffer output-buffer
+            (let ((result (buffer-string)))
+              (display-overlay result))))
+      (message "Process %s is not running." process-name))))
+
+(defun display-overlay (text)
+  "Display TEXT as an overlay at the current point."
+  (let ((overlay (make-overlay (point) (point))))
+    (overlay-put overlay 'after-string (concat " => " text))))
+
+(defun repl-eval-region (start end)
+  "Send the selected region to the REPL and display the result."
+  (interactive "r")
+  (let ((code (buffer-substring-no-properties start end)))
+    (start-repl-process "node-repl" "node")
+    (send-to-repl "node-repl" code)))
+
+;; Keybinding for convenience
+(global-set-key (kbd "C-c C-r") 'repl-eval-region)
+
+(defun display-overlay-at-region (start end text)
+  "Create an overlay from START to END displaying TEXT."
+  (let ((overlay (make-overlay start end)))
+    (overlay-put overlay 'after-string text)))
+
+(defun show-overlay-on-region (start end)
+  "Display a simple overlay on the selected region with custom text."
+  (interactive "r")
+  (display-overlay-at-region start end " [Overlay Text]"))
+
+(defun eval-and-display-overlay (start end)
+  "Evaluate the selected region and display the result as an overlay."
+  (interactive "r")
+  (let ((code (buffer-substring-no-properties start end)))
+    (display-after-overlay end end (concat " => " (eval-expression (read code))))))
+
+(defun display-temporary-overlay (start end text duration)
+  "Create an overlay from START to END displaying TEXT temporarily for DURATION seconds."
+  (let ((overlay (make-overlay start end)))
+    (overlay-put overlay 'after-string text)
+    (run-at-time duration nil #'delete-overlay overlay)))
+
+(defun show-temp-overlay-on-region (start end)
+  "Show a temporary overlay on the selected region for 1 second."
+  (interactive "r")
+  (display-temporary-overlay start end " [Temp Overlay]" 1))
+                 
+;;
+;; how to make overlay
+;; replace input
+      ;; (mapc #'delete-overlay
+      ;;          (overlays-at (rdd@ repl input/start)))
+      ;;    (let ((overlay (make-overlay (rdd@ repl input/start)
+      ;;                                 (rdd@ repl input/end))))
+      ;;      (overlay-put overlay 'help-echo output))
+```
+
+
 repl, sent tmux 
 
 ```elisp
