@@ -1,6 +1,30 @@
-test diffrence functionality with overlay 
+test prove of concept functionality repl tmux with overlay 
 
 ```lisp
+
+(defun send-to-tmux-browser-repl (input)
+  "Send INPUT to the tmux browser REPL session."
+  (interactive "sEnter command: ")
+  (let ((session-name "browser-repl"))
+    (if (zerop (call-process-shell-command (format "tmux has-session -t %s" session-name)))
+        (start-process-shell-command
+         "tmux-send" nil
+         (format "tmux send-keys -t %s \"%s\" C-m" session-name input))
+        (message "Browser REPL session not running."))))
+
+(defun send-region-to-tmux-repl (start end)
+  "Send the selected region to the tmux browser REPL session."
+  (interactive "r")
+  (let ((input (buffer-substring-no-properties start end)))
+    (send-to-tmux-browser-repl input)))
+
+(defun capture-tmux-pane-output ()
+  "Capture the output of the tmux browser REPL pane."
+  (interactive)
+  (let ((output (shell-command-to-string "tmux capture-pane -p -t browser-repl")))
+    (with-output-to-temp-buffer "*tmux-output*"
+      (princ output))))
+
 ;; repl-overlay.el - A simple REPL-driven development tool for Emacs
 (defun start-repl-process (name command)
   "Start a REPL process with the given NAME and COMMAND."

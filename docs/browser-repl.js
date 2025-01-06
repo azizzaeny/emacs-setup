@@ -105,5 +105,7 @@ var replServer = replServer || repl.start({
   ignoreUndefined: true
 });
 
+// simple tmux systems
+// tmux new-session -d -s browser-repl 'PORT=5050 node ~/.emacs.d/docs/browser-repl.js'
 
 
