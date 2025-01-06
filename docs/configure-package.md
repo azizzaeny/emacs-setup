@@ -7,7 +7,15 @@ so on.
 we also need to has temporary overlay.
 
 concept of core emacs setup, and extended 
-
+instead of creating files and save the script use realtime evaluations script 
+examples
+```sh 
+node -e "$(cat <<'EOF'
+const name = 'Node.js';
+console.log(`Hello, ${name}!`);
+EOF
+)"
+```
 
 test prove of concept functionality repl tmux with overlay 
 
