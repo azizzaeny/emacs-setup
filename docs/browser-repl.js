@@ -97,13 +97,13 @@ var browserEval = (cmd, context, filename, callback) => {
 
 var server = server || httpServer({ port: parseInt(process.env.PORT) || 5050 , handler: (req, res)=> mainHandler(req, res)});
 
-console.log(`Browser Repl created at port ${process.env.PORT}, REPL started`);
-
 var replServer = replServer || repl.start({
   prompt: '> ',
   eval: browserEval,
   ignoreUndefined: true
 });
+
+console.log(`Browser Repl created at port ${process.env.PORT}, REPL started`);
 
 // simple tmux systems
 // tmux new-session -d -s browser-repl 'PORT=5050 node ~/.emacs.d/docs/browser-repl.js'
