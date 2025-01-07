@@ -48,6 +48,13 @@ Escape special characters like $ and \" before sending."
   (let ((line-text (thing-at-point 'line t)))
     (tmux-send-last-command line-text)))
 
+;; (tmux-send-last-command "node")
+;; (tmux-send-keys "work:0" ".exit")
+
+;; creating sessions
+;; tmux has-session -t new-session 2>/dev/null || tmux new-session -d -s new-session 'cp foo bar'
+;; SESSION="new-session" COMMAND="cp foo bar" tmux has-session -t "$SESSION" 2>/dev/null || tmux new-session -d -s "$SESSION" "$COMMAND"
+
 (defun tmux-send-region-to-repl (start end)
   "Send the selected region (START to END) to the tmux target."
   (interactive "r")
@@ -97,6 +104,8 @@ wrapped in a 'cat > FILENAME <<'EOF' ... EOF' block."
 (global-set-key (kbd "C-c t z") 'tmux-send-control-z)      ;; Send C-z
 
 ```
+ls
+
 
 foobar
 tmux, mosh, and workflow 
