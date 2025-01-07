@@ -10,13 +10,20 @@ concept of core emacs setup, and extended
 instead of creating files and save the script use realtime evaluations script 
 examples
 ```sh 
-node -e "$(cat <<'EOF'
-const name = 'Node.js';
-console.log(`Hello, ${name}!`);
+cat <<'EOF' | node
+const fs = require('fs');
+fs.writeFileSync('output.txt', 'Hello, Node.js!');
+console.log('File created!');
 EOF
-)"
 ```
-
+use execSync 
+```sh 
+cat <<'EOF' | node
+const { execSync } = require('child_process');
+const result = execSync('ls').toString();
+console.log('Files:', result);
+EOF
+```
 test prove of concept functionality repl tmux with overlay 
 
 ```lisp
