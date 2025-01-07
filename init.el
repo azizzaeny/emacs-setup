@@ -37,7 +37,7 @@
 (defvar md-block-header-snippet "^```\\(\\S-+\\)\\s-+name=\\(\\S-+\\)")
 (defvar md-block-end-snippet "^```$")
 
-;;(global-unset-key (kbd "C-c b"))
+;; (global-unset-key (kbd "C-c b"))
 
 (load-markdown "~/.emacs.d/docs/package.md")
 (load-markdown "~/.emacs.d/docs/configure-package.md")
