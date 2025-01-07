@@ -57,6 +57,7 @@ set key binding
 (global-set-key (kbd "C-s f") 'isearch-forward-symbol-at-point)
 (global-set-key (kbd "C-s d") 'counsel-grep-or-swiper)
 (global-set-key (kbd "M-x") 'counsel-M-x) ;; todo: changes default search key bind
+(global-set-key (kbd "C-s x") 'counsel-M-x) ;; todo: changes default search key bind
 (global-set-key (kbd "C-x b") 'ido-switch-buffer)
 (global-set-key (kbd "C-x C-f") 'ido-find-file)
 (global-unset-key (kbd "C-x d"))
