@@ -37,17 +37,9 @@
 (defvar md-block-header-snippet "^```\\(\\S-+\\)\\s-+name=\\(\\S-+\\)")
 (defvar md-block-end-snippet "^```$")
 
-;; (global-unset-key (kbd "C-c b"))
-
-(load-markdown "~/.emacs.d/docs/package.md")
-(load-markdown "~/.emacs.d/docs/configure-package.md")
-(load-markdown "~/.emacs.d/docs/visual.md")
-(load-markdown "~/.emacs.d/docs/copy-paste.md")
-(load-markdown "~/.emacs.d/docs/note.md")
-(load-markdown "~/.emacs.d/docs/expand-abbrev.md")
-(load-markdown "~/.emacs.d/docs/repl.md")
-(load-markdown "~/.emacs.d/docs/align.md")
-(load-markdown "~/.emacs.d/docs/set-key.md")
+(load-markdown "~/.emacs.d/configuration.md")
+(load-markdown "~/.emacs.d/extend-custom.md")
+(load-markdown "~/.emacs.d/assign-key.md")
 
 ;; (setq load-verbose t)
 ;; (setq debug-on-error t)
