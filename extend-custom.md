@@ -125,8 +125,8 @@ bare bones
 creating sessions
 tmux has-session -t new-session 2>/dev/null || tmux new-session -d -s new-session 'cp foo bar'
 SESSION="new-session" COMMAND="cp foo bar" tmux has-session -t "$SESSION" 2>/dev/null || tmux new-session -d -s "$SESSION" "$COMMAND"
-```
 
+```
 
 ## pull and sync from remote 
 
