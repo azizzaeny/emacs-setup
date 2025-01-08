@@ -291,7 +291,7 @@ remove those details
 
 ## javascript mode 
 
-``` elisp
+```elisp
 (setq-default indent-tabs-mode nil)
 (add-hook 'js2-mode-hook (lambda () (setq js2-basic-offset 2)))
 
@@ -308,7 +308,7 @@ remove those details
 
 ### web mode 
 
-``` elisp
+```elisp
 
 ;; webmode
 (setq web-mode-markup-indent-offset 2)

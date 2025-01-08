@@ -107,7 +107,7 @@ wrapped in a 'cat > FILENAME <<'EOF' ... EOF' block."
          (content (if (use-region-p)
                       (buffer-substring-no-properties start end)
                     (thing-at-point 'paragraph t)))
-         (wrapped-content (format "cat > %s <<'EOF'\n%sEOF" filename content)))
+         (wrapped-content (format "cat > %s <<'EOF'\n%s\nEOF" filename content)))
     (tmux-send-last-command wrapped-content)))
 
 ```

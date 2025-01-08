@@ -77,7 +77,7 @@ var matchRoute = (pathname, routes) => {
 }
 ```
 
-### docker node
+n### docker node
 ```sh name=dockerNode
 docker run --name test --rm -it -w /work --network host -v $(pwd):/work node:20-alpine /bin/sh -c "node && /bin/sh"
 ```
@@ -118,11 +118,12 @@ var createServer = (handler) => require('http').createServer((req, res)=>{
   let buffer = [];
   req.on('data', chunk => (chunk ? buffer.push(chunk) : null));
   req.on('end', async ()  => (parseRequest(req, buffer), writeResponse(await handler(req, res),  req, res))); 
-}));
+});
 var handler = (req, res) => ({body: `hellow buddy ${req.buffer}`});
 var server = createServer((req, res) => handler(req, res));
 server.listen(8080);
 ```
+
 ### Simple HTTP Handler
 ```js name=handleRoute
 var routes = {
@@ -289,4 +290,124 @@ var createServer = (port, handler) => {
   return server;
 }
 
+```
+
+### http serve file dir 
+```js name=httpServe 
+
+var { readFile } = require('fs/promises');
+var { join, extname } = require('path');
+var parseRequest = (request, buffer) => (
+  request.$parsed = require('url').parse(request.url, true),
+  request.params = { ...request.$parsed.query },
+  request.pathname = request.$parsed.pathname,
+  request.body = buffer,
+  request
+);
+var writeResponse = (ctx, request, response) => 
+  ctx === null ? null : (response.writeHead(ctx.status || 404, ctx.headers || {}), response.end(ctx.body || ''));
+var createServer = (handler) => 
+  require('http').createServer((req, res) => {
+    let buffer = [];
+    req.on('data', chunk => buffer.push(chunk));
+    req.on('end', async () => writeResponse(await handler(parseRequest(req, Buffer.concat(buffer))), req, res));
+  });
+var getFilePath = (serveDirectory, pathname) => join(serveDirectory, pathname === '/' ? '/index.html' : pathname);
+var getMimeType = (ext) => ({
+  'html': 'text/html',
+  'css': 'text/css',
+  'js': 'application/javascript',
+  'png': 'image/png',
+  'jpg': 'image/jpeg',
+  'svg': 'image/svg+xml',
+}[ext] || 'application/octet-stream');
+var getExtension = (filePath) => extname(filePath).slice(1) || 'html';
+var serve = async (req) => {
+  let serveDirectory = './';
+  let filePath = getFilePath(serveDirectory, req.pathname);
+  let ext = getExtension(filePath);
+  try {
+    let content = await readFile(filePath);
+    return { status: 200, headers: { 'Content-Type': getMimeType(ext) }, body: content };
+  } catch {
+    return { status: 404, headers: { 'Content-Type': 'text/plain' }, body: '404 Not Found' };
+  }
+};
+
+var handler = (req) => serve(req);
+var server = createServer(handler);
+server.listen(8080, () => console.log('running at port 8080'));
+
+```
+
+### nginx header conf 
+```conf name=nginxHeader 
+add_header                Cache-Control  "public, must-revalidate, proxy-revalidate, max-age=0";
+proxy_set_header          X-Forwarded-For $proxy_add_x_forwarded_for;
+proxy_set_header          X-NginX-Proxy true;
+proxy_set_header          X-Real-IP $remote_addr;
+proxy_set_header          X-Forwarded-Proto https;
+proxy_hide_header         X-Frame-Options;
+proxy_set_header          Accept-Encoding "";
+proxy_http_version        1.1;
+proxy_set_header          Upgrade $http_upgrade;
+proxy_set_header          Connection "upgrade";
+proxy_set_header          Host $host;
+proxy_cache_bypass        $http_upgrade;
+proxy_max_temp_file_size  0;
+proxy_redirect            off;
+proxy_read_timeout        240s;
+```
+
+### nginx default domain 
+```conf name=nginxDefault
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    server_name ~^(?<subdomain>.+)\.azizzaeny\.com$ azizzaeny.com;
+    rewrite ^ https://$server_name$request_uri? permanent;        
+    root /var/www/www;
+    location / {
+         return 301 https://$host$request_uri;        
+    }
+}
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    server_name www.azizzaeny.com azizzaeny.com;
+    location / {
+    index index.html;
+        root /var/www/landing;
+        #include /etc/nginx/header.conf;
+        #proxy_pass http://0.0.0.0:10010/;
+    }
+}
+```
+### nginx subdomain 
+```conf 
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    server_name draft.azizzaeny.com; 
+    location /{
+        include /etc/nginx/header.conf;
+        proxy_pass http://0.0.0.0:8080;
+    }
+}
+```
+
+### certbot generate ssl 
+```sh name=certbot
+certCmd="certbot certonly --manual -d *.azizzaeny.com -d azizzaeny.com --agree-tos  --preferred-challenges dns-01 --register-unsafely-without-email"
+/usr/bin/docker run --rm -it --name certbot --network host --entrypoint "" -v "/home/aziz/sandbox/deployement/credentials:/etc/letsencrypt/:rw" -w /etc/letsencrypt certbot/certbot:v2.0.0 /bin/sh -c "$certCmd"
+```
+
+### nginx start 
+```sh name=nginxStart
+docker run -d --rm --name gateway --network host -v $(pwd)/credentials:/etc/letsencrypt  -v $(pwd)/conf/header.conf:/etc/nginx/header.conf -v $(pwd)/conf/subdomain/:/etc/nginx/conf.d -v $(pwd)/public:/var/www:rw nginx:latest
+```
+
+### nginx reload 
+```sh name=nginxReload
+docker exec gateway bin/sh -c "nginx -t && nginx -s reload"
 ```
