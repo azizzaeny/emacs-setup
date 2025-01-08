@@ -425,3 +425,104 @@ console.log('Server running at http://localhost:8080/');
 EOF
 )"
 ```
+### browser repl 
+```sh name=browserRepl
+docker run --name local-first --rm -it -w /work --network host node:20-alpine /bin/sh
+cat > /work/tmp.js <<'EOF'
+var os = require('os');
+var repl = require('repl');
+var vm = require('vm');
+var hosts = `https://draft.azizzaeny.com` || `http://localhost:8080`;
+var parseRequest = (request, buffer) => (request.$parsed = require('url').parse(request.url, true), request.params = Object.assign({}, request.$parsed.query), request.pathname = request.$parsed.pathname, request.body = buffer, request);
+var writeResponse = (ctx, request, response) => ctx === null ? null : (response.writeHead(ctx.status || 404, ctx.headers || {}), response.write(ctx.body || ''), response.end());
+var createServer = (port, handler) => {
+  let server = require('http').createServer((req, res)=>{
+    let buffer = [];
+    req.on('data', chunk => (chunk ? buffer.push(chunk) : null));
+    req.on('end', async ()  => (parseRequest(req, buffer), writeResponse(await handler(req, res),  req, res))); 
+  });
+  return (server.listen(port), server);
+}
+var cors = (origin='*', method='GET, POST, PUT, DELETE, OPTIONS', headers='Content-Type, Authorization') => ({
+  'Access-Control-Allow-Origin': origin,
+  'Access-Control-Allow-Methods': method,
+  'Access-Control-Allow-Headers': headers
+});
+var bufferContent = bufferContent || [];
+var bufferRelease = (txt) => {
+  bufferContent.forEach((res) => (res.writeHead(200, cors()), res.end(txt)));
+  bufferContent = [];
+  return true;
+}
+var defaultHtml = `
+ <html>
+   <head>
+     <meta charset='UTF-8'/>
+     <meta name='viewport' content='width=device-width,initial-scale=1.0'>    
+     <script src='https://cdn.tailwindcss.com/3.4.3'></script>
+     <script src='${hosts}/client.js'></script>
+   </head>
+   <body class='antialiased'>
+   </body>
+ </html>
+`;
+var defaultClient =`
+  var createScript = (id, content) => {
+    let _script = () => Object.assign(document.createElement('script'), {id: id ? id : generateId(), innerHTML:content});
+    let findScript = document.querySelector('script[id='+id+']');
+    if(!findScript) return document.head.appendChild(_script());
+    return (findScript.parentNode.removeChild(findScript), document.head.appendChild(_script()))
+  }
+  var loadRepl = url => fetch(url, {mode: 'cors'}).then(res => res.text()).then(res => (createScript('_repl', res), setTimeout(()=>loadRepl(url), 200)));
+  loadRepl('${hosts}/_repl');
+  console.log('Browser Repl: connected');
+`;
+var typeHtml = {'Content-Type': 'text/html'};
+var typeJs = {'Content-Type': 'text/javascript'};
+var defaultHeaders = (type) => Object.assign(cors(), type);
+var serveIndex = (req) => ({ status: 200, headers: defaultHeaders(typeHtml), body: defaultHtml});
+var serveClient = (req) => ({ status: 200, headers: defaultHeaders(typeJs), body: defaultClient});
+var handler = (req, res) => {
+  let routes = {
+    'GET /': serveIndex,
+    'GET /client.js': serveClient
+  };
+  let found = routes[`${req.method} ${req.pathname}`];
+  if(found) return found(req);
+  return (bufferContent.push(res), null);
+};
+var bufferCmds = bufferCmds = [];
+var bufferTimer = null;
+var browserEval = (cmd, context, filename, callback) => {
+  (cmd = cmd.replace(/;+$/, ''));
+  if (cmd.trim()) {
+    try {
+      new vm.Script(cmd);
+      bufferCmds.push(cmd);
+      if(bufferTimer) clearTimeout(bufferTimer);
+      bufferTimer = setTimeout( _ => (bufferRelease(bufferCmds.join(' \n ')), bufferCmds = []), 200);
+      callback(null);
+    } catch (e) {
+      if (e instanceof SyntaxError) {
+        callback(new repl.Recoverable(e));
+      } else {
+        bufferCmds.push(cmd);
+        if(bufferTimer) clearTimeout(bufferTimer); 
+        bufferTimer = setTimeout( _ => (bufferRelease(bufferCmds.join(' \n ')), bufferCmds=[]), 200);
+        callback(e);
+      }
+    }
+  } else {
+    callback(null);
+  }
+}
+var server = server || createServer(8080, (req, res)=> handler(req, res));
+console.log(`Browser Repl created at port ${process.env.PORT}, REPL started`);
+var replServer = replServer || repl.start({
+  prompt: '> ',
+  eval: browserEval,
+  ignoreUndefined: true
+});
+EOF
+node /work/tmp.js
+```
