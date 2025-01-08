@@ -77,9 +77,15 @@ var matchRoute = (pathname, routes) => {
 }
 ```
 
-n### docker node
-```sh name=dockerNode
+### docker node
+```sh name=dockerNodeMount
 docker run --name test --rm -it -w /work --network host -v $(pwd):/work node:20-alpine /bin/sh -c "node && /bin/sh"
+```
+
+### docker node 
+```sh name=dockerNode 
+docker run --name test --rm -it -w /work --network host node:20-alpine node
+docker exec -it test /bin/sh
 ```
 
 ### docker redis
@@ -410,4 +416,12 @@ docker run -d --rm --name gateway --network host -v $(pwd)/credentials:/etc/lets
 ### nginx reload 
 ```sh name=nginxReload
 docker exec gateway bin/sh -c "nginx -t && nginx -s reload"
+```
+
+### node cat 
+```sh name=nodeCat 
+node -e "$(cat <<'EOF'
+console.log('Server running at http://localhost:8080/');
+EOF
+)"
 ```
