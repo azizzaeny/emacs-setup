@@ -1,3 +1,9 @@
+## add websocket control chrome 
+
+```elisp 
+(require 'websocket)
+```
+
 ## add isearch current word 
 ```elisp 
 

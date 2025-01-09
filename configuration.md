@@ -35,6 +35,7 @@
     restclient
     company
 	async
+    websocket
     )
   )
 ;; todo use gptel package to interact with llm
