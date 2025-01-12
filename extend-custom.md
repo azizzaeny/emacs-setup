@@ -1,8 +1,154 @@
-## add websocket control chrome 
+how we parse json 
+```lisp 
+(let* ((json-str "{\"type\": \"hello\", \"payload\": \"world\"}")
+       (hash (json-parse-string json-str :object-type 'hash-table)))
+  (message "Type: %s" (gethash "type" hash))
+  (message "Payload: %s" (gethash "payload" hash)))
+```
+
+##  websocket to repl node --inspect chrome debugger 
 
 ```elisp 
 (require 'websocket)
+(require 'json)
+
+(defvar ws-connection nil
+  "Holds the WebSocket connection.")
+
+(defun ws-connect (url)
+  "Connect to a WebSocket server at URL and set up message handling."
+  (setq ws-connection
+        (websocket-open url
+         :on-message (lambda (_ws frame)
+                       (ws-handle-message frame))
+         :on-close (lambda (_ws)
+                     (message "WebSocket closed"))))
+  (message "Connected to %s" url))
+
+(defun escape-quotes (str)
+  "Escape double quotes in STR for use in JSON."
+  (replace-regexp-in-string "\"" "\\\\\"" str))
+
+(defun sent-runtime-evalaute (str)
+  (format "{\"id\": 1, \"method\":\"Runtime.evaluate\", \"params\":{ \"expression\":\"%s\"}}" str))
+
+(defun ws-send (json-str)
+  "Send a JSON string JSON-STR over the WebSocket connection."
+  (if (websocket-openp ws-connection)
+      (progn
+        (websocket-send-text ws-connection json-str)
+        (message "Sent: %s" json-str))
+    (message "WebSocket connection is not open!")))
+
+(defun ws-handle-message (frame)
+  "Handle incoming WebSocket FRAME by extracting and parsing the message."
+  (let* ((text (websocket-frame-text frame))  ; Extract the text part of the frame
+         (parsed-hash (json-parse-string text :object-type 'hash-table)))
+    (message "Received: %s" text)
+    (message "Parsed into hash: %s" (json-encode (gethash "result" parsed-hash)))))
+
+(defun ws-close ()
+  "Close the WebSocket connection."
+  (when (websocket-openp ws-connection)
+    (websocket-close ws-connection)
+    (setq ws-connection nil)
+    (message "WebSocket connection closed.")))
+
+(defun ws-send-evaluate (start end)
+  "Send the expression from the region or the last expression in the buffer to the WebSocket server."
+  (interactive "r")
+  (let* ((input (if (use-region-p) (buffer-substring-no-properties start end) ; If region is active, use it
+                  (thing-at-point 'sexp t)))                   ; Otherwise, grab the last expression
+         (escaped-input (escape-quotes input))
+         (json-str (sent-runtime-evalaute escaped-input)))
+    (ws-send json-str)))
+
+(defun ws-connect-debugger ()
+  "Prompt the user for a WebSocket URL and then connect to it."
+  (interactive)
+  (let ((url (read-string "Enter WebSocket URL: " "ws://127.0.0.1:9229/e74e75ca-a7a8-4a28-ab4b-2e9743b3e827")))  ; Default URL
+    (ws-connect url)))
+
+;; Assign the function to a keybinding
+;; (global-set-key (kbd "C-c t r") 'ws-send-evaluate)
+
+;; (ws-connect "ws://127.0.0.1:9229/e74e75ca-a7a8-4a28-ab4b-2e9743b3e827")
+;; (ws-send "{\"id\": 1, \"method\":\"Runtime.evaluate\", \"params\":{ \"expression\":\"console.log('hallo world')\"}}")
+;; (ws-send "{\"id\": 1, \"method\":\"Runtime.evaluate\", \"params\":{ \"expression\":\"console.log('hallo world')\"}}")
+;; (ws-close)
+;; (ws-send (sent-runtime-evalaute (escape-quotes "console.log(\"hello world\")")))
+;; console.log("hellowww browws")
+
 ```
+## tmux sent simulate 
+
+```elisp 
+
+(defvar tmux-runtime nil
+  "runtime target to sent")
+
+(defun tmux-set-runtime (target)
+  "set tmux target runtime"
+  (interactive "sTmux runtime : session:window.pane")
+  (setq tmux-runtime target)
+  (message "set tmux runtime to % s" tmux-runtime))
+
+(defun tmux-get-runtime ()
+  "get active target"
+  (or tmux-runtime
+      (progn (setq tmux-runtime (read-string "session:window.pane ")) tmux-runtime )))
+
+(defun tmux-send (target str)
+  "sent to tmux"
+  (let* ((command (concat "tmux send-keys -t " target " \"" str "\" C-m")))
+    (start-process-shell-command "tmux-send-keys" nil command)
+    (message "Sent to tmux :%s" command)))
+
+(defun escape-quote-str (str)
+  "escape special char like $ and \" before sending"
+  (let* ((step1 (replace-regexp-in-string "\"" "\\\"" str t t))
+         (step2 (replace-regexp-in-string "\\$" "\\$" step1 t t))
+         (step3 (replace-regexp-in-string "`" "\\`" step2 t t)))
+    step3))
+
+(defun tmux-send-runtime (str)
+  "sent to last runtime"
+  (tmux-send (tmux-get-runtime) (escape-quote-str str)))
+
+(defun tmux-send-exp (start end)
+  "sent s expressions or region"
+  (interactive "r")
+  (let* ((str (if (use-region-p) (buffer-substring-no-properties start end)
+                  (thing-at-point 'sexp t))))
+    (tmux-send-runtime str)))
+
+(defun tmux-send-region (start end)
+  "sent region or paragraph"
+  (interactive "r")
+  (let* ((str (if (use-region-p) (buffer-substring-no-properties start end)
+                  (thing-at-point 'paragraph t))))
+    (tmux-send-runtime str)))
+
+(defun tmux-send-cat (start end)
+  "sent wrap region into cat"
+  (interactive "r")
+  (let* ((str (if (use-region-p) (buffer-substring-no-properties start end)
+                (thing-at-point 'paragraph t)))
+         (filename (read-string "Filename: ")))
+    (tmux-send-runtime (format "cat > %s <<'EOF'\n%s\nEOF" filename str))))
+
+(global-set-key (kbd "C-c t r") 'tmux-send-cat)
+
+;; tmux-runtime
+;; (tmux-get-runtime)
+;; (tmux-send "runtime:2" "ls")
+;; (tmux-set-runtime "runtime:2")
+;; (tmux-send-runtime "echo \"hello\"")
+
+;; (tmux-send-runtime "C-z")
+
+```
+
 
 ## add isearch current word 
 ```elisp 
@@ -116,13 +262,41 @@ wrapped in a 'cat > FILENAME <<'EOF' ... EOF' block."
          (wrapped-content (format "cat > %s <<'EOF'\n%s\nEOF" filename content)))
     (tmux-send-last-command wrapped-content)))
 
+(defun tmux-send-region-evaluate (start end)
+  "send region to last command"
+  (interactive "r")
+  (let* ((expression (if (use-region-p)
+                     (buffer-substring-no-properties start end)
+                     (thing-at-point 'paragraph t)))
+         (escape-expr (replace-regexp-in-string "\"" "\\\"" expression t t))
+        (json-command (format "{\"id\": 1, \"method\":\"Runtime.evaluate\", \"params\":{ \"expression\":\"%s\"}}" escape-expr)))
+    (tmux-send-last-command json-command)))
+
+(global-set-key (kbd "C-c t b") 'tmux-send-region-evaluate)
+
 ```
+
+we just neeed to get hash with 
+(gethash $hash key)
+(puthash key val)
+(make-hash-table :test 'equal)
+console.log("hello work")
 
 test it 
 
-```lisp 
+```lisp
 (tmux-send-last-command "node")
 (tmux-send-keys "work:0" ".exit")
+(tmux-set-target "runtime:2")
+(tmux-send-last-command "curl -s http://localhost:9222/json | jq  '.[0] | .id, .webSocketDebuggerUrl'")
+(tmux-send-last-command "websocat ws://localhost:9222/devtools/page/209FA35662274B4BB840F70BB75EF2E5")
+(tmux-send-last-command "{\"id\": 1, \"method\":\"Target.activateTarget\", \"params\":{ \"targetId\":\"209FA35662274B4BB840F70BB75EF2E5\"}}")
+(tmux-send-last-command "{\"id\": 1, \"method\":\"Runtime.evaluate\", \"params\":{ \"expression\":\"console.log('hallo world')\"}}")
+(tmux-send-last-command "{\"id\": 1, \"method\":\"Runtime.evaluate\", \"params\":{ \"expression\":\"console.log(\\\\\"hallo double quote world\\\\\")\"}}")
+;; to coubler some we need functions on top of it
+(replace-regexp-in-string "\"" "\\\"" "console.log(\"hello world\")" t t)
+
+
 ```
 
 bare bones 

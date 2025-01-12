@@ -93,7 +93,7 @@
 ```elisp 
 (add-hook 'text-mode-hook
           (lambda ()
-            (global-display-line-numbers-mode) ;; enable line 
+            ;;(global-display-line-numbers-mode) ;; enable line 
             ;; (setq-default paragraph-start "\f\\|[ \t]*$"
             ;;               paragraph-separate "[ \t\f]*$") ;; hanging indent
             (setq fill-column 80)    ; Set maximum line width to 80 characters
@@ -354,7 +354,7 @@ remove those details
                      (face-background 'vertical-border nil t))
 
 ;;(display-line-numbers-mode 1)
-(global-display-line-numbers-mode 1)
+;;(global-display-line-numbers-mode 1)
 
 (setq line-number-mode t)
 (setq indicate-empty-lines t)
