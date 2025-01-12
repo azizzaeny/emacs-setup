@@ -8,7 +8,7 @@ how we parse json
 
 ##  websocket to repl node --inspect chrome debugger 
 
-```elisp 
+```lisp 
 (require 'websocket)
 (require 'json)
 
@@ -82,7 +82,7 @@ how we parse json
 ```
 ## tmux sent simulate 
 
-```elisp 
+```lisp 
 
 (defvar tmux-runtime nil
   "runtime target to sent")
