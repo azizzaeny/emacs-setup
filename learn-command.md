@@ -1,3 +1,253 @@
+## learn repl last 
+## repl 
+
+```elisp
+;; prefix
+
+(setq repl-default-proc "ansi-term")
+(setq repl-second-proc "browser-repl") ;; we can sent to secondary using b, c is primary
+
+(defun repl-set-default-proc ()
+  "set default process for evaluation"
+  (interactive)
+  (setq repl-default-roc (read-string "set default proc (default: ansi-term): " nil nil "ansi-term")))
+
+(defun repl-set-second-proc ()
+  "set second process for evaluation"
+  (interactive)
+  (setq repl-second-roc (read-string "set second proc (default: browser-repl): " nil nil "browser-repl")))
+;; todo: assign key
+
+(defface my-highlight-face
+  '((t (:background "##f0f8ff"))) ; Customize background color here
+  "Face for highlighting text."
+  :group 'basic-faces)
+
+(defun repl-create-proc (name)
+  "create persistence repl process"
+  (interactive)
+  (let ((current-buffer (current-buffer)))
+    (if (get-buffer (format "*%s*" name))
+        (get-buffer-process (format "*%s*" name))
+      (get-buffer-process (ansi-term "/bin/zsh" name))
+      (switch-to-buffer current-buffer) 
+      (message "repl-process created"))));; TODO: fix need to sent twice when starting
+
+(defun repl-send-to (proc str)
+  "repl send message to proces"
+  (interactive)
+  (let ((proc (repl-create-proc proc)))
+    (comint-send-string proc str)
+    (comint-send-string proc "\n")  
+    (message "repl sent .")))
+
+;; main functions
+(defun repl-send-last-exp (&optional proc)
+  "send last expression"
+  (interactive)
+  (let* ((begin (save-excursion
+              (backward-sexp)
+              (move-beginning-of-line nil)
+              (point)))
+         (end (point))
+         (str (buffer-substring-no-properties begin end)))
+    ;;(highlight-region begin end)
+    (repl-send-to (or proc repl-default-proc) str)))
+
+(defun repl-send-line (&optional proc)
+  "send line"
+  (interactive)
+  (let* ((begin (save-excursion (beginning-of-line) (point)))
+         (end (save-excursion (end-of-line) (point)))
+         (str (buffer-substring-no-properties begin end)))
+    ;;(highlight-region begin end)
+    (repl-send-to (or proc repl-default-proc) str)))
+
+(defun repl-send-paragraph (&optional proc)
+  "Send region if selected, otherwise send the current paragraph."
+  (interactive)
+    (let* ((start (progn (backward-paragraph) (point)))
+           (end (progn (forward-paragraph) (point)))
+           (str (buffer-substring-no-properties start end)))
+      ;;(highlight-region begin end)      
+      (repl-send-to (or proc repl-default-proc) str)))
+
+(defun repl-send-region (&optional proc)
+  "Send the selected region to the process PROC."
+  (interactive)
+  (when (use-region-p)
+    (let ((start (region-beginning))
+          (end (region-end)))
+      (repl-send-to (or proc repl-default-proc) 
+                    (buffer-substring-no-properties start end)))))
+
+;; todo: sent buffer or region
+(defun repl-send-buffer (&optional proc)
+  "send the whole buffer"
+  (interactive)
+  ;;(highlight-region (point-min) (point-max))
+  (repl-send-to (or proc repl-default-proc) (buffer-substring-no-properties (point-min) (point-max))))
+
+(defun repl-send-markdown-block (&optional proc)
+  "send current markdown code block, search block backwarnd and then forward"
+  (interactive)
+  (save-excursion
+    (let ((starting-pos (progn (re-search-backward "^```" (point-min) t) (match-end 0)))
+          (end-pos (progn (re-search-forward md-block-end (point-max) t) (match-beginning 0))))
+      (let ((file-ref (or (progn (re-search-backward "```" starting-pos t) (match-string 1)) nil))
+            (start-content (progn (goto-char starting-pos) (beginning-of-line) (forward-line 1) (point))))
+        ;;(highlight-region start-content end-pos)
+        (repl-send-to (or proc repl-default-proc) (buffer-substring-no-properties start-content end-pos))))))
+
+;; TODO: send markdown block using defined proc in the code blocks it selfs
+
+(defun repl-b-send-last-exp ()
+  "send last expression to secondary proc"
+  (interactive)
+  (repl-send-last-exp repl-second-proc))
+
+(defun repl-b-send-line ()
+  "send line to secondary proc"
+  (interactive)
+  (repl-send-line repl-second-proc))
+
+;; todo: buffer is sent or region selected
+(defun repl-b-send-buffer ()
+  "send buffer to secondary proc"
+  (interactive)
+  (repl-send-buffer repl-second-proc))
+
+(defun repl-b-send-paragraph ()
+  "send paragraph to secondary proc"
+  (interactive)
+  (repl-send-paragraph repl-second-proc))
+
+(defun repl-b-send-region ()
+  "send region to secondary proc"
+  (interactive)
+  (repl-send-region repl-second-proc))
+
+(defun repl-b-send-markdown-block ()
+  "send markdown-block to secondary proc"
+  (interactive)
+  (repl-send-markdown-block repl-second-proc))
+
+
+(setq repl-mark "reload()") ;; default mark
+
+(defun repl-set-mark ()
+  (interactive)
+  (setq repl-mark (read-string "set repl-mark: ")))
+
+(defun repl-send-mark () ;; todo: make it able to send to the second process
+  "send marked interctive"
+  (interactive)
+  (repl-send-to repl-default-proc repl-mark))
+
+;; todo: send buffer or region ;;;
+
+```
+
+## learn tmux command 
+
+```elisp 
+(defvar tmux-last-target nil
+  "Stores the last tmux target used.")
+
+(defun tmux-set-target (target)
+  "Set the tmux TARGET for subsequent commands."
+  (interactive "sTmux target (e.g., session:window.pane): ")
+  (setq tmux-last-target target)
+  (message "Tmux target set to: %s" tmux-last-target))
+
+(defun tmux-get-target ()
+  "Get the current tmux target, or prompt if none is set."
+  (or tmux-last-target
+      (read-string "No target set. Specify tmux target (e.g., session:window.pane): ")))
+
+(defun tmux-send-keys (target command)
+  "Send a COMMAND string to a specific tmux TARGET (session:window.pane).
+Escape special characters like $ and \" before sending."
+  (let* ((step1 (replace-regexp-in-string "\"" "\\\"" command t t))
+         (step2 (replace-regexp-in-string "\\$" "\\$" step1 t t))
+         (step3 (replace-regexp-in-string "`" "\\`"  step2 t t))
+         (formatted-command (concat "tmux send-keys -t " target " \"" step3 "\" C-m")))
+    (start-process-shell-command "tmux-send-keys" nil formatted-command)
+    (message "Sent to tmux: %s" command)))
+
+(defun tmux-send-control-key (key)
+  "Send a control KEY (e.g., C-c, C-d, C-z) to the last tmux target."
+  (let ((target (tmux-get-target))
+        (control-key (pcase key
+                       ('C-c "C-c")
+                       ('C-d "C-d")
+                       ('C-z "C-z")
+                       (_ (error "Unsupported control key")))))
+    (let ((formatted-command (format "tmux send-keys -t %s %s" target control-key)))
+      (start-process-shell-command "tmux-send-keys" nil formatted-command)
+      (message "Sent to tmux: %s" control-key))))
+
+(defun tmux-send-last-command (command)
+  "Send COMMAND to the last tmux target."
+  (tmux-send-keys (tmux-get-target) command))
+
+(defun tmux-send-line-to-repl ()
+  "Send the current line to the tmux target."
+  (interactive)
+  (let ((line-text (thing-at-point 'line t)))
+    (tmux-send-last-command line-text)))
+
+(defun tmux-send-region-to-repl (start end)
+  "Send the selected region (START to END) to the tmux target."
+  (interactive "r")
+  (let ((region-text (buffer-substring-no-properties start end)))
+    (tmux-send-last-command region-text)))
+
+(defun tmux-send-paragraph-to-repl ()
+  "Send the current paragraph to the tmux target."
+  (interactive)
+  (let ((paragraph-text (thing-at-point 'paragraph t)))
+    (tmux-send-last-command paragraph-text)))
+
+(defun tmux-send-control-c ()
+  "Send C-c to the tmux target."
+  (interactive)
+  (tmux-send-control-key 'C-c))
+
+(defun tmux-send-control-d ()
+  "Send C-d to the tmux target."
+  (interactive)
+  (tmux-send-control-key 'C-d))
+
+(defun tmux-send-control-z ()
+  "Send C-z to the tmux target."
+  (interactive)
+  (tmux-send-control-key 'C-z))
+
+(defun tmux-send-region-or-paragraph-with-cat (start end)
+  "Send the selected region or the current paragraph to the tmux target,
+wrapped in a 'cat > FILENAME <<'EOF' ... EOF' block."
+  (interactive "r")
+  (let* ((filename (read-string "Enter filename: "))
+         (content (if (use-region-p)
+                      (buffer-substring-no-properties start end)
+                    (thing-at-point 'paragraph t)))
+         (wrapped-content (format "cat > %s <<'EOF'\n%s\nEOF" filename content)))
+    (tmux-send-last-command wrapped-content)))
+
+(defun tmux-send-region-evaluate (start end)
+  "send region to last command"
+  (interactive "r")
+  (let* ((expression (if (use-region-p)
+                     (buffer-substring-no-properties start end)
+                     (thing-at-point 'paragraph t)))
+         (escape-expr (replace-regexp-in-string "\"" "\\\"" expression t t))
+        (json-command (format "{\"id\": 1, \"method\":\"Runtime.evaluate\", \"params\":{ \"expression\":\"%s\"}}" escape-expr)))
+    (tmux-send-last-command json-command)))
+
+(global-set-key (kbd "C-c t b") 'tmux-send-region-evaluate)
+
+```
 ### Snippet System
 **snippet**
 

@@ -17,7 +17,7 @@
 (defvar md-block-header "^```elisp")
 (defvar md-block-end "^```$")
 
-(defun load-markdown (file-paths &optional evaluator)
+(defun zaeny/load-markdown (file-paths &optional evaluator)
   (interactive)
   (when (file-exists-p (expand-file-name file-paths))
     (with-temp-buffer
@@ -37,9 +37,9 @@
 (defvar md-block-header-snippet "^```\\(\\S-+\\)\\s-+name=\\(\\S-+\\)")
 (defvar md-block-end-snippet "^```$")
 
-(load-markdown "~/.emacs.d/configuration.md")
-(load-markdown "~/.emacs.d/extend-custom.md")
-(load-markdown "~/.emacs.d/assign-key.md")
+(zaeny/load-markdown "~/.emacs.d/configuration.md")
+(zaeny/load-markdown "~/.emacs.d/extend-custom.md")
+(zaeny/load-markdown "~/.emacs.d/assign-key.md")
 
 ;; (setq load-verbose t)
 ;; (setq debug-on-error t)
