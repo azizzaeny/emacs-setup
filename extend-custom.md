@@ -20,7 +20,7 @@ how we parse json
   (setq zaeny/ws-connection
         (websocket-open url
          :on-message (lambda (_ws frame)
-                       (ws-handle-message frame))
+                       (zaeny/ws-handle-message frame))
          :on-close (lambda (_ws)
                      (message "WebSocket closed"))))
   (message "Connected to %s" url))
@@ -48,11 +48,12 @@ how we parse json
     (message "Parsed into hash: %s" (json-encode (gethash "result" parsed-hash)))))
 
 (defun zaeny/ws-close ()
-  "Close the WebSocket connection."
-  (when (websocket-openp zaeny/ws-connection)
+ "Close the WebSocket connection."
+ (interactive)
+ (when (websocket-openp zaeny/ws-connection)
     (websocket-close zaeny/ws-connection)
     (setq zaeny/ws-connection nil)
-    (message "WebSocket connection closed.")))
+  (message "WebSocket connection closed.")))
 
 (defun zaeny/ws-send-evaluate (start end)
   "Send the expression from the region or the last expression in the buffer to the WebSocket server."
