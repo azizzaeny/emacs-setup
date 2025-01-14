@@ -1,7 +1,7 @@
 we want c-c prefix 
 we want c-x prefix 
 
-## configure tmux send region 
+## configure send region
 
 ```elisp 
 
@@ -10,9 +10,14 @@ we want c-x prefix
 (global-set-key (kbd "C-c t r") 'zaeny/tmux-send-region) ;; or paragrpah
 (global-set-key (kbd "C-c t l") 'zaeny/tmux-send-line) ;; or paragrpah
 (global-set-key (kbd "C-c t c") 'zaeny/tmux-send-cat) ;; sent wraper cat
+
 ;; (global-set-key (kbd "C-c t d") 'tmux-send-control-c)      ;; Send C-d
 ;; (global-set-key (kbd "C-c t z") 'tmux-send-control-z)      ;; Send C-z
 
+(global-set-key (kbd "C-c w t") 'zaeny/ws-connect-debugger)
+(global-set-key (kbd "C-c w c") 'zaeny/ws-close)
+(global-set-key (kbd "C-c w e") 'zaeny/ws-send-evaluate)
+;; todo create region, paragraph and line
 ```
 
 ## pull and sync remote 
