@@ -126,6 +126,13 @@ how we parse json
                   (thing-at-point 'paragraph t))))
     (zaeny/tmux-send-runtime str)))
 
+(defun zaeny/tmux-send-line (start end)
+  "sent region or line"
+  (interactive "r")
+  (let* ((str (if (use-region-p) (buffer-substring-no-properties start end)
+                  (thing-at-point 'line t))))
+    (zaeny/tmux-send-runtime str)))
+
 (defun zaeny/tmux-send-cat (start end)
   "sent wrap region into cat"
   (interactive "r")
@@ -337,7 +344,7 @@ If not provided, use today's date. If the file doesn't exist, create it."
                             (line-beginning-position))))
             (puthash name
                      (string-trim (buffer-substring-no-properties start end))
-                     snippets))))
+                     zaeny/snippets))))
     (message "Snippets file not found: %s" (expand-file-name snippets-file))))
 
 
@@ -361,8 +368,8 @@ If not provided, use today's date. If the file doesn't exist, create it."
 
 (defun zaeny/expand-abbrev-snippet ()
   (interactive)
-  (let* ((abbrev (abbrev-at-point))
-         (snippet-content (gethash abbrev snippets)))
+  (let* ((abbrev (zaeny/abbrev-at-point))
+         (snippet-content (gethash abbrev zaeny/snippets)))
     (if snippet-content
         (insert-content-abbrev snippet-content))))
 
@@ -592,5 +599,11 @@ If it exists, close it. Otherwise, prompt for a buffer to open."
   (transpose-lines 1)
   (forward-line -1))
 
+(defun zaeny/move-line-up ()
+  "Move the current line up by one."
+  (interactive)
+  (transpose-lines 1)
+  (forward-line -2))
 ```
+
 
