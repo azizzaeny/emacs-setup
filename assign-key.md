@@ -17,6 +17,9 @@ we want c-x prefix
 (global-set-key (kbd "C-c w t") 'zaeny/ws-connect-debugger)
 (global-set-key (kbd "C-c w c") 'zaeny/ws-close)
 (global-set-key (kbd "C-c w e") 'zaeny/ws-send-evaluate)
+(global-set-key (kbd "C-c w r") 'zaeny/ws-send-region)
+(global-set-key (kbd "C-c w l") 'zaeny/ws-send-line)
+
 ;; todo create region, paragraph and line
 ```
 
@@ -152,8 +155,8 @@ we want c-x prefix
 
 ;; popper 
 (global-unset-key (kbd "C-x p")) 
-(global-set-key (kbd "C-x p o") 'my-popup-toggle) ; Toggle or open popup
-(global-set-key (kbd "C-x p c") 'my-popup-close)  ; Close popup
+(global-set-key (kbd "C-x p o") 'zaeny/popup-toggle) ; Toggle or open popup
+(global-set-key (kbd "C-x p c") 'zaeny/popup-close)  ; Close popup
 
 
 ;; code folding

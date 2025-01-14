@@ -64,6 +64,24 @@ how we parse json
          (json-str (zaeny/sent-runtime-evalaute escaped-input)))
     (zaeny/ws-send json-str)))
 
+(defun zaeny/ws-send-region (start end)
+  "Send the expression from the region or the last expression in the buffer to the WebSocket server."
+  (interactive "r")
+  (let* ((input (if (use-region-p) (buffer-substring-no-properties start end) ; If region is active, use it
+                  (thing-at-point 'paragraph t)))                   ; Otherwise, grab the last expression
+         (escaped-input (zaeny/escape-quotes input))
+         (json-str (zaeny/sent-runtime-evalaute escaped-input)))
+    (zaeny/ws-send json-str)))
+
+(defun zaeny/ws-send-line (start end)
+  "Send the expression from the region or the last expression in the buffer to the WebSocket server."
+  (interactive "r")
+  (let* ((input (if (use-region-p) (buffer-substring-no-properties start end) ; If region is active, use it
+                  (thing-at-point 'line t)))                   ; Otherwise, grab the last expression
+         (escaped-input (zaeny/escape-quotes input))
+         (json-str (zaeny/sent-runtime-evalaute escaped-input)))
+    (zaeny/ws-send json-str)))
+
 (defun zaeny/ws-connect-debugger ()
   "Prompt the user for a WebSocket URL and then connect to it."
   (interactive)
@@ -87,7 +105,7 @@ how we parse json
 
 (defun zaeny/tmux-set-runtime (target)
   "set tmux target runtime"
-  (interactive "sTmux runtime : session:window.pane")
+  (interactive "sTmux runtime : session:window.pane ")
   (setq zaeny/tmux-runtime target)
   (message "set tmux runtime to % s" zaeny/tmux-runtime))
 
