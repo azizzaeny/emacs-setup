@@ -308,7 +308,6 @@ copy paste problem on remote
 ## note
 
 ```elisp
-
 (defun zaeny/note-open-today (&optional year month day)
   "Open a note for a specific YEAR, MONTH, and DAY. If not provided, use today's date. If the file doesn't exist, create it."
   (interactive)
@@ -411,7 +410,6 @@ send to repl/terminal, send into an incremental execution environment
 add send javascript, send plain, send wrap, send paragrap, send region and send buffer
 set wrap send plain, 
 send specific command
-
 control ansi process
 
 ```elisp
