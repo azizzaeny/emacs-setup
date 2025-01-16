@@ -370,6 +370,8 @@ If not provided, use today's date. If the file doesn't exist, create it."
   (interactive)
   (zaeny/load-snippets "~/.emacs.d/docs/snippet.md")) ;; todo: change directory
 
+(zaeny/load-snippets "~/.emacs.d/docs/snippet.md")
+
 (defun zaeny/abbrev-at-point ()
   "Return the abbreviation at point."
   (let* ((end (point))

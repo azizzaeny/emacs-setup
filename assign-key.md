@@ -170,14 +170,14 @@ we want c-x prefix
 (global-set-key (kbd "C-c a a") 'aggressive-indent-indent-defun)
 
 ;; expand region
-(global-set-key (kbd "C-c e e") 'er/expand-region)
+(global-set-key (kbd "C-c e r") 'er/expand-region)
 
 ;; snippets 
 ;;(global-set-key (kbd "C-c s r") 'zaeny/reload-snippets)
 (global-set-key (kbd "C-c e a") 'zaeny/expand-abbrev-snippet)
 
 ;; region to single line to sent
-(global-set-key (kbd "C-c r l") 'zaeny/region-to-single-line)
+(global-set-key (kbd "C-c e l") 'zaeny/region-to-single-line)
 
 ;; bookmark
 ;; C-x r m ;; make a bookmark
