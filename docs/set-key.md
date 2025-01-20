@@ -177,4 +177,6 @@ set key binding
 ;; simple-httpd
 ;;(global-set-key (kbd "C-c c s") 'httpd-start-with-port)
 
+;; gptel
+(global-set-key (kbd "C-c g s") 'gptel-send-menu)
 ```

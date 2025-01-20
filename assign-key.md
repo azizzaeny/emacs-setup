@@ -174,7 +174,7 @@ we want c-x prefix
 
 ;; snippets 
 ;;(global-set-key (kbd "C-c s r") 'zaeny/reload-snippets)
-(global-set-key (kbd "C-c e a") 'zaeny/expand-abbrev-snippet)
+(global-set-key (kbd "C-c e s") 'zaeny/expand-abbrev-snippet)
 
 ;; region to single line to sent
 (global-set-key (kbd "C-c e l") 'zaeny/region-to-single-line)
@@ -223,4 +223,7 @@ we want c-x prefix
 ;; simple-httpd
 ;;(global-set-key (kbd "C-c c s") 'httpd-start-with-port)
 
+;; gptel
+(global-set-key (kbd "C-x g g") 'gptel)
+(global-set-key (kbd "C-x g s") 'gptel-send)
 ```

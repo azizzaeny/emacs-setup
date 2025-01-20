@@ -36,6 +36,7 @@
     company
 	async
     websocket
+    gptel
     )
   )
 ;; todo use gptel package to interact with llm
@@ -410,4 +411,10 @@ remove those details
 (setq scroll-conservatively 10000)
 (setq scroll-preserve-screen-position t)
 
+```
+
+## gptel 
+
+```elisp
+(setq gptel-api-key (getenv "CHATGPT_API_KEY"))
 ```
