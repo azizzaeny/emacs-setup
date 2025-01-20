@@ -224,6 +224,6 @@ we want c-x prefix
 ;;(global-set-key (kbd "C-c c s") 'httpd-start-with-port)
 
 ;; gptel
-(global-set-key (kbd "C-x g g") 'gptel)
+(global-set-key (kbd "C-x g m") 'gptel-menu)
 (global-set-key (kbd "C-x g s") 'gptel-send)
 ```
