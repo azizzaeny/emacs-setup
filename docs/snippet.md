@@ -116,7 +116,7 @@ ssh -L 11001:localhost:11001 server
 ssh -AJ jumServer targetServer
 ```
 
-### Simple HTTP Server
+### Basic HTTP Server
 ```js name=httpServer
 var parseRequest = (request, buffer) => (request.$parsed = require('url').parse(request.url, true), request.params = Object.assign({}, request.$parsed.query), request.pathname = request.$parsed.pathname, request.body = buffer, request);
 var writeResponse = (ctx, request, response) => ctx === null ? null : (response.writeHead(ctx.status || 404, ctx.headers || {}), response.write(ctx.body || ''), response.end());
@@ -128,6 +128,10 @@ var createServer = (handler) => require('http').createServer((req, res)=>{
 var handler = (req, res) => ({body: `hellow buddy ${req.buffer}`});
 var server = createServer((req, res) => handler(req, res));
 server.listen(8080);
+```
+
+### Simple HTTP Server 
+```js name=simpleHttp
 ```
 
 ### Simple HTTP Handler
@@ -144,9 +148,9 @@ var handler = (req, res) => {
 
 ### Capture Code Blocks
 
-```js name=captureMdBlock
-var captureCodeBlocks = (markdown) =>  Array.from(markdown.matchAll(/\`\`\`(\w+)((?:\s+\w+=[\w./-]+)*)\s*([\s\S]*?)\`\`\`/g), match => {
-  return merge({ lang: match[1], content: match[3].trim()}, match[2].trim().split(/\s+/).reduce((acc, attr)=>{
+```js name=getCodeBlocks
+var getCodeBlocks = (markdown) =>  Array.from(markdown.matchAll(/\`\`\`(\w+)((?:\s+\w+=[\w./-]+)*)\s*([\s\S]*?)\`\`\`/g), match => {
+  return Object.assign({ lang: match[1], content: match[3].trim()}, match[2].trim().split(/\s+/).reduce((acc, attr)=>{
     let [key, value] = attr.split('=');
     return (key && value) ? (acc[key] = value, acc) : acc;
   }, {}));
@@ -301,48 +305,32 @@ var createServer = (port, handler) => {
 ### http serve file dir 
 ```js name=httpServe 
 
-var { readFile } = require('fs/promises');
-var { join, extname } = require('path');
-var parseRequest = (request, buffer) => (
-  request.$parsed = require('url').parse(request.url, true),
-  request.params = { ...request.$parsed.query },
-  request.pathname = request.$parsed.pathname,
-  request.body = buffer,
-  request
-);
-var writeResponse = (ctx, request, response) => 
-  ctx === null ? null : (response.writeHead(ctx.status || 404, ctx.headers || {}), response.end(ctx.body || ''));
-var createServer = (handler) => 
-  require('http').createServer((req, res) => {
-    let buffer = [];
-    req.on('data', chunk => buffer.push(chunk));
-    req.on('end', async () => writeResponse(await handler(parseRequest(req, Buffer.concat(buffer))), req, res));
-  });
-var getFilePath = (serveDirectory, pathname) => join(serveDirectory, pathname === '/' ? '/index.html' : pathname);
-var getMimeType = (ext) => ({
-  'html': 'text/html',
-  'css': 'text/css',
-  'js': 'application/javascript',
-  'png': 'image/png',
-  'jpg': 'image/jpeg',
-  'svg': 'image/svg+xml',
-}[ext] || 'application/octet-stream');
-var getExtension = (filePath) => extname(filePath).slice(1) || 'html';
-var serve = async (req) => {
-  let serveDirectory = './';
-  let filePath = getFilePath(serveDirectory, req.pathname);
-  let ext = getExtension(filePath);
-  try {
-    let content = await readFile(filePath);
-    return { status: 200, headers: { 'Content-Type': getMimeType(ext) }, body: content };
-  } catch {
-    return { status: 404, headers: { 'Content-Type': 'text/plain' }, body: '404 Not Found' };
-  }
+var parseRequest = (request, buffer) => (request.$parsed = require('url').parse(request.url, true), request.params = Object.assign({}, request.$parsed.query), request.pathname = request.$parsed.pathname, request.body = buffer, request);
+var writeResponse = (ctx, request, response) => ctx === null ? null : (response.writeHead(ctx.status || 404, ctx.headers || {}), response.write(ctx.body || ''), response.end());
+var createServer = (handler) => require('http').createServer((req, res)=>{
+  let buffer = [];
+  req.on('data', chunk => (chunk ? buffer.push(chunk) : null));
+  req.on('end', async ()  => (parseRequest(req, buffer), writeResponse(await handler(req, res),  req, res))); 
+});
+var fs = require('fs');
+var serveIndex = (pathname) => fs.existsSync(`.${pathname}`) && fs.statSync(`.${pathname}`).isDirectory() && fs.existsSync(`.${pathname}/index.html`) && fs.readFileSync(`.${pathname}/index.html`).toString();
+var serveFile = (pathname) => {
+  let type = { 'html': 'text/html',  'css': 'text/css',  'js': 'application/javascript', 'png': 'image/png',  'jpg': 'image/jpeg',  'svg': 'image/svg+xml' }  ;
+  let ext = require('path').extname(pathname).slice(1);
+  let contentType = type[ext] || 'plain/text';
+  let content = fs.existsSync(`.${pathname}`) && fs.readFileSync(`.${pathname}`);
+  if(content) return [content.toString(), contentType];
+  return [null, null];
 };
-
-var handler = (req) => serve(req);
-var server = createServer(handler);
-server.listen(8080, () => console.log('running at port 8080'));
+var handler = (req, res) =>{
+  let index = serveIndex(req.pathname);
+  if(index) return { status : 200, headers: {'Content-Type': 'text/html'}, body: index };
+  let [file, type] = serveFile(req.pathname);
+  if(file) return { status: 200, headers: {'Content-Type': type }, body: file};
+  return {status: 404, headers: {'Content-Type': 'text/plain'}, body: '404'}
+};
+var server = createServer((req, res) => handler(req, res));
+server.listen(8080)
 
 ```
 

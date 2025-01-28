@@ -274,22 +274,6 @@ remove those details
 
 ```
 
-## polymarkdow 
-
-```elisp 
-;; polymode poly-markdown
-(require 'polymode)
-(require 'poly-markdown)
-(with-eval-after-load 'poly-markdown
-  (add-to-list 'auto-mode-alist '("\\.md" . poly-markdown-mode)))
-;; markdown-mode
-(require 'markdown-mode)
-;; (with-eval-after-load 'markdown-mode
-;;   (autoload 'gfm-mode "markdown-mode"
-;;     "Major mode for editing GitHub Flavored Markdown files" t)
-;;   (add-to-list 'auto-mode-alist '("README\\.md\\'" . gfm-mode)))
-
-```
 
 ## javascript mode 
 
@@ -305,6 +289,8 @@ remove those details
 
 (with-eval-after-load 'js2-mode
   (add-to-list 'auto-mode-alist '("\\.mjs" . js2-mode)))
+
+(setq comment-style 'aligned)
 
 ```
 
@@ -417,4 +403,23 @@ remove those details
 
 ```elisp
 (setq gptel-api-key (getenv "CHATGPT_API_KEY"))
+```
+
+## polymarkdown
+
+```elisp 
+;; markdown-mode
+(require 'markdown-mode)
+;; (with-eval-after-load 'markdown-mode
+;;   (autoload 'gfm-mode "markdown-mode"
+;;     "Major mode for editing GitHub Flavored Markdown files" t)
+;;   (add-to-list 'auto-mode-alist '("README\\.md\\'" . gfm-mode)))
+
+;; polymode poly-markdown
+(require 'polymode)
+(require 'poly-markdown)
+
+(with-eval-after-load 'poly-markdown
+  (add-to-list 'auto-mode-alist '("\\.md" . poly-markdown-mode)))
+
 ```
