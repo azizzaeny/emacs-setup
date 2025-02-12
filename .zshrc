@@ -176,3 +176,9 @@ export LANG
 alias ec="emacsclient -t ."
 alias chrome-debug='/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --remote-debugging-port=9222 --user-data-dir="$HOME/.chrome-debug-profile"'
 source ~/.secret-api-key
+
+# copy remote
+function cpr() {
+    local host="$1"
+    ssh "$host" 'cat ~/clip' | pbcopy
+}

@@ -293,7 +293,7 @@ copy paste problem on remote
         (lambda (text &optional push)
           (with-temp-buffer
             (insert text)  ;; Insert the copied/cut text
-            (write-file "~/clipboard/clipboard.txt"))))) ;; Write to the clipboard file on the server
+            (write-file "~/clip"))))) ;; Write to the clipboard file on the server
 
 (defun zaeny/update-clipboard-from-file ()
   "Read clipboard content from the file and update Emacs kill-ring."

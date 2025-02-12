@@ -413,30 +413,55 @@ remove those details
 
 ;;(gptel-make-gemini "Gemini" :key "YOUR_GEMINI_API_KEY" :stream t)
 
-;; (gptel-make-anthropic "Claude"          ;Any name you want
-;;   :stream t                             ;Streaming responses
-;;   :key "your-api-key")
+(gptel-make-anthropic "Claude"          ;Any name you want
+  :stream t                             ;Streaming responses
+  :key (getenv "CLAUDE_API_KEY"))
 
 ;; DeepSeek offers an OpenAI compatible API
-;; (gptel-make-openai "DeepSeek"       ;Any name you want
-;;   :host "api.deepseek.com"
-;;   :endpoint "/chat/completions"
-;;   :stream t
-;;   :key "your-api-key"               ;can be a function that returns the key
-;;   :models '(deepseek-chat deepseek-coder))
+(gptel-make-openai "DeepSeek"       ;Any name you want
+  :host "api.deepseek.com"
+  :endpoint "/chat/completions"
+  :stream t
+  :key (getenv "DEEPSEEK_API_KEY")               ;can be a function that returns the key
+  :models '(deepseek-chat deepseek-coder))
 
 ;; OpenRouter offers an OpenAI compatible API
-;; (gptel-make-openai "OpenRouter"               ;Any name you want
-;;   :host "openrouter.ai"
-;;   :endpoint "/api/v1/chat/completions"
-;;   :stream t
-;;   :key "your-api-key"                   ;can be a function that returns the key
-;;   :models '(openai/gpt-3.5-turbo
-;;             mistralai/mixtral-8x7b-instruct
-;;             meta-llama/codellama-34b-instruct
-;;             codellama/codellama-70b-instruct
-;;             google/palm-2-codechat-bison-32k
-;;             google/gemini-pro))
+(gptel-make-openai "OpenRouter"               ;Any name you want
+  :host "openrouter.ai"
+  :endpoint "/api/v1/chat/completions"
+  :stream t
+  :key (getenv "OPENROUTER_API_KEY")                   ;can be a function that returns the key
+  :models '(openai/gpt-3.5-turbo
+            openai/gpt-4o-mini
+            openai/gpt-4-32k
+            openai/gpt-4
+            anthropic/claude-3-haiku
+            anthropic/claude-3.5-haiku
+            anthropic/claude-3-opus
+            anthropic/claude-3.5-sonnet
+            deepseek/deepseek-r1
+            deepseek/deepseek-chat
+            deepseek/deepseek-r1:free
+            deepseek/deepseek-chat:free
+            deepseek/deepseek-r1-distill-llama-70b:free
+            google/palm-2-codechat-bison-32k
+            google/gemini-pro
+            google/gemini-2.0-flash-lite-preview-02-05:free
+            google/gemini-2.0-flash-thinking-exp-1219:free
+            google/gemini-2.0-flash-thinking-exp:free
+            google/gemini-pro-1.5
+            google/gemini-2.0-flash-001
+            mistralai/mistral-small-24b-instruct-2501:free
+            mistralai/mistral-small-24b-instruct-2501
+            mistralai/mixtral-8x7b-instruct
+            mistralai/mistral-7b-instruct-v0.1
+            meta-llama/codellama-34b-instruct
+            codellama/codellama-70b-instruct
+            qwen/qwen-vl-plus:free
+            openchat/openchat-7b:free
+            nvidia/llama-3.1-nemotron-70b-instruct:free
+            openrouter/auto))
+
 ```
 
 ## polymarkdown
