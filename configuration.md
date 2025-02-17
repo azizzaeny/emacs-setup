@@ -435,6 +435,7 @@ remove those details
             openai/gpt-4o-mini
             openai/gpt-4-32k
             openai/gpt-4
+            openai/o3-mini-high
             anthropic/claude-3-haiku
             anthropic/claude-3.5-haiku
             anthropic/claude-3-opus
