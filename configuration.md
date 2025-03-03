@@ -92,14 +92,15 @@
 ## text mode configuration 
 
 ```elisp 
-(add-hook 'text-mode-hook
-          (lambda ()
-            ;;(global-display-line-numbers-mode) ;; enable line 
-            ;; (setq-default paragraph-start "\f\\|[ \t]*$"
-            ;;               paragraph-separate "[ \t\f]*$") ;; hanging indent
-            (setq fill-column 80)    ; Set maximum line width to 80 characters
-            (auto-fill-mode 1)
-            (turn-on-auto-fill))) ; Enable automatic line wrapping 
+
+;; (add-hook 'text-mode-hook
+;;           (lambda ()
+;;             ;;(global-display-line-numbers-mode) ;; enable line 
+;;             ;; (setq-default paragraph-start "\f\\|[ \t]*$"
+;;             ;;               paragraph-separate "[ \t\f]*$") ;; hanging indent
+;;             (setq fill-column 80)    ; Set maximum line width to 80 characters
+;;             (auto-fill-mode 1)
+;;             (turn-on-auto-fill))) ; Enable automatic line wrapping 
 
 ;; Save & restore sessions
 ;; (desktop-save-mode 1)
