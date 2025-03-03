@@ -403,6 +403,7 @@ remove those details
 
 ```elisp
 (require 'gptel)
+
 (setq gptel-api-key (getenv "CHATGPT_API_KEY"))
 ;; (message gptel-api-key)
 
@@ -418,12 +419,13 @@ remove those details
   :key (getenv "CLAUDE_API_KEY"))
 
 ;; DeepSeek offers an OpenAI compatible API
-(gptel-make-openai "DeepSeek"       ;Any name you want
-  :host "api.deepseek.com"
-  :endpoint "/chat/completions"
-  :stream t
-  :key (getenv "DEEPSEEK_API_KEY")               ;can be a function that returns the key
-  :models '(deepseek-chat deepseek-coder))
+
+;; (gptel-make-openai "DeepSeek"       ;Any name you want
+;;   :host "api.deepseek.com"
+;;   :endpoint "/chat/completions"
+;;   :stream t
+;;   :key (getenv "DEEPSEEK_API_KEY")               ;can be a function that returns the key
+;;   :models '(deepseek-chat deepseek-coder))
 
 ;; OpenRouter offers an OpenAI compatible API
 (gptel-make-openai "OpenRouter"               ;Any name you want
@@ -431,11 +433,14 @@ remove those details
   :endpoint "/api/v1/chat/completions"
   :stream t
   :key (getenv "OPENROUTER_API_KEY")                   ;can be a function that returns the key
-  :models '(openai/gpt-3.5-turbo
+  :models '(openai/gpt-4.5-preview
             openai/gpt-4o-mini
-            openai/gpt-4-32k
-            openai/gpt-4
+            openai/gpt-4o-2024-11-20
+            openai/gpt-4            
             openai/o3-mini-high
+            openai/o3-mini
+            openai/o1
+            openai/o1-mini-2024-09-12
             anthropic/claude-3-haiku
             anthropic/claude-3.5-haiku
             anthropic/claude-3-opus
@@ -444,8 +449,6 @@ remove those details
             deepseek/deepseek-chat
             deepseek/deepseek-r1:free
             deepseek/deepseek-chat:free
-            deepseek/deepseek-r1-distill-llama-70b:free
-            google/palm-2-codechat-bison-32k
             google/gemini-pro
             google/gemini-2.0-flash-lite-preview-02-05:free
             google/gemini-2.0-flash-thinking-exp-1219:free
@@ -456,11 +459,6 @@ remove those details
             mistralai/mistral-small-24b-instruct-2501
             mistralai/mixtral-8x7b-instruct
             mistralai/mistral-7b-instruct-v0.1
-            meta-llama/codellama-34b-instruct
-            codellama/codellama-70b-instruct
-            qwen/qwen-vl-plus:free
-            openchat/openchat-7b:free
-            nvidia/llama-3.1-nemotron-70b-instruct:free
             openrouter/auto))
 
 ```
