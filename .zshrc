@@ -182,3 +182,5 @@ function cpr() {
     local host="$1"
     ssh "$host" 'cat ~/clip' | pbcopy
 }
+
+export EDITOR="emacsclient -t"
