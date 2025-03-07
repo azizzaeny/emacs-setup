@@ -72,9 +72,16 @@ ZSH_THEME="agnoster"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-# plugins=(
-#     git
-# )
+plugins=(
+    colorize
+    fzf
+    fzf-tab
+    fast-syntax-highlighting
+    zsh-syntax-highlighting
+    zsh-autosuggestions
+)
+
+fpath+=${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-completions/src
 
 source $ZSH/oh-my-zsh.sh
 
@@ -144,30 +151,6 @@ function clip() {
 #     emacs -nw $out
 # }
 
-# if [ -n "$INSIDE_EMACS" ]; then
-#   chpwd() { print -P "\033AnSiTc %d" }
-#   print -P "\033AnSiTu %n"
-#   print -P "\033AnSiTc %d"
-# fi
-
-# if [[ ${TERM} == "dumb" ]]; then
-#     # This shell runs inside an Emacs *shell*/*term* buffer.
-#     prompt walters
-#     unsetopt zle
-# fi
-
-# if [ -n "$INSIDE_EMACS" ]; then
-#   chpwd() { print -P "\033AnSiTc %d" }
-#   print -P "\033AnSiTu %n"
-#   print -P "\033AnSiTc %d"
-# fi
-
-
-# export PROMPT_COMMAND=""
-
-# Fig post block. Keep at the bottom of this file.
-#[[ -f "$HOME/.fig/shell/zshrc.post.zsh" ]] && builtin source "$HOME/.fig/shell/zshrc.post.zsh"
-
 Lang="En_Us.UTF-8"
 export LC_ALL="en_US.UTF-8"
 export LANG
@@ -184,3 +167,4 @@ function cpr() {
 }
 
 export EDITOR="emacsclient -t"
+#source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
