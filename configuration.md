@@ -1,6 +1,7 @@
 ## refresh package contents
 
 ```elisp
+(setq server-use-tcp t)
 (setq server-temp-file-regexp ".*")
 (setq server-socket-dir "~/.emacs.d/server")
 
