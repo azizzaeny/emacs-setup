@@ -20,7 +20,7 @@
     clojure-mode
     counsel
     ivy
-    aggressive-indent
+    ;;aggressive-indent
     polymode
     poly-markdown
     expand-region
@@ -71,7 +71,7 @@
 ;; find-file-in-project
 ;; page-break-lines
 ;; auto-complete
-
+;; elpy
 ## install the package 
 ```elisp
 (defun my-packages-installed-p ()
@@ -482,7 +482,39 @@ remove those details
 (require 'polymode)
 (require 'poly-markdown)
 
-(with-eval-after-load 'poly-markdown
+(with-eval-after-load 'poly-markdown  
   (add-to-list 'auto-mode-alist '("\\.md" . poly-markdown-mode)))
+
+
+```
+
+## python 
+```elisp 
+
+;; (add-hook 'python-mode-hook
+;;  (lambda ()
+;;    (setq indent-tabs-mode t)
+;;    (setq python-indent 2)
+;;    (setq tab-width 2)))
+
+
+;; (with-eval-after-load 'aggressive-indent
+;; (add-to-list 'aggressive-indent-excluded-modes 'python-mode))
+
+;; Set default Python indentation to 4 spaces
+(setq python-indent-offset 4)
+
+;; Ensure that spaces are used for indentation
+(setq-default indent-tabs-mode nil)
+
+;; (setq python-shell-interpreter "./.venv/bin/ipython"
+;;       python-shell-interpreter-args "--simple-prompt -i")
+
+;; (setq python-shell-interpreter "./.venv/bin/python"
+;;       python-shell-interpreter-args "-i")
+
+(setq python-shell-interpreter "./.venv/bin/bpython"
+      python-shell-interpreter-args "-i")
+
 
 ```

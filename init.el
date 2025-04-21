@@ -41,6 +41,11 @@
 (zaeny/load-markdown "~/.emacs.d/extend-custom.md")
 (zaeny/load-markdown "~/.emacs.d/assign-key.md")
 
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (let ((start (float-time (time-subtract after-init-time before-init-time))))
+              (message "Emacs startup time: %.2f ms" (* start 1000)))))
+
 ;; (setq load-verbose t)
 ;; (setq debug-on-error t)
 
@@ -62,5 +67,9 @@
  ;; If there is more than one, they won't work right.
  '(auth-source-save-behavior nil)
  '(package-selected-packages
-   '(websocket company restclient multiple-cursors yaml-mode yasnippet expand-region poly-markdown polymode aggressive-indent php-mode js2-mode python-mode auto-complete counsel clojure-mode cmake-mode)))
+   '(async blacken clojure-mode counsel dotenv-mode emmet-mode
+           expand-region gptel js2-mode json-mode jupyter mmm-mode
+           multiple-cursors nginx-mode php-mode poly-markdown
+           python-mode restclient simple-httpd vscode-dark-plus-theme
+           vterm web-mode websocket yaml-mode zmq)))
 

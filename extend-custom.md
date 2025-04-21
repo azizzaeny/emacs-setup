@@ -116,7 +116,7 @@ how we parse json
 
 (defun zaeny/tmux-send (target str)
   "sent to tmux"
-  (let* ((command (concat "tmux send-keys -t " target " \"" str "\" C-m")))
+  (let* ((command (concat "tmux send-keys -t " target " \"" str "\" C-m"))) ;C-m
     (start-process-shell-command "tmux-send-keys" nil command)
     (message "Sent to tmux :%s" command)))
 

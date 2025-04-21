@@ -226,4 +226,8 @@ we want c-x prefix
 ;; gptel
 (global-set-key (kbd "C-x g m") 'gptel-menu)
 (global-set-key (kbd "C-x g s") 'gptel-send)
+
+;; expand yas snippets
+(global-set-key (kbd "C-c ;") 'emmet-expand-yas)
+
 ```
