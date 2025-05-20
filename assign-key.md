@@ -10,6 +10,10 @@ we want c-x prefix
 (global-set-key (kbd "C-c t r") 'zaeny/tmux-send-region) ;; or paragrpah
 (global-set-key (kbd "C-c t l") 'zaeny/tmux-send-line) ;; or paragrpah
 (global-set-key (kbd "C-c t c") 'zaeny/tmux-send-cat) ;; sent wraper cat
+(global-set-key (kbd "C-c t b") 'zaeny/tmux-send-whole-buffer) ;; sent whole buffer
+(global-set-key (kbd "C-c t p") 'zaeny/mark-python-code-block) ;; mark python code blocks
+(global-set-key (kbd "C-c t m") 'zaeny/tmux-mark-point) ;; begin mark into key bind
+(global-set-key (kbd "C-c t s") 'zaeny/tmux-send-mark) ;; sent mark into current runtime
 
 ;; (global-set-key (kbd "C-c t d") 'tmux-send-control-c)      ;; Send C-d
 ;; (global-set-key (kbd "C-c t z") 'tmux-send-control-z)      ;; Send C-z
@@ -115,9 +119,12 @@ we want c-x prefix
 ;; markdown
 ;; (global-set-key (kbd "C-x m f") 'polymode-next-chunk)
 ;; (global-set-key (kbd "C-x m p") 'polymode-previous-chunk)
-;; (global-set-key (kbd "C-c C-f") 'markdown-forward-same-level)
-;; (global-set-key (kbd "C-c C-p") 'markdown-backward-same-level)
+(global-set-key (kbd "C-c m f") 'markdown-forward-same-level)
+(global-set-key (kbd "C-c m b") 'markdown-backward-same-level)
 ;; (global-set-key (kbd "C-c m") 'polymode-mark-or-extend-chunk)
+;; (global-set-key (kbd "C-c m p") 'markdown-previous-visible-heading)
+;; (global-set-key (kbd "C-c m n") 'markdown-next-visible-heading)
+
 
 ;; window movement
 (global-set-key (kbd "C-x g <up>") 'windmove-up)

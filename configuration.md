@@ -36,7 +36,6 @@
     dotenv-mode
     json-mode
     yaml-mode
-    restclient
     company
 	async
     websocket
@@ -72,6 +71,8 @@
 ;; page-break-lines
 ;; auto-complete
 ;; elpy
+;; restclient
+    
 ## install the package 
 ```elisp
 (defun my-packages-installed-p ()
@@ -186,7 +187,8 @@
 ## configure the isearch 
 
 ```elisp
-(require 'restclient);
+;;(require 'restclient);
+
 (require 'isearch)
 (setq search-whitespace-regexp ".*?" ; one `setq' here to make it obvious they are a bundle
         isearch-lax-whitespace t
@@ -321,16 +323,19 @@ remove those details
 ## themes set, divider, bottom border
 
 ```elisp
-(setq window-divider-default-places 'right-only)
-(setq window-divider-default-bottom-width 1)
-(setq window-divider-default-right-width 1)
+
+;; (setq window-divider-default-places 'right-only)
+;; (setq window-divider-default-bottom-width 1)
+;; (setq window-divider-default-right-width 1)
+
 (load-theme 'vscode-dark-plus t)
-(window-divider-mode 1)
+
+;;(window-divider-mode 1)
 
 ;; balck bottom border bg status
-(custom-set-faces
- '(mode-line ((t (:background "#000000" :foreground "#ffffff"))))
- '(mode-line-inactive ((t (:background "#000000" :foreground "#888888")))))
+;; (custom-set-faces
+;;  '(mode-line ((t (:background "#000000" :foreground "#ffffff"))))
+;;  '(mode-line-inactive ((t (:background "#000000" :foreground "#888888")))))
 
 ;; font 
 (set-face-attribute 'default nil :font "Source Code Pro for powerline")
@@ -342,8 +347,8 @@ remove those details
 ```elisp
 (menu-bar-mode -1)
 
-(set-face-foreground 'vertical-border
-                     (face-background 'vertical-border nil t))
+;; (set-face-foreground 'vertical-border
+;;                      (face-background 'vertical-border nil t))
 
 ;;(display-line-numbers-mode 1)
 ;;(global-display-line-numbers-mode 1)
@@ -409,7 +414,7 @@ remove those details
 ```elisp
 (require 'gptel)
 
-(setq gptel-api-key (getenv "CHATGPT_API_KEY"))
+;;(setq gptel-api-key (getenv "CHATGPT_API_KEY"))
 ;; (message gptel-api-key)
 
 ;; (gptel-make-ollama "Ollama"             ;Any name of your choosing
@@ -419,9 +424,9 @@ remove those details
 
 ;;(gptel-make-gemini "Gemini" :key "YOUR_GEMINI_API_KEY" :stream t)
 
-(gptel-make-anthropic "Claude"          ;Any name you want
-  :stream t                             ;Streaming responses
-  :key (getenv "CLAUDE_API_KEY"))
+;; (gptel-make-anthropic "Claude"          ;Any name you want
+;;   :stream t                             ;Streaming responses
+;;   :key (getenv "CLAUDE_API_KEY"))
 
 ;; DeepSeek offers an OpenAI compatible API
 
@@ -433,38 +438,84 @@ remove those details
 ;;   :models '(deepseek-chat deepseek-coder))
 
 ;; OpenRouter offers an OpenAI compatible API
+
 (gptel-make-openai "OpenRouter"               ;Any name you want
   :host "openrouter.ai"
   :endpoint "/api/v1/chat/completions"
   :stream t
   :key (getenv "OPENROUTER_API_KEY")                   ;can be a function that returns the key
-  :models '(openai/gpt-4.5-preview
-            openai/gpt-4o-mini
-            openai/gpt-4o-2024-11-20
-            openai/gpt-4            
-            openai/o3-mini-high
-            openai/o3-mini
-            openai/o1
-            openai/o1-mini-2024-09-12
-            anthropic/claude-3-haiku
-            anthropic/claude-3.5-haiku
-            anthropic/claude-3-opus
-            anthropic/claude-3.5-sonnet
-            deepseek/deepseek-r1
-            deepseek/deepseek-chat
-            deepseek/deepseek-r1:free
-            deepseek/deepseek-chat:free
-            google/gemini-pro
-            google/gemini-2.0-flash-lite-preview-02-05:free
-            google/gemini-2.0-flash-thinking-exp-1219:free
-            google/gemini-2.0-flash-thinking-exp:free
-            google/gemini-pro-1.5
-            google/gemini-2.0-flash-001
-            mistralai/mistral-small-24b-instruct-2501:free
-            mistralai/mistral-small-24b-instruct-2501
-            mistralai/mixtral-8x7b-instruct
-            mistralai/mistral-7b-instruct-v0.1
-            openrouter/auto))
+  :models '(
+             anthropic/claude-3.7-sonnet:thinking ;3 15
+             anthropic/claude-3.7-sonnet:beta ;3 15
+             anthropic/claude-3.7-sonnet ;3 15             
+             anthropic/claude-3.5-haiku ; 0.8 4
+             anthropic/claude-3.5-haiku:beta ;0.8 4
+             anthropic/claude-3.5-sonnet:beta ;0.8 4
+             anthropic/claude-3.5-sonnet ;3 15
+             anthropic/claude-3-opus ;15 75
+             google/gemini-2.5-pro-preview ; 1.25 10             
+             google/gemini-2.5-flash-preview ;0.15 0.6
+             google/gemini-2.5-flash-preview:thinking ;0.15 3.5
+             google/gemini-2.5-pro-exp-03-25 ; 0. 0.
+             google/gemma-3-12b-it:free ; 0. 0.
+             google/gemini-2.0-flash-001 ; 0.10 0.40
+             google/gemini-2.0-flash-lite-001; 0.075 0.3             
+             openai/codex-mini ;1.5 6
+             openai/gpt-4o-mini
+             openai/gpt-4.1 ;2 8             
+             openai/gpt-4.1-mini ; 0.4 1.6
+             openai/gpt-4.1-nano ; 0.1 0.4
+             openai/gpt-4o-2024-11-20 ;2.5 10
+             openai/gpt-4o ; 2 10
+             openai/gpt-4o-mini-2024-07-18 ; 0.15 0.6
+             openai/gpt-4o-mini-search-preview ;0.15 0.6
+             openai/gpt-4o-search-preview ; 2.5 10
+             openai/gpt-4.5-preview ; 75 150
+             openai/o1 ;15 60
+             openai/o1-preview-2024-09-12 ; 15 60
+             openai/o1-mini-2024-09-12 ;1.1 4.4
+             openai/gpt-4-turbo ;10 30
+             openai/gpt-3.5-turbo ;0.5 1.5
+             deepseek/deepseek-chat-v3-0324 ; 0.3 0.88
+             deepseek/deepseek-chat-v3-0324:free ;0.0
+             deepseek/deepseek-chat ;0.38 0.89
+             deepseek/deepseek-chat:free ;0.0 
+             deepseek/deepseek-r1 ; 0.5 2.1
+             deepseek/deepseek-r1:free ; 0 0
+             tngtech/deepseek-r1t-chimera:free ;0 0
+             deepseek/deepseek-v3-base:free ;0 0
+             deepseek/deepseek-prover-v2  ;0.5 2.1
+             deepseek/deepseek-prover-v2:free ;0 0 
+             )
+  )
+
+ ;; models: '(openai/gpt-4.5-preview
+ ;;            openai/gpt-4o-mini
+ ;;            openai/gpt-4o-2024-11-20
+ ;;            openai/gpt-4            
+ ;;            openai/o3-mini-high
+ ;;            openai/o3-mini
+ ;;            openai/o1
+ ;;            openai/o1-mini-2024-09-12
+ ;;            anthropic/claude-3-haiku
+ ;;            anthropic/claude-3.5-haiku
+ ;;            anthropic/claude-3-opus
+ ;;            anthropic/claude-3.5-sonnet
+ ;;            deepseek/deepseek-r1
+ ;;            deepseek/deepseek-chat
+ ;;            deepseek/deepseek-r1:free
+ ;;            deepseek/deepseek-chat:free
+ ;;            google/gemini-pro
+ ;;            google/gemini-2.0-flash-lite-preview-02-05:free
+ ;;            google/gemini-2.0-flash-thinking-exp-1219:free
+ ;;            google/gemini-2.0-flash-thinking-exp:free
+ ;;            google/gemini-pro-1.5
+ ;;            google/gemini-2.0-flash-001
+ ;;            mistralai/mistral-small-24b-instruct-2501:free
+ ;;            mistralai/mistral-small-24b-instruct-2501
+ ;;            mistralai/mixtral-8x7b-instruct
+ ;;            mistralai/mistral-7b-instruct-v0.1
+ ;;            openrouter/auto)
 
 ```
 

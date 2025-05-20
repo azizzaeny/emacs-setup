@@ -118,7 +118,7 @@ how we parse json
   "sent to tmux"
   (let* ((command (concat "tmux send-keys -t " target " \"" str "\" C-m"))) ;C-m
     (start-process-shell-command "tmux-send-keys" nil command)
-    (message "Sent to tmux :%s" command)))
+    (message "Sent to tmux")))
 
 (defun zaeny/escape-quote-str (str)
   "escape special char like $ and \" before sending"
@@ -160,6 +160,48 @@ how we parse json
          (filename (read-string "Filename: ")))
     (zaeny/tmux-send-runtime (format "cat > %s <<'EOF'\n%s\nEOF" filename str))))
 
+(defun zaeny/tmux-send-whole-buffer ()
+  "Send the entire buffer to tmux."
+  (interactive)
+  (let ((str (buffer-string)))
+    (zaeny/tmux-send-runtime str)))
+
+(defun zaeny/tmux-send-paragraph ()
+  "Send current paragraph to tmux."
+  (interactive)
+  (let ((str (thing-at-point 'paragraph t)))
+    (zaeny/tmux-send-runtime str)))
+
+(defun zaeny/tmux-send-python-code-block ()
+  "Send Python code block to tmux."
+  (interactive)
+  (let ((start (save-excursion (python-nav-beginning-of-block) (point)))
+        (end (save-excursion (python-nav-end-of-block) (point))))
+    (let ((str (buffer-substring-no-properties start end)))
+      (zaeny/tmux-send-runtime str))))
+
+(defun zaeny/mark-python-code-block ()
+  "Mark the current Python code block."
+  (interactive)
+  (let ((start (save-excursion (python-nav-beginning-of-block) (point)))
+        (end (save-excursion (python-nav-end-of-block) (point))))
+    (push-mark start t t)  ; Set mark at block start
+    (goto-char end)))     ; Move point to block end
+
+(defvar zaeny/mark-str "")
+
+(defun zaeny/tmux-mark-point (start end)
+  "mark this string"
+  (interactive "r")
+  (setq zaeny/mark-str (buffer-substring-no-properties start end))
+  (message (format "marked %s" zaeny/mark-str)))
+  
+
+(defun zaeny/tmux-send-mark ()
+  "sent the marked stirg into runtime"
+  (interactive)
+  (zaeny/tmux-send-runtime zaeny/mark-str))
+  
 
 ;; zaeny/tmux-runtime
 ;; (zaeny/tmux-get-runtime)

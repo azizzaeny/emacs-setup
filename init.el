@@ -49,16 +49,16 @@
 ;; (setq load-verbose t)
 ;; (setq debug-on-error t)
 
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(mode-line ((t (:background "#000000" :foreground "#ffffff"))))
- '(mode-line-inactive ((t (:background "#000000" :foreground "#888888"))))
- '(window-divider ((t (:foreground "dim gray"))))
- '(window-divider-first-pixel ((t (:foreground "dim gray"))))
- '(window-divider-last-pixel ((t (:foreground "dim gray")))))
+;; (custom-set-faces
+;;  ;; custom-set-faces was added by Custom.
+;;  ;; If you edit it by hand, you could mess it up, so be careful.
+;;  ;; Your init file should contain only one such instance.
+;;  ;; If there is more than one, they won't work right.
+;;  '(mode-line ((t (:background "#000000" :foreground "#ffffff"))))
+;;  '(mode-line-inactive ((t (:background "#000000" :foreground "#888888"))))
+;;  '(window-divider ((t (:foreground "dim gray"))))
+;;  '(window-divider-first-pixel ((t (:foreground "dim gray"))))
+;;  '(window-divider-last-pixel ((t (:foreground "dim gray")))))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -70,6 +70,13 @@
    '(async blacken clojure-mode counsel dotenv-mode emmet-mode
            expand-region gptel js2-mode json-mode jupyter mmm-mode
            multiple-cursors nginx-mode php-mode poly-markdown
-           python-mode restclient simple-httpd vscode-dark-plus-theme
-           vterm web-mode websocket yaml-mode zmq)))
+           python-mode simple-httpd vscode-dark-plus-theme vterm
+           web-mode websocket yaml-mode zmq)))
 
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(mode-line ((t (:background "#000000" :foreground "#ffffff"))))
+ '(mode-line-inactive ((t (:background "#000000" :foreground "#888888")))))
