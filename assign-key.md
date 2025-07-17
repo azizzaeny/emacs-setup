@@ -68,6 +68,8 @@ we want c-x prefix
 (global-set-key (kbd "C-s s") 'isearch-forward)
 (global-set-key (kbd "C-s w") 'isearch-forward-symbol-at-point)
 (global-set-key (kbd "C-s d") 'counsel-grep-or-swiper)
+(global-set-key (kbd "C-s b") 'swiper-isearch-backward)
+(global-set-key (kbd "C-s f") 'swiper-isearch)
 (global-set-key (kbd "C-s x") 'counsel-M-x)
 (global-set-key (kbd "C-s l") 'goto-line)
 (global-set-key (kbd "C-x b") 'ido-switch-buffer)

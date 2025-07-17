@@ -66,12 +66,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(auth-source-save-behavior nil)
- '(package-selected-packages
-   '(async blacken clojure-mode counsel dotenv-mode emmet-mode
-           expand-region gptel js2-mode json-mode jupyter mmm-mode
-           multiple-cursors nginx-mode php-mode poly-markdown
-           python-mode simple-httpd vscode-dark-plus-theme vterm
-           web-mode websocket yaml-mode zmq)))
+ '(package-selected-packages nil))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

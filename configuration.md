@@ -1,4 +1,4 @@
-## refresh package contents
+# refresh package contents
 
 ```elisp
 ;; (setq server-use-tcp t)
@@ -40,6 +40,7 @@
 	async
     websocket
     gptel
+    evil
     )
   )
 ;; todo use gptel package to interact with llm
@@ -98,6 +99,7 @@
 
 ```elisp 
 
+
 ;; (add-hook 'text-mode-hook
 ;;           (lambda ()
 ;;             ;;(global-display-line-numbers-mode) ;; enable line 
@@ -106,7 +108,6 @@
 ;;             (setq fill-column 80)    ; Set maximum line width to 80 characters
 ;;             (auto-fill-mode 1)
 ;;             (turn-on-auto-fill))) ; Enable automatic line wrapping 
-
 ;; Save & restore sessions
 ;; (desktop-save-mode 1)
 ```
@@ -263,7 +264,19 @@ remove those details
 ```elisp
 (require 'expand-region)
 ```
+## evil mode 
 
+```elisp
+(require 'evil)
+(setq evil-repeat-delay 0.1)  ; Lower value = faster repeating
+;(define-key evil-normal-state-map (kbd "C-r") 'evil-redo)
+(evil-set-undo-system 'undo-redo)
+(evil-mode 1)
+(setq display-line-numbers-type 'relative)
+;;(display-line-numbers-mode 1)
+(global-display-line-numbers-mode 1)
+(define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
+```
 ## clojure paren 
 
 ```elisp
@@ -349,6 +362,8 @@ remove those details
 
 ;; (set-face-foreground 'vertical-border
 ;;                      (face-background 'vertical-border nil t))
+;;
+
 
 ;;(display-line-numbers-mode 1)
 ;;(global-display-line-numbers-mode 1)
@@ -445,47 +460,33 @@ remove those details
   :stream t
   :key (getenv "OPENROUTER_API_KEY")                   ;can be a function that returns the key
   :models '(
+             moonshotai/kimi-k2 ; 0.14 2.49
+             anthropic/claude-opus-4 ; 15 75
+             anthropic/claude-sonnet-4 ; 15 75
              anthropic/claude-3.7-sonnet:thinking ;3 15
-             anthropic/claude-3.7-sonnet:beta ;3 15
              anthropic/claude-3.7-sonnet ;3 15             
              anthropic/claude-3.5-haiku ; 0.8 4
-             anthropic/claude-3.5-haiku:beta ;0.8 4
-             anthropic/claude-3.5-sonnet:beta ;0.8 4
              anthropic/claude-3.5-sonnet ;3 15
-             anthropic/claude-3-opus ;15 75
-             google/gemini-2.5-pro-preview ; 1.25 10             
-             google/gemini-2.5-flash-preview ;0.15 0.6
+             google/gemini-2.5-flash-lite-preview-06-17 ; 0.10 0.40
+             google/gemini-2.5-flash ;0.30 2.50
+             google/gemini-2.5-pro ;1.25 10
              google/gemini-2.5-flash-preview:thinking ;0.15 3.5
-             google/gemini-2.5-pro-exp-03-25 ; 0. 0.
-             google/gemma-3-12b-it:free ; 0. 0.
-             google/gemini-2.0-flash-001 ; 0.10 0.40
-             google/gemini-2.0-flash-lite-001; 0.075 0.3             
              openai/codex-mini ;1.5 6
-             openai/gpt-4o-mini
-             openai/gpt-4.1 ;2 8             
+             openai/gpt-4.1 ;2 8
              openai/gpt-4.1-mini ; 0.4 1.6
              openai/gpt-4.1-nano ; 0.1 0.4
-             openai/gpt-4o-2024-11-20 ;2.5 10
-             openai/gpt-4o ; 2 10
-             openai/gpt-4o-mini-2024-07-18 ; 0.15 0.6
-             openai/gpt-4o-mini-search-preview ;0.15 0.6
-             openai/gpt-4o-search-preview ; 2.5 10
-             openai/gpt-4.5-preview ; 75 150
+             openai/o1-pro ;150 600
              openai/o1 ;15 60
-             openai/o1-preview-2024-09-12 ; 15 60
-             openai/o1-mini-2024-09-12 ;1.1 4.4
-             openai/gpt-4-turbo ;10 30
-             openai/gpt-3.5-turbo ;0.5 1.5
+             openai/o1-mini ; 1.1 4.4
              deepseek/deepseek-chat-v3-0324 ; 0.3 0.88
              deepseek/deepseek-chat-v3-0324:free ;0.0
+             deepseek/deepseek-v3-base:free ; 0.0
              deepseek/deepseek-chat ;0.38 0.89
-             deepseek/deepseek-chat:free ;0.0 
-             deepseek/deepseek-r1 ; 0.5 2.1
-             deepseek/deepseek-r1:free ; 0 0
+             deepseek/deepseek-chat:free ;0.0
+             deepseek/deepseek-r1;
+             deepseek/deepseek-r1-0528:free; 0.0
+             deepseek/deepseek-r1-0528 ;0.27 0.27
              tngtech/deepseek-r1t-chimera:free ;0 0
-             deepseek/deepseek-v3-base:free ;0 0
-             deepseek/deepseek-prover-v2  ;0.5 2.1
-             deepseek/deepseek-prover-v2:free ;0 0 
              )
   )
 
