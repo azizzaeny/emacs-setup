@@ -267,13 +267,22 @@ remove those details
 ## evil mode 
 
 ```elisp
+(setq-default cursor-type 'box) ; Options: 'box, 'bar, 'hbar, 'underscore, etc.
+
 (require 'evil)
-(setq evil-repeat-delay 0.1)  ; Lower value = faster repeating
-;(define-key evil-normal-state-map (kbd "C-r") 'evil-redo)
 (evil-set-undo-system 'undo-redo)
 (evil-mode 1)
+(setq evil-default-cursor t)               ; Default cursor in Normal mode (box)
+(setq evil-repeat-delay 0.1)  ; Lower value = faster repeating
+(setq evil-normal-state-cursor 'box)
+(setq evil-visual-state-cursor 'hollow)
+(setq evil-insert-state-cursor 'bar)
+
+;(add-hook 'evil-insert-state-entry-hook (lambda () (setq cursor-type 'bar)))
+;(add-hook 'evil-normal-state-entry-hook (lambda () (setq cursor-type 'box)))
+
+;(define-key evil-normal-state-map (kbd "C-r") 'evil-redo)
 (setq display-line-numbers-type 'relative)
-;;(display-line-numbers-mode 1)
 (global-display-line-numbers-mode 1)
 (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
 ```
@@ -373,9 +382,8 @@ remove those details
 (setq global-hl-line-mode nil)
 ;;(global-hl-line-mode nil)
 
-(setq tab-width 2)
+(setq tab-width 4)
 (setq-default indent-tabs-mode nil)
-(setq-default tab-width 2)
 (setq toggle-truncate-lines t)
 (setq indent-tabs-mode nil)
 (blink-cursor-mode -1)
@@ -489,34 +497,6 @@ remove those details
              tngtech/deepseek-r1t-chimera:free ;0 0
              )
   )
-
- ;; models: '(openai/gpt-4.5-preview
- ;;            openai/gpt-4o-mini
- ;;            openai/gpt-4o-2024-11-20
- ;;            openai/gpt-4            
- ;;            openai/o3-mini-high
- ;;            openai/o3-mini
- ;;            openai/o1
- ;;            openai/o1-mini-2024-09-12
- ;;            anthropic/claude-3-haiku
- ;;            anthropic/claude-3.5-haiku
- ;;            anthropic/claude-3-opus
- ;;            anthropic/claude-3.5-sonnet
- ;;            deepseek/deepseek-r1
- ;;            deepseek/deepseek-chat
- ;;            deepseek/deepseek-r1:free
- ;;            deepseek/deepseek-chat:free
- ;;            google/gemini-pro
- ;;            google/gemini-2.0-flash-lite-preview-02-05:free
- ;;            google/gemini-2.0-flash-thinking-exp-1219:free
- ;;            google/gemini-2.0-flash-thinking-exp:free
- ;;            google/gemini-pro-1.5
- ;;            google/gemini-2.0-flash-001
- ;;            mistralai/mistral-small-24b-instruct-2501:free
- ;;            mistralai/mistral-small-24b-instruct-2501
- ;;            mistralai/mixtral-8x7b-instruct
- ;;            mistralai/mistral-7b-instruct-v0.1
- ;;            openrouter/auto)
 
 ```
 
