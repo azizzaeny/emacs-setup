@@ -365,7 +365,7 @@ remove those details
 ```
 
 ## visual apperaence
- 
+
 ```elisp
 (menu-bar-mode -1)
 
@@ -488,7 +488,6 @@ remove those details
              openai/o1-mini ; 1.1 4.4
              deepseek/deepseek-chat-v3-0324 ; 0.3 0.88
              deepseek/deepseek-chat-v3-0324:free ;0.0
-             deepseek/deepseek-v3-base:free ; 0.0
              deepseek/deepseek-chat ;0.38 0.89
              deepseek/deepseek-chat:free ;0.0
              deepseek/deepseek-r1;
